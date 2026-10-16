@@ -66,6 +66,10 @@ USER 1000:1000
 COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --chown=rails:rails --from=build /rails /rails
 
+# Commit SHA the image was built from, reported by /api/health/live so a deploy can be verified.
+ARG APP_REVISION=""
+ENV APP_REVISION="${APP_REVISION}"
+
 # Entrypoint only execs the command; migrations run as a separate one-off step.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 

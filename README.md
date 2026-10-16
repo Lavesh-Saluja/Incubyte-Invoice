@@ -31,12 +31,12 @@ and two health endpoints. Replace the sample with your real feature
 ## 2. Architecture
 
 ```
- Development (no Docker needed)                    Production (separately hosted)
+ Development (no Docker needed)                    Production (Render, render.yaml)
 
- Browser ──► Vite :5173 ──/api/*──► Rails :3000     Browser ──► Static host (dist/)
+ Browser ──► Vite :5173 ──/api/*──► Rails :3000     Browser ──► Render static site (dist/)
              (React app)   proxy     (API only)        │
-                                        │              └──https──► Rails container ──► Managed
-                                        ▼                          (Dockerfile)          PostgreSQL
+                                        │              └──https──► Render web service ──► Render
+                                        ▼                          (Docker image)          PostgreSQL
                                    PostgreSQL                       CORS_ORIGINS = frontend origin
 ```
 
@@ -472,49 +472,88 @@ both checks.
 
 ## 17. Deployment
 
-The hosting platform is not fixed. The design is provider-neutral:
+Production runs on **Render**, free plan, region Singapore, defined in [`render.yaml`](render.yaml)
+(a Render Blueprint):
 
-| Piece      | Where it can run                                                       | Notes                                                                                  |
-| ---------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Rails API  | Any Docker host: Render, Railway, Fly.io, Koyeb, a VM with Docker      | Root `Dockerfile`. **Not** Vercel/Netlify — they do not run long-lived Rails processes |
-| PostgreSQL | The platform's managed Postgres, Neon, Supabase, etc.                  | Provide `DATABASE_URL`                                                                 |
-| React app  | Any static host: Vercel, Netlify, Cloudflare Pages, Render static site | Publish `dist/`. Most give PR preview deploys                                          |
+| Piece      | Render service                                     | URL                                         |
+| ---------- | -------------------------------------------------- | ------------------------------------------- |
+| Rails API  | Web Service from the GHCR image (`runtime: image`) | `https://incubyte-invoice-api.onrender.com` |
+| React app  | Static Site built from `main` (`dist/`)            | `https://incubyte-invoice-web.onrender.com` |
+| PostgreSQL | Render PostgreSQL 16 (`incubyte-invoice-db`)       | internal `DATABASE_URL`                     |
 
-### Steps
-
-1. **Database** — provision PostgreSQL and copy its connection string (add `?sslmode=require`
-   if the provider requires TLS).
-2. **Backend service** — create a Docker web service from this repo (Dockerfile at the root).
-   Set `DATABASE_URL`, `SECRET_KEY_BASE` (`bin/rails secret`), `CORS_ORIGINS=https://<frontend-domain>`
-   (exact origin, no trailing slash) and `APP_HOSTS=<api-domain>` (recommended). The
-   platform's `PORT` is honored by Puma.
-3. **Migrations** — configure a **release / pre-deploy command** that runs once per deploy:
-   `bin/rails db:migrate` (on the very first deploy, `bin/rails db:prepare` also creates the
-   database if the provider has not). Containers never migrate on boot, so replicas cannot race.
-   Manual alternative: `docker run --rm -e DATABASE_URL=… -e SECRET_KEY_BASE=… <image> ./bin/rails db:migrate`.
-4. **Health checks** — point the platform at `/api/health/ready` for routing traffic / zero-downtime
-   deploys. If the platform _restarts_ containers on a failing check, use `/api/health/live`
-   for that, so a database outage does not cause a restart loop (section 18).
-5. **Frontend** — on the static host: base directory = repository root, build command
-   `npm ci && npm run build`, output `dist`, Node 22, build env
-   `VITE_API_BASE_URL=https://<api-domain>` (rebuild after changing it). Because the app uses
-   client-side routing, add the host's **SPA fallback** so every path serves `index.html`
-   (Netlify: `/* /index.html 200` redirect; Vercel: a rewrite to `/index.html`; Render static
-   site: rewrite `/*` → `/index.html`).
-6. **Verify** — run the smoke test below.
-
-### Manual delivery (`deploy.yml`)
-
-**Never runs automatically** — not on push, merge or PR. Start it yourself:
-**Actions → Deploy → Run workflow → branch `main`**. It then:
+**Nothing deploys automatically.** The API is image-backed (Render never redeploys it on its
+own) and the static site has auto-deploy and PR previews off. The only way to deploy is
+**Actions → Deploy → Run workflow → branch `main`** (`.github/workflows/deploy.yml`), which:
 
 1. refuses to continue unless CI passed for that exact commit on `main`;
-2. builds the API image and pushes `ghcr.io/<owner>/<repo>-api:{sha,latest}` (built-in `GITHUB_TOKEN`);
-3. calls your host's deploy hook if the secret `BACKEND_DEPLOY_HOOK_URL` exists.
+2. builds the API image (with the commit baked in as `APP_REVISION`) and pushes
+   `ghcr.io/<owner>/<repo>-api:{sha-<commit>,latest}`;
+3. calls the API's deploy hook with that exact image and waits until `/api/health/live`
+   reports the commit, then checks `/api/health/ready` is 200 (database reachable);
+4. only then calls the static site's deploy hook and waits until `/version.txt` reports the
+   commit, then checks the page loads.
 
-It runs one at a time in the `production` environment (add required reviewers there for an
-extra approval) and never runs migrations itself. Frontend deploys come from the static
-host's own Git integration, which also gives preview deploys for branches.
+It runs one at a time in the GitHub `production` environment (add required reviewers there for
+an extra approval click).
+
+**Configuration lives in three places, and none of it is a secret in the repo:**
+
+| Where                                           | What                                                                                                                 |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `render.yaml` (committed)                       | `CORS_ORIGINS`, `APP_HOSTS`, `VITE_API_BASE_URL`, plan, region, health check, rewrite                                |
+| Render (generated)                              | `DATABASE_URL` (from the database), `SECRET_KEY_BASE` (`generateValue`)                                              |
+| GitHub → Settings → Environments → `production` | Secrets `RENDER_BACKEND_DEPLOY_HOOK_URL`, `RENDER_FRONTEND_DEPLOY_HOOK_URL`; variables `BACKEND_URL`, `FRONTEND_URL` |
+
+**Migrations** run when the API starts (`bin/migrate-and-start`, the `dockerCommand` in
+`render.yaml`) because Render's free plan has no pre-deploy command. This is safe only with a
+single instance. On a paid plan, set `preDeployCommand: bin/rails db:migrate` and remove
+`dockerCommand`. Seeds never run in production.
+
+**CORS:** the API allows exactly one origin, the static site (`CORS_ORIGINS`). Both are
+`*.onrender.com` subdomains, so they are different origins and CORS is required.
+
+### First deploy (one time)
+
+1. **Merge to `main`** and wait for CI to pass.
+2. **Publish the first image:** run **Actions → Deploy**. With no deploy hooks set yet it only
+   builds and pushes the image (Render needs it to exist before creating the service).
+3. **Make the image public:** GitHub → your profile → **Packages** → `<repo>-api` →
+   **Package settings** → **Change visibility → Public**. (Or keep it private and add GHCR
+   registry credentials in Render.)
+4. **Create everything on Render:** Render dashboard → **New → Blueprint** → connect GitHub and
+   pick this repository → **Apply**. It creates the database, the API (deploys `:latest`) and the
+   static site (first build).
+5. **Check the URLs** in the Render dashboard. If a name was taken, Render adds a suffix: then
+   update `CORS_ORIGINS`, `APP_HOSTS` and `VITE_API_BASE_URL` in `render.yaml` and merge.
+6. **Connect GitHub to Render:** for each of the two services, Render → service →
+   **Settings → Deploy Hook** → copy. Add them as secrets in GitHub → **Settings → Environments
+   → `production`** (or in a terminal: `gh secret set RENDER_BACKEND_DEPLOY_HOOK_URL --env production`,
+   which prompts for the value without echoing it). A deploy hook URL lets anyone trigger a
+   deploy: never commit it or paste it anywhere else.
+7. **Add the variables** in the same environment: `BACKEND_URL` and `FRONTEND_URL` (the two
+   `https://….onrender.com` URLs).
+8. **Run Actions → Deploy** again. It deploys both and verifies them; then do the smoke test
+   below.
+
+### Every later deploy
+
+Merge to `main`, wait for CI, then **Actions → Deploy → Run workflow → `main`**.
+
+### Render free-plan limits
+
+- The API sleeps after ~15 minutes without traffic; the next request takes ~30–60 s (the
+  static site never sleeps). The deploy workflow waits up to 15 minutes per service.
+- Free PostgreSQL databases expire after about 30 days (Render emails before deleting).
+- The static site builds the latest commit on `main` when its hook is called. If `main` moved
+  after you started the workflow, the frontend check fails with a commit mismatch: run Deploy
+  again for the new commit.
+
+### Using another host
+
+Nothing in the app is Render-specific: the API is a plain Docker image honoring `PORT`,
+`DATABASE_URL`, `SECRET_KEY_BASE`, `CORS_ORIGINS` and `APP_HOSTS`, and the frontend is static
+`dist/` built with `VITE_API_BASE_URL` plus an SPA fallback to `index.html`. Only `render.yaml`
+and the deploy steps of `deploy.yml` would change.
 
 ### Run the production image locally
 
@@ -567,7 +606,7 @@ Parameters matching `passw`, `secret`, `token`, `_key`, `email`, etc. are filter
 
 | Endpoint                | Meaning                                           | Touches DB | Success                                          | Failure                                                            |
 | ----------------------- | ------------------------------------------------- | ---------- | ------------------------------------------------ | ------------------------------------------------------------------ |
-| `GET /api/health/live`  | The Rails process can answer                      | No         | `200 {"status":"ok"}`                            | No answer / timeout                                                |
+| `GET /api/health/live`  | The Rails process can answer                      | No         | `200 {"status":"ok","revision":"<commit>"}`      | No answer / timeout                                                |
 | `GET /api/health/ready` | Ready for real traffic (DB reachable, `SELECT 1`) | Yes        | `200 {"status":"ok","checks":{"database":"ok"}}` | `503 {"status":"unavailable","checks":{"database":"unavailable"}}` |
 
 **Liveness** tells the platform whether to _restart_ the container. **Readiness** tells it
@@ -575,7 +614,8 @@ whether to _send traffic_ (and whether a new deploy is healthy enough to replace
 one). They are unauthenticated, reveal no configuration, and readiness logs only the error
 class (connection messages can contain host and user names). They are exempt from
 `APP_HOSTS` Host checks, since platforms probe by internal IP. The Docker image also defines
-a `HEALTHCHECK` against `/api/health/live`.
+a `HEALTHCHECK` against `/api/health/live`. `revision` is the commit the image was built
+from (`APP_REVISION`, set by `deploy.yml`); it is omitted when unknown, e.g. locally.
 
 In **development only**, Rails checks for pending migrations on every request, so with the
 database down even `/live` returns 500 locally. Production does not do this (verified).
@@ -657,12 +697,12 @@ every policy) and write the real rules in each policy, e.g. `record.user_id == u
 
 ## 22. Known limitations and manual steps
 
-- **CI has not yet run on GitHub.** The workflows pass `actionlint`, and every CI command was
-  run locally from a clean export of the repo; confirm the first real run in the Actions tab.
-- **No real deployment was performed.** The Docker image was built and run in production mode
-  locally (migrations, health checks, CRUD, CORS, Host protection, SSL settings);
-  provider-specific setup (section 17), including the SPA fallback, is manual.
-- `deploy.yml` only runs when started manually from the Actions tab; set `BACKEND_DEPLOY_HOOK_URL` to make it deploy, not just publish the image.
+- **The Render setup has not been run against Render yet.** `render.yaml` validates against
+  Render's published Blueprint schema, and the production image was run locally with
+  `bin/migrate-and-start` on an empty database (migrations, revision reporting, health checks,
+  CORS, Host protection). The first deploy (section 17) is the real test.
+- `deploy.yml` only runs when started manually from the Actions tab. Without the Render deploy
+  hook secrets it only publishes the image.
 - Database roles and the PostgreSQL service must be set up by hand (section 7).
 - The frontend is tested in jsdom; there are no browser end-to-end tests.
 - Only English translations are included; add `translations/<locale>.json` and register it in
