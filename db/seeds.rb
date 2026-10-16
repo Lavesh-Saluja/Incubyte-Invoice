@@ -1,6 +1,7 @@
 # Idempotent demo data for local development. Run with: bin/rails db:seed
-# Skipped in production: `db:prepare` seeds automatically when it creates a new database.
-return if Rails.env.production?
+# Development only: `db:prepare` seeds automatically when it creates a new database,
+# and seed rows in the test database would break tests that count records.
+return unless Rails.env.development?
 
 [
   { name: "First sample item", description: "Created by db/seeds.rb" },
