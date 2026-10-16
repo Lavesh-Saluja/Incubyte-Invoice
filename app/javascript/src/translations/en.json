@@ -61,5 +61,10 @@
       "createdAt": "Created",
       "updatedAt": "Last updated"
     }
+  },
+  "version": {
+    "summary": "Web {{web}} · API {{api}}",
+    "development": "development",
+    "unavailable": "unavailable"
   }
 }
