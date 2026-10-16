@@ -13,12 +13,15 @@ const buildItem = (overrides = {}) => ({
   id: 1,
   name: 'Notebook',
   description: 'A ruled notebook',
+  quantity: 4,
   created_at: '2026-01-01T10:00:00Z',
   updated_at: '2026-01-01T10:00:00Z',
   ...overrides,
 })
 
 const nameInput = () => screen.getByLabelText(t('sampleItems.form.name'))
+const quantityInput = () =>
+  screen.getByLabelText(t('sampleItems.form.quantity'))
 const addButton = () =>
   screen.getByRole('button', { name: t('sampleItems.form.add') })
 
@@ -70,12 +73,16 @@ describe('Sample items page', () => {
     renderApp(routes.sampleItems.index)
     await screen.findByText(t('sampleItems.empty'))
 
+    expect(quantityInput()).toHaveValue(1)
     await userEvent.type(nameInput(), '  Lamp ')
+    await userEvent.clear(quantityInput())
+    await userEvent.type(quantityInput(), '3')
     await userEvent.click(addButton())
 
     expect(sampleItemsApi.create).toHaveBeenCalledWith({
       name: 'Lamp',
       description: null,
+      quantity: 3,
     })
     expect(
       await screen.findByText(
@@ -128,7 +135,11 @@ describe('Sample items page', () => {
 
     expect(sampleItemsApi.update).toHaveBeenCalledWith({
       id: 1,
-      payload: { name: 'Sketchbook', description: 'A ruled notebook' },
+      payload: {
+        name: 'Sketchbook',
+        description: 'A ruled notebook',
+        quantity: 4,
+      },
     })
     expect(
       await screen.findByText(

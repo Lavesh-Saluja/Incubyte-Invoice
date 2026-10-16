@@ -28,6 +28,9 @@ const List = ({ items, editingId, deletingId, onEdit, onDelete }) => {
                 </Link>
               </h3>
               {item.description && <p>{item.description}</p>}
+              <p className="item__quantity">
+                {t('sampleItems.quantity', { value: item.quantity })}
+              </p>
               <time dateTime={item.created_at}>
                 {t('sampleItems.addedOn', {
                   date: formatDateTime(item.created_at),

@@ -6,6 +6,8 @@ import {
   DESCRIPTION_ROWS,
   FIELD_IDS,
   NAME_MAX_LENGTH,
+  QUANTITY_MAX,
+  QUANTITY_MIN,
 } from './constants'
 import {
   errorId,
@@ -103,6 +105,29 @@ const Form = ({ item, onSubmit, onCancel }) => {
           fieldId={FIELD_IDS.description}
           messages={errors.description}
         />
+      </div>
+
+      <div className="field">
+        <label htmlFor={FIELD_IDS.quantity}>
+          {t('sampleItems.form.quantity')}
+        </label>
+        <input
+          id={FIELD_IDS.quantity}
+          name="quantity"
+          type="number"
+          inputMode="numeric"
+          min={QUANTITY_MIN}
+          max={QUANTITY_MAX}
+          step={1}
+          value={values.quantity}
+          onChange={handleChange}
+          required
+          aria-invalid={Boolean(errors.quantity)}
+          aria-describedby={
+            errors.quantity ? errorId(FIELD_IDS.quantity) : undefined
+          }
+        />
+        <FieldError fieldId={FIELD_IDS.quantity} messages={errors.quantity} />
       </div>
 
       <div className="actions">

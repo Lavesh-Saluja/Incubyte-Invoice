@@ -15,6 +15,7 @@ describe('Sample item detail page', () => {
       id: 7,
       name: 'Lamp',
       description: null,
+      quantity: 12,
       created_at: '2026-01-01T10:00:00Z',
       updated_at: '2026-01-02T10:00:00Z',
     })
@@ -27,6 +28,7 @@ describe('Sample item detail page', () => {
     expect(
       screen.getByText(t('sampleItems.show.noDescription')),
     ).toBeInTheDocument()
+    expect(screen.getByText('12')).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: t('sampleItems.actions.backToList') }),
     ).toHaveAttribute('href', routes.sampleItems.index)

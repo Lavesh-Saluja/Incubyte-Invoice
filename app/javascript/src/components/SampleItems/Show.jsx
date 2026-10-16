@@ -26,6 +26,8 @@ const Show = () => {
         <dl className="details">
           <dt>{t('sampleItems.show.description')}</dt>
           <dd>{item.description || t('sampleItems.show.noDescription')}</dd>
+          <dt>{t('sampleItems.show.quantity')}</dt>
+          <dd>{item.quantity}</dd>
           <dt>{t('sampleItems.show.createdAt')}</dt>
           <dd>
             <time dateTime={item.created_at}>

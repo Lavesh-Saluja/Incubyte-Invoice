@@ -34,7 +34,7 @@ module Api
       end
 
       def sample_item_params
-        params.expect(sample_item: %i[name description])
+        params.expect(sample_item: %i[name description quantity])
       end
   end
 end

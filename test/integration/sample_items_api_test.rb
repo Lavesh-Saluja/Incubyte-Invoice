@@ -13,7 +13,7 @@ class SampleItemsApiTest < ActionDispatch::IntegrationTest
     assert_response :ok
     items = json_response["sample_items"]
     assert_equal [ newer.id, @item.id ], items.map { |item| item["id"] }
-    assert_equal %w[created_at description id name updated_at], items.first.keys.sort
+    assert_equal %w[created_at description id name quantity updated_at], items.first.keys.sort
   end
 
   test "shows an item" do
@@ -35,12 +35,13 @@ class SampleItemsApiTest < ActionDispatch::IntegrationTest
 
   test "creates an item" do
     assert_difference "SampleItem.count", 1 do
-      post "/api/sample_items", params: { sample_item: { name: "Lamp", description: "Desk lamp" } }, as: :json
+      post "/api/sample_items", params: { sample_item: { name: "Lamp", description: "Desk lamp", quantity: 3 } }, as: :json
     end
 
     assert_response :created
     item = json_response["sample_item"]
     assert_equal "Lamp", item["name"]
+    assert_equal 3, item["quantity"]
     assert_equal "Desk lamp", SampleItem.find(item["id"]).description
   end
 
@@ -52,6 +53,13 @@ class SampleItemsApiTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_equal "Validation failed", json_response["error"]
     assert_equal [ "can't be blank" ], json_response.dig("details", "name")
+  end
+
+  test "rejects a negative quantity with validation details" do
+    post "/api/sample_items", params: { sample_item: { name: "Lamp", quantity: -1 } }, as: :json
+
+    assert_response :unprocessable_content
+    assert_equal [ "must be greater than or equal to 0" ], json_response.dig("details", "quantity")
   end
 
   test "rejects a request without item parameters" do
