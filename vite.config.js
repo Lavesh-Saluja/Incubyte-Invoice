@@ -27,6 +27,13 @@ export default defineConfig(({ mode }) => {
     root: 'app/javascript',
     envDir: projectRoot,
     plugins: [react()],
+    define: {
+      // Commit shown in the version footer. Render static sites provide RENDER_GIT_COMMIT
+      // at build time; set VITE_APP_REVISION to override (empty locally).
+      'import.meta.env.VITE_APP_REVISION': JSON.stringify(
+        env.VITE_APP_REVISION || env.RENDER_GIT_COMMIT || '',
+      ),
+    },
     resolve: {
       alias: Object.fromEntries(
         SOURCE_ALIASES.map((name) => [name, `${src}/${name}`]),

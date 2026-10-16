@@ -11,6 +11,9 @@ export const routes = {
 }
 
 export const apiRoutes = {
+  health: {
+    live: '/api/health/live',
+  },
   sampleItems: {
     index: '/api/sample_items',
     show: '/api/sample_items/:id',

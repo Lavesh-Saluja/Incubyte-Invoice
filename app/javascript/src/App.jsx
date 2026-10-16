@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Navigate, Route, Routes } from 'react-router'
+import VersionFooter from 'components/commons/VersionFooter'
 import NotFound from 'components/NotFound'
 import SampleItems from 'components/SampleItems'
 import ShowSampleItem from 'components/SampleItems/Show'
@@ -20,6 +21,7 @@ const App = () => {
         <Route path={routes.sampleItems.show} element={<ShowSampleItem />} />
         <Route path={routes.notFound} element={<NotFound />} />
       </Routes>
+      <VersionFooter />
     </>
   )
 }
