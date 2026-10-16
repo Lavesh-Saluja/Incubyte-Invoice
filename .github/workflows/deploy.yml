@@ -1,0 +1,88 @@
+# Provider-neutral backend delivery. MANUAL ONLY: it never runs on push, merge or PR.
+#
+# Trigger it from GitHub: Actions > Deploy > Run workflow (branch: main).
+# It refuses to run unless CI has passed for that exact commit on main, then builds the
+# Rails Dockerfile, pushes it to GitHub Container Registry (ghcr.io/<owner>/<repo>-api)
+# and, if configured, calls your host's deploy hook.
+#
+# Optional configuration:
+#   - Secret BACKEND_DEPLOY_HOOK_URL: the host's deploy hook URL (Render, Railway, Coolify,
+#     etc.). Configure the host to run `bin/rails db:migrate` once as its release /
+#     pre-deploy command; this workflow never migrates.
+#   - Protection rules (e.g. required reviewers) on the "production" environment.
+#
+# The frontend is deployed by the static host's own Git integration (see README).
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  backend:
+    name: Build and deliver backend image
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+
+    steps:
+      - name: Require a passing CI run for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          conclusion=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml \
+            --branch main --commit "$GITHUB_SHA" --event push \
+            --json conclusion --jq '.[0].conclusion // ""')
+          if [ "$conclusion" != "success" ]; then
+            echo "::error::CI has not passed for $GITHUB_SHA on main (latest result: ${conclusion:-none}). Not deploying."
+            exit 1
+          fi
+          echo "CI passed for $GITHUB_SHA."
+
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}-api
+          tags: |
+            type=sha,format=long
+            type=raw,value=latest
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trigger deploy hook
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.BACKEND_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ]; then
+            echo "BACKEND_DEPLOY_HOOK_URL not set; image pushed, skipping deploy hook."
+            exit 0
+          fi
+          curl --fail --silent --show-error --output /dev/null -X POST "$DEPLOY_HOOK_URL"
+          echo "Deploy hook triggered."
