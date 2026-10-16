@@ -4,7 +4,9 @@ module Api
     skip_after_action :verify_authorized, :verify_policy_scoped
 
     # Liveness: the process can serve a request. Never touches the database.
+    # Also reports the deployed commit (APP_REVISION, baked into the image) when known.
     def live
+      @revision = ENV["APP_REVISION"].presence
     end
 
     # Readiness: the app can serve real traffic, which requires the database.

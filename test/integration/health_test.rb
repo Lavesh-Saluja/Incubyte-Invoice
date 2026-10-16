@@ -8,6 +8,16 @@ class HealthTest < ActionDispatch::IntegrationTest
     assert_equal({ "status" => "ok" }, json_response)
   end
 
+  test "liveness reports the deployed revision when it is set" do
+    ENV["APP_REVISION"] = "abc123"
+    get "/api/health/live"
+
+    assert_response :ok
+    assert_equal({ "status" => "ok", "revision" => "abc123" }, json_response)
+  ensure
+    ENV.delete("APP_REVISION")
+  end
+
   test "liveness does not touch the database" do
     ActiveRecord::Base.stub(:connection_pool, -> { raise "database should not be used" }) do
       get "/api/health/live"
