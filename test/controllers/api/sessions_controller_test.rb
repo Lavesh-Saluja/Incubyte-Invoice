@@ -1,6 +1,6 @@
 require "test_helper"
 
-class SessionsApiTest < ActionDispatch::IntegrationTest
+class Api::SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
     Api::SessionsController::RATE_LIMIT_STORE.clear
     @user = create(:user, name: "HR Manager", email: "hr@acme.test", password: "correct-horse-battery")

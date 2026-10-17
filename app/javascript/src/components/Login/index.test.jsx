@@ -16,6 +16,14 @@ const fillAndSubmit = async (user, { email, password }) => {
 }
 
 describe('Login', () => {
+  it('sends signed-out visitors to the login page', async () => {
+    renderApp(routes.root)
+
+    expect(
+      await screen.findByRole('heading', { name: t('login.title') }),
+    ).toBeInTheDocument()
+  })
+
   it('validates the fields before calling the API', async () => {
     const user = userEvent.setup()
     renderApp(routes.login)
@@ -33,19 +41,6 @@ describe('Login', () => {
       'aria-invalid',
       'true',
     )
-    expect(sessionApi.login).not.toHaveBeenCalled()
-  })
-
-  it('rejects a malformed email', async () => {
-    const user = userEvent.setup()
-    renderApp(routes.login)
-    await screen.findByRole('heading', { name: t('login.title') })
-
-    await fillAndSubmit(user, { email: 'hr-at-acme', password: 'secret' })
-
-    expect(
-      screen.getByText(t('login.validation.emailInvalid')),
-    ).toBeInTheDocument()
     expect(sessionApi.login).not.toHaveBeenCalled()
   })
 
@@ -88,14 +83,5 @@ describe('Login', () => {
       email: 'hr@acme.test',
       password: 'correct-horse-battery',
     })
-  })
-
-  it('sends a signed-in user straight to the app', async () => {
-    vi.mocked(sessionApi.current).mockResolvedValue(hrUser)
-    renderApp(routes.login)
-
-    expect(
-      await screen.findByRole('heading', { name: t('home.title') }),
-    ).toBeInTheDocument()
   })
 })

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class HealthTest < ActionDispatch::IntegrationTest
+class Api::HealthControllerTest < ActionDispatch::IntegrationTest
   test "liveness responds ok" do
     get "/api/health/live"
 
