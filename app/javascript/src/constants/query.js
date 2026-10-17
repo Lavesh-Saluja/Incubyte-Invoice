@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   API_HEALTH: 'apiHealth',
+  CURRENT_USER: 'currentUser',
 }
 
 export const QUERY_STALE_TIME_MS = 30_000

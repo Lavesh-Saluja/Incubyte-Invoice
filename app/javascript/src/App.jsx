@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Route, Routes } from 'react-router'
+import AppLayout from 'components/commons/AppLayout'
+import RequireAuth from 'components/commons/RequireAuth'
 import VersionFooter from 'components/commons/VersionFooter'
 import Home from 'components/Home'
+import Login from 'components/Login'
 import NotFound from 'components/NotFound'
 import { routes } from 'routes'
 
@@ -12,7 +15,12 @@ const App = () => {
     <>
       <title>{t('app.title')}</title>
       <Routes>
-        <Route path={routes.root} element={<Home />} />
+        <Route path={routes.login} element={<Login />} />
+        <Route element={<RequireAuth />}>
+          <Route element={<AppLayout />}>
+            <Route path={routes.root} element={<Home />} />
+          </Route>
+        </Route>
         <Route path={routes.notFound} element={<NotFound />} />
       </Routes>
       <VersionFooter />
