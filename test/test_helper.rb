@@ -18,5 +18,10 @@ module ActionDispatch
     def json_response
       JSON.parse(response.body)
     end
+
+    def sign_in_as(user, password: "correct-horse-battery")
+      post "/api/session", params: { session: { email: user.email, password: } }, as: :json
+      assert_response :ok, "sign in as #{user.email} failed"
+    end
   end
 end

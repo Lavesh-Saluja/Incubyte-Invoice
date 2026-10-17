@@ -8,4 +8,12 @@ vi.mock('apis/health', () => ({
   default: { live: vi.fn(() => Promise.resolve({ status: 'ok' })) },
 }))
 
+vi.mock('apis/session', () => ({
+  default: {
+    current: vi.fn(() => Promise.resolve(null)),
+    login: vi.fn(),
+    logout: vi.fn(() => Promise.resolve()),
+  },
+}))
+
 afterEach(() => cleanup())

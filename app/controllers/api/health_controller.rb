@@ -1,6 +1,7 @@
 module Api
   # Public probes for the hosting platform; they have no records to authorize.
   class HealthController < ApplicationController
+    allow_unauthenticated_access
     skip_after_action :verify_authorized, :verify_policy_scoped
 
     # Liveness: the process can serve a request. Never touches the database.

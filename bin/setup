@@ -20,6 +20,9 @@ FileUtils.chdir APP_ROOT do
   system! "bin/rails db:prepare"
   system!({ "RAILS_ENV" => "test" }, "bin/rails db:prepare")
 
+  puts "\n== Seeding the development database (local HR account) =="
+  system! "bin/rails db:seed"
+
   puts "\n== Checking configuration =="
   system! "bin/rails starter:check"
 end

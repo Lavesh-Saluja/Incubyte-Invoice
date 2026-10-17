@@ -3,6 +3,7 @@
 
 export const routes = {
   root: '/',
+  login: '/login',
   notFound: '*',
 }
 
@@ -10,4 +11,5 @@ export const apiRoutes = {
   health: {
     live: '/api/health/live',
   },
+  session: '/api/session',
 }

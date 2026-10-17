@@ -107,7 +107,7 @@ macOS and Linux are supported directly. On Windows use WSL2.
 │       ├── index.html
 │       ├── public/                      Static files copied as-is (favicon)
 │       └── src/                         See "Frontend conventions"
-├── bin/setup                            Install gems + npm packages, prepare DBs, run starter:check
+├── bin/setup                            Install gems + npm packages, prepare DBs, seed (local HR account), run starter:check
 ├── bin/docker-entrypoint                Execs the command; deliberately does NOT migrate
 ├── config/locales/en.yml                API error messages (no hard-coded strings in Ruby)
 ├── config/database.yml                  DB_* in dev/test, DATABASE_URL in production
@@ -158,7 +158,7 @@ request → controller ─ authorize (Pundit policy) ─► service (business lo
    with no body.
 5. **Messages come from `config/locales/en.yml`** via `I18n.t`, never hard-coded.
 6. **Tests per layer:** policy tests in `test/policies/`, service tests in `test/services/`,
-   HTTP behaviour (status codes, JSON shape, 403) in `test/integration/`, all using factories.
+   HTTP behaviour (status codes, JSON shape, 403) in `test/controllers/`, all using factories.
 
 ### API responses
 
@@ -224,7 +224,7 @@ connect to (section 7 explains how to set that up):
 ```bash
 git clone <repo-url> my-assignment && cd my-assignment
 cp .env.example .env   # optional; only needed if you must set DB_* or other variables
-bin/setup              # gems, npm packages (+ Git hooks), dev and test databases, config check
+bin/setup              # gems, npm packages (+ Git hooks), dev and test databases, seeds, config check
 ```
 
 `make setup` does the same. Then start the two servers (section 9) and open <http://localhost:5173>.
@@ -411,11 +411,11 @@ migration compatible with the **currently running** code:
 | What                   | Command                                                       | Notes                                 |
 | ---------------------- | ------------------------------------------------------------- | ------------------------------------- |
 | All backend tests      | `bin/rails test`                                              | Needs PostgreSQL; uses `starter_test` |
-| One file / one line    | `bin/rails test test/integration/sample_items_api_test.rb:15` |                                       |
+| One file / one line    | `bin/rails test test/controllers/api/sessions_controller_test.rb:15` |                                       |
 | Ruby lint              | `bin/rubocop` (`-a` to autocorrect)                           | Omakase style                         |
 | Security scan          | `bin/brakeman`                                                |                                       |
 | Frontend tests         | `npm test` (`npm run test:watch`)                             | Vitest + jsdom                        |
-| One test file          | `npx vitest run app/javascript/src/apis/client.test.js`       |                                       |
+| One test file          | `npx vitest run app/javascript/src/components/Login`          |                                       |
 | ESLint                 | `npm run lint`                                                | Fails on any warning                  |
 | Prettier               | `npm run format:check` / `npm run format`                     |                                       |
 | Production build       | `npm run build`                                               | → `dist/`                             |
@@ -450,7 +450,7 @@ when `CI=true`). To (re)install manually: `make hooks` or `npx lefthook install`
 | Hook         | Runs                                                                                                                   | Typical time |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------ |
 | `pre-commit` | RuboCop on staged Ruby files; ESLint and Prettier `--check` on staged JS/JSX files. Nothing is auto-fixed or re-staged | 1–3 s        |
-| `pre-push`   | RuboCop + Minitest, and ESLint, Prettier, Vitest, build, in parallel                                                   | ~6–10 s      |
+| `pre-push`   | RuboCop + Minitest, and ESLint, Prettier, build, in parallel                                                           | ~6–10 s      |
 
 Bypass deliberately: `git commit --no-verify`, `git push --no-verify`, or `LEFTHOOK=0 git …`.
 Personal tweaks go in `lefthook-local.yml` (git-ignored). Hooks are a convenience, **not a
@@ -464,7 +464,7 @@ security boundary** — CI runs the same checks and is the gate that matters.
 - **Backend (Rails)** — Ruby from `.ruby-version` with cached gems; a `postgres:16` service
   with throwaway credentials; RuboCop, Brakeman, `db:prepare`, Minitest (eager loading on, as `CI=true`).
 - **Frontend (React)** — Node from `.nvmrc` with npm cache; `npm ci`; ESLint, Prettier,
-  Vitest, production build.
+  production build. Frontend tests (`npm test`) run locally only.
 
 Any failing step fails the workflow. In-progress runs for the same PR are cancelled when
 you push again. To make it a hard gate, enable branch protection on `main` and require

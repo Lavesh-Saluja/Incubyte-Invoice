@@ -15,7 +15,7 @@ const VersionFooter = () => {
   }
 
   return (
-    <footer className="px-4 pb-6 text-center text-sm text-gray-500">
+    <footer className="px-4 pb-6 text-center text-sm text-muted-foreground">
       {t('version.summary', {
         web: shortRevision(APP_REVISION) ?? t('version.development'),
         api: apiVersion(),

@@ -1,13 +1,35 @@
 {
   "app": {
-    "title": "Rails React Starter"
+    "title": "ACME Salary Management",
+    "name": "ACME Salary"
   },
   "home": {
     "title": "Sample items",
     "subtitle": "A demonstration CRUD workflow. Replace it with your assignment's feature."
   },
+  "auth": {
+    "checking": "Checking your session…"
+  },
+  "login": {
+    "title": "Sign in",
+    "description": "Use your HR account to manage employee salaries.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "validation": {
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a valid email address, like name@acme.com.",
+      "passwordRequired": "Enter your password."
+    }
+  },
+  "header": {
+    "logout": "Log out",
+    "loggingOut": "Logging out…"
+  },
   "common": {
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "retry": "Try again"
   },
   "errors": {
     "network": "Could not reach the server. Check that the API is running and try again.",

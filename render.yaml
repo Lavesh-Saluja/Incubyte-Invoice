@@ -6,7 +6,7 @@
 # .github/workflows/deploy.yml, which calls each service's deploy hook.
 #
 # For the next assignment, rename the three services/database below and the URLs that
-# contain those names (CORS_ORIGINS, APP_HOSTS, VITE_API_BASE_URL, image url).
+# contain those names (APP_HOSTS, the /api/* rewrite destination, image url).
 # No secrets in this file: Render generates SECRET_KEY_BASE and provides DATABASE_URL.
 
 databases:
@@ -37,13 +37,16 @@ services:
           property: connectionString
       - key: SECRET_KEY_BASE
         generateValue: true
-      # Exact frontend origin: scheme + host, no trailing slash.
-      - key: CORS_ORIGINS
-        value: https://incubyte-invoice-web.onrender.com
       - key: APP_HOSTS
-        value: incubyte-invoice-api.onrender.com
+        value: incubyte-invoice-api.onrender.com,incubyte-invoice-web.onrender.com
       - key: RAILS_LOG_LEVEL
         value: info
+      - key: HR_NAME
+        sync: false
+      - key: HR_EMAIL
+        sync: false
+      - key: HR_PASSWORD
+        sync: false
 
   - type: web
     name: incubyte-invoice-web
@@ -54,14 +57,13 @@ services:
     autoDeployTrigger: 'off'
     previews:
       generation: 'off'
-    # Client-side routing: every unknown path serves the React app.
     routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://incubyte-invoice-api.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html
     envVars:
       - key: NODE_VERSION
         value: '22'
-      # Public, compiled into the bundle. Never put secrets in VITE_* variables.
-      - key: VITE_API_BASE_URL
-        value: https://incubyte-invoice-api.onrender.com
