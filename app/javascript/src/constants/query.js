@@ -1,5 +1,4 @@
 export const QUERY_KEYS = {
-  SAMPLE_ITEMS: 'sampleItems',
   API_HEALTH: 'apiHealth',
 }
 

@@ -8,7 +8,7 @@ module ActiveSupport
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Build records with factories from test/factories, e.g. create(:sample_item)
+    # Build records with factories from test/factories, e.g. create(:employee)
     include FactoryBot::Syntax::Methods
   end
 end
