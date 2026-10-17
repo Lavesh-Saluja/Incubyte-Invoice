@@ -10,9 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_172316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "employees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigserial "employee_number", null: false
+    t.string "employee_code", null: false
+    t.string "first_name", limit: 100, null: false
+    t.string "last_name", limit: 100, null: false
+    t.string "email", null: false
+    t.string "department", null: false
+    t.string "job_title", null: false
+    t.string "country", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "notice_period_started_at"
+    t.datetime "notice_period_ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower((email)::text)", name: "index_employees_on_lower_email", unique: true
+    t.index ["employee_code"], name: "index_employees_on_employee_code", unique: true
+    t.index ["employee_number"], name: "index_employees_on_employee_number", unique: true
+    t.index ["status"], name: "index_employees_on_status"
+    t.check_constraint "status::text = ANY (ARRAY['active'::character varying, 'notice_period'::character varying, 'inactive'::character varying]::text[])", name: "employees_status_allowed"
+  end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", limit: 100, null: false
