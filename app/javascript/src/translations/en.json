@@ -46,5 +46,66 @@
     "summary": "Web {{web}} · API {{api}}",
     "development": "development",
     "unavailable": "unavailable"
+  },
+  "employees": {
+    "loading": "Loading employee…",
+    "fields": {
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Work email",
+      "job_title": "Job title",
+      "department": "Department",
+      "country": "Country"
+    },
+    "new": {
+      "title": "Add employee",
+      "description": "The employee code is generated automatically when you save."
+    },
+    "actions": {
+      "create": "Create employee",
+      "creating": "Creating…",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "add": "Add employee",
+      "edit": "Edit",
+      "editLabel": "Edit {{name}}"
+    },
+    "notices": {
+      "created": "Employee {{code}} created.",
+      "updated": "Changes saved."
+    },
+    "validation": {
+      "required": "This field is required.",
+      "tooLong": "Use at most {{count}} characters.",
+      "emailInvalid": "Enter a valid email address, like name@acme.com."
+    },
+    "status": {
+      "active": "Active",
+      "notice_period": "On notice",
+      "inactive": "Inactive"
+    },
+    "list": {
+      "title": "Employees",
+      "description": "Everyone at ACME and their current employment status.",
+      "loading": "Loading employees…",
+      "emptyTitle": "No employees yet",
+      "emptyDescription": "Add your first employee to start managing salaries."
+    },
+    "table": {
+      "employee": "Employee",
+      "code": "Code",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "pagination": {
+      "range": "Showing {{from}}–{{to}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "employees": "Employees"
   }
 }

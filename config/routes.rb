@@ -6,5 +6,6 @@ Rails.application.routes.draw do
     end
 
     resource :session, only: %i[show create destroy]
+    resources :employees, only: %i[index show create update]
   end
 end

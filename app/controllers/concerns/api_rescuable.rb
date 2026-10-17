@@ -6,6 +6,7 @@ module ApiRescuable
   included do
     rescue_from ActiveRecord::RecordNotFound, with: :handle_record_not_found
     rescue_from ActiveRecord::RecordInvalid, with: :handle_validation_error
+    rescue_from ActiveRecord::RecordNotUnique, with: :handle_conflict
     rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
     rescue_from ActionDispatch::Http::Parameters::ParseError, with: :handle_parse_error
     rescue_from Pundit::NotAuthorizedError, with: :handle_not_authorized
@@ -18,6 +19,10 @@ module ApiRescuable
 
     def handle_validation_error(exception)
       render_error(I18n.t("errors.validation_failed"), :unprocessable_content, exception.record.errors.to_hash)
+    end
+
+    def handle_conflict
+      render_error(I18n.t("errors.conflict"), :conflict)
     end
 
     def handle_parameter_missing(exception)

@@ -4,6 +4,11 @@
 export const routes = {
   root: '/',
   login: '/login',
+  employees: {
+    index: '/employees',
+    new: '/employees/new',
+    edit: '/employees/:id/edit',
+  },
   notFound: '*',
 }
 
@@ -12,4 +17,8 @@ export const apiRoutes = {
     live: '/api/health/live',
   },
   session: '/api/session',
+  employees: {
+    index: '/api/employees',
+    show: '/api/employees/:id',
+  },
 }
