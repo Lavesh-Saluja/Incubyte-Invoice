@@ -11,3 +11,4 @@ en:
     too_many_sign_in_attempts: "Too many sign-in attempts. Please wait a minute and try again"
     cross_site_request: "Cross-site requests are not allowed"
     unsupported_media_type: "Request body must be JSON"
+    conflict: "A record with these details already exists"

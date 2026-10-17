@@ -18,11 +18,13 @@
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.0",
     "i18next": "^26.4.7",
+    "lucide-react": "^1.59.0",
     "radix-ui": "^1.8.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-i18next": "^17.0.19",
-    "react-router": "^7.18.4"
+    "react-router": "^7.18.4",
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

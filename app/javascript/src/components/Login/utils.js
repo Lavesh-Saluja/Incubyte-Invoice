@@ -1,5 +1,5 @@
 import { t } from 'i18next'
-import { EMAIL_PATTERN } from './constants'
+import { EMAIL_PATTERN } from 'constants'
 
 export const errorId = (fieldId) => `${fieldId}-error`
 
