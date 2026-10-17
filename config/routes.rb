@@ -4,5 +4,7 @@ Rails.application.routes.draw do
       get :live
       get :ready
     end
+
+    resource :session, only: %i[show create destroy]
   end
 end

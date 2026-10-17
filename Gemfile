@@ -16,6 +16,9 @@ gem "bootsnap", require: false
 # JSON responses are rendered from app/views/**/*.json.jbuilder
 gem "jbuilder"
 
+# Password hashing for has_secure_password
+gem "bcrypt", "~> 3.1.7"
+
 # Authorization policies in app/policies
 gem "pundit"
 

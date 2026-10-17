@@ -1,11 +1,13 @@
 #!/bin/bash -e
 
 # Production start command for hosts without a release / pre-deploy step (Render's free
-# plan). Applies pending migrations, then starts the server.
+# plan). Applies pending migrations, creates the HR account if it is missing (never
+# overwrites one; see lib/tasks/users.rake), then starts the server.
 #
 # Use it ONLY with a single instance: with several replicas each one would try to migrate.
 # On a paid plan, use a pre-deploy command (bin/rails db:migrate) and the image's default
 # command instead.
 
 ./bin/rails db:migrate
+./bin/rails users:provision_hr
 exec ./bin/rails server

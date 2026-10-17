@@ -40,5 +40,23 @@ module Starter
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Sign-in state lives in Rails' encrypted cookie session (no sessions table). API-only apps drop
+    # the cookie and session middleware, so add them back. The frontend reaches the API on its own
+    # origin (Vite proxy locally, a Render rewrite in production), so the cookie is first-party:
+    # HttpOnly, Secure in production, SameSite=Lax. No expiry is set, so it ends with the browser
+    # session; Authentication also enforces a 12-hour maximum on the server.
+    config.session_store :cookie_store,
+      key: "_acme_session",
+      httponly: true,
+      secure: Rails.env.production?,
+      same_site: :lax
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store, config.session_options
+
+    # New tables get UUID primary keys (PostgreSQL 13+ provides gen_random_uuid()).
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
   end
 end

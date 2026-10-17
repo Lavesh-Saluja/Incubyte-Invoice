@@ -107,7 +107,7 @@ macOS and Linux are supported directly. On Windows use WSL2.
 │       ├── index.html
 │       ├── public/                      Static files copied as-is (favicon)
 │       └── src/                         See "Frontend conventions"
-├── bin/setup                            Install gems + npm packages, prepare DBs, run starter:check
+├── bin/setup                            Install gems + npm packages, prepare DBs, seed (local HR account), run starter:check
 ├── bin/docker-entrypoint                Execs the command; deliberately does NOT migrate
 ├── config/locales/en.yml                API error messages (no hard-coded strings in Ruby)
 ├── config/database.yml                  DB_* in dev/test, DATABASE_URL in production
@@ -224,7 +224,7 @@ connect to (section 7 explains how to set that up):
 ```bash
 git clone <repo-url> my-assignment && cd my-assignment
 cp .env.example .env   # optional; only needed if you must set DB_* or other variables
-bin/setup              # gems, npm packages (+ Git hooks), dev and test databases, config check
+bin/setup              # gems, npm packages (+ Git hooks), dev and test databases, seeds, config check
 ```
 
 `make setup` does the same. Then start the two servers (section 9) and open <http://localhost:5173>.
