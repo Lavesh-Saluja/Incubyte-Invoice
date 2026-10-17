@@ -30,7 +30,6 @@ const Login = () => {
 
   if (isCheckingSession)
     return <FullPageStatus>{t('auth.checking')}</FullPageStatus>
-  // Signed in (already, or just now): continue to the page they first asked for.
   if (user) return <Navigate to={location.state?.from ?? routes.root} replace />
 
   const handleChange = (event) => {

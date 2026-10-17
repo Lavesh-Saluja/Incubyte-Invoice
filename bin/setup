@@ -20,7 +20,6 @@ FileUtils.chdir APP_ROOT do
   system! "bin/rails db:prepare"
   system!({ "RAILS_ENV" => "test" }, "bin/rails db:prepare")
 
-  # db:prepare seeds only a database it creates; seeds are idempotent, so run them every time.
   puts "\n== Seeding the development database (local HR account) =="
   system! "bin/rails db:seed"
 

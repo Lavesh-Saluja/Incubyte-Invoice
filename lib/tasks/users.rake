@@ -4,7 +4,6 @@ namespace :users do
     name, email, password = ENV.values_at("HR_NAME", "HR_EMAIL", "HR_PASSWORD")
 
     if email.blank?
-      # Once the account exists the variables can be removed from the environment.
       abort "users:provision_hr: set HR_NAME, HR_EMAIL and HR_PASSWORD to create the HR account" unless User.exists?
       puts "users:provision_hr: HR_EMAIL is not set and an account exists; skipping"
       next

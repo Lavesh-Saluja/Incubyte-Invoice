@@ -5,8 +5,6 @@ import LoadError from 'components/commons/LoadError'
 import { useCurrentUser } from 'hooks/reactQuery/useSession'
 import { routes } from 'routes'
 
-// Shows nested routes only to a signed-in user. This is navigation, not security: the API
-// rejects every unauthenticated request regardless of what the UI renders.
 const RequireAuth = () => {
   const { t } = useTranslation()
   const location = useLocation()

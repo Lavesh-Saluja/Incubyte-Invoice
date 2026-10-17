@@ -16,8 +16,6 @@ const shouldRetry = (failureCount, error) => {
   return transient && failureCount < MAX_QUERY_RETRIES
 }
 
-// Forget every cached response (they may hold salary data) and mark the user signed out. The
-// current-user query is updated in place, not removed, so mounted route guards see the change.
 export const clearSignedInState = (queryClient) => {
   queryClient.removeQueries({
     predicate: ({ queryKey }) => queryKey[0] !== QUERY_KEYS.CURRENT_USER,
@@ -26,8 +24,6 @@ export const clearSignedInState = (queryClient) => {
 }
 
 export const createQueryClient = (overrides = {}) => {
-  // A 401 from any request means the session ended (expired, or signed out in another tab):
-  // the route guard then sends the user to the login page.
   const handleError = (error) => {
     if (error?.status === HTTP_STATUS.UNAUTHORIZED)
       clearSignedInState(queryClient)

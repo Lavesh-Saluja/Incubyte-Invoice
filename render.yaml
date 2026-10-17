@@ -37,13 +37,10 @@ services:
           property: connectionString
       - key: SECRET_KEY_BASE
         generateValue: true
-      # The web host too: its /api/* rewrite forwards requests with the browser's Host header.
       - key: APP_HOSTS
         value: incubyte-invoice-api.onrender.com,incubyte-invoice-web.onrender.com
       - key: RAILS_LOG_LEVEL
         value: info
-      # The first HR account, created at start when missing (bin/migrate-and-start).
-      # Values are entered in the Render dashboard, never committed.
       - key: HR_NAME
         sync: false
       - key: HR_EMAIL
@@ -60,18 +57,13 @@ services:
     autoDeployTrigger: 'off'
     previews:
       generation: 'off'
-    # Rules apply top to bottom.
     routes:
-      # Same-origin API: the browser calls /api/* on this site and Render forwards it to the API,
-      # so the session cookie is first-party (onrender.com subdomains are separate sites).
       - type: rewrite
         source: /api/*
         destination: https://incubyte-invoice-api.onrender.com/api/*
-      # Client-side routing: every other unknown path serves the React app.
       - type: rewrite
         source: /*
         destination: /index.html
     envVars:
       - key: NODE_VERSION
         value: '22'
-      # VITE_API_BASE_URL is deliberately unset: the frontend calls /api on its own origin.

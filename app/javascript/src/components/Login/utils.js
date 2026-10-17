@@ -3,7 +3,6 @@ import { EMAIL_PATTERN } from './constants'
 
 export const errorId = (fieldId) => `${fieldId}-error`
 
-// Returns { field: message } for invalid fields; empty when the form can be submitted.
 export const validateCredentials = ({ email, password }) => {
   const errors = {}
   const trimmedEmail = email.trim()

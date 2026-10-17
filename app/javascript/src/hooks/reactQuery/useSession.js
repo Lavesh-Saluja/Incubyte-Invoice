@@ -5,8 +5,6 @@ import { clearSignedInState } from 'utils/queryClient'
 
 const currentUserKey = [QUERY_KEYS.CURRENT_USER]
 
-// The signed-in user (null when signed out). The single source of truth for auth state in the UI;
-// the API still authorizes every request on its own.
 export const useCurrentUser = () =>
   useQuery({
     queryKey: currentUserKey,

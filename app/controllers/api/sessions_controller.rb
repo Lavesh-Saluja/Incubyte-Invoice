@@ -1,9 +1,5 @@
 module Api
-  # Sign in, read the signed-in user, sign out. The session is the user's own, so there is no
-  # record for Pundit to authorize here.
   class SessionsController < ApplicationController
-    # One store per process: the free plan runs a single instance. Production's default cache
-    # store is not shared either, and tests use a null cache, so keep the counter explicit.
     RATE_LIMIT_STORE = ActiveSupport::Cache::MemoryStore.new
 
     allow_unauthenticated_access only: :create

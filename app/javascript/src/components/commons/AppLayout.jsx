@@ -4,7 +4,6 @@ import { Button } from 'components/ui/button'
 import { useCurrentUser, useLogout } from 'hooks/reactQuery/useSession'
 import { getErrorMessage } from 'utils/errors'
 
-// Shell for signed-in pages: top header with the user and logout, then the page.
 const AppLayout = () => {
   const { t } = useTranslation()
   const { data: user } = useCurrentUser()

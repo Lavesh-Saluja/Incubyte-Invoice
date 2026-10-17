@@ -1,6 +1,4 @@
 module Sessions
-  # Returns the user for a correct email and password, nil otherwise. authenticate_by takes the
-  # same time whether or not the email exists, so responses do not reveal which accounts exist.
   class AuthenticateService
     attr_reader :email, :password
 

@@ -1,4 +1,3 @@
-# An HR user who signs in to manage employee salaries. Accounts are provisioned, never self-registered.
 class User < ApplicationRecord
   PASSWORD_MIN_LENGTH = 12
 

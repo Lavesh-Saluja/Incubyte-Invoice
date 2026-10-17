@@ -1,11 +1,5 @@
-/* Scan only the React source for class names, not the Rails app or coverage reports. */
 @import 'tailwindcss' source('./');
 
-/*
- * Light enterprise theme. These are the shadcn/ui design tokens: components/ui reads them
- * through utilities such as bg-primary, text-muted-foreground and border-border.
- * Change the palette here rather than styling pages with raw colours.
- */
 :root {
   --radius: 0.5rem;
 
