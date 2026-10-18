@@ -3,11 +3,11 @@ import { Route, Routes } from 'react-router'
 import AppLayout from 'components/commons/AppLayout'
 import RequireAuth from 'components/commons/RequireAuth'
 import VersionFooter from 'components/commons/VersionFooter'
+import Dashboard from 'components/Dashboard'
 import Employees from 'components/Employees'
 import EditEmployee from 'components/Employees/Edit'
 import NewEmployee from 'components/Employees/New'
 import ShowEmployee from 'components/Employees/Show'
-import Home from 'components/Home'
 import Login from 'components/Login'
 import NotFound from 'components/NotFound'
 import { Toaster } from 'components/ui/sonner'
@@ -23,7 +23,7 @@ const App = () => {
         <Route path={routes.login} element={<Login />} />
         <Route element={<RequireAuth />}>
           <Route element={<AppLayout />}>
-            <Route path={routes.root} element={<Home />} />
+            <Route path={routes.root} element={<Dashboard />} />
             <Route path={routes.employees.index} element={<Employees />} />
             <Route path={routes.employees.new} element={<NewEmployee />} />
             <Route path={routes.employees.show} element={<ShowEmployee />} />

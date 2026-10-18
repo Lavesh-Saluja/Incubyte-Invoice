@@ -74,4 +74,22 @@ class Employees::ListServiceTest < ActiveSupport::TestCase
 
     assert_equal 2, list(filters: { q: "  ", status: "retired", department: "" }).total_count
   end
+
+  test "sorts employees on notice by notice end date, soonest first, across pages" do
+    later = create(:employee, :on_notice, notice_period_ends_at: 20.days.from_now)
+    soonest = create(:employee, :on_notice, notice_period_ends_at: 2.days.from_now)
+    middle = create(:employee, :on_notice, notice_period_ends_at: 9.days.from_now)
+
+    first_page = list(filters: { status: "notice_period" }, per_page: 2)
+    second_page = list(filters: { status: "notice_period" }, per_page: 2, page: 2)
+
+    assert_equal [ soonest, middle ], first_page.records.to_a
+    assert_equal [ later ], second_page.records.to_a
+  end
+
+  test "keeps newest-first order for other statuses" do
+    older, newer = create_list(:employee, 2)
+
+    assert_equal [ newer, older ], list(filters: { status: "active" }).records.to_a
+  end
 end

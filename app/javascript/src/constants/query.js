@@ -4,6 +4,7 @@ export const QUERY_KEYS = {
   EMPLOYEES: 'employees',
   SETTINGS: 'settings',
   SELECT_OPTIONS: 'selectOptions',
+  DASHBOARD: 'dashboard',
 }
 
 export const QUERY_STALE_TIME_MS = 30_000

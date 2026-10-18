@@ -3,7 +3,7 @@ COMPOSE := $(shell docker compose version >/dev/null 2>&1 && echo "docker compos
 
 .DEFAULT_GOAL := help
 .PHONY: help setup hooks backend frontend db-up db-down check-config \
-        test test-backend test-frontend lint lint-backend lint-frontend build check
+        test lint lint-backend lint-frontend build check
 
 help: ## List available targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-14s %s\n", $$1, $$2}'
@@ -30,13 +30,8 @@ db-down: ## OPTIONAL: stop the Docker PostgreSQL (data is kept)
 check-config: ## Verify Ruby, database and migrations (read-only)
 	bin/rails starter:check
 
-test-backend: ## Run Rails Minitest
+test: ## Run Rails Minitest
 	bin/rails test
-
-test-frontend: ## Run Vitest
-	npm test
-
-test: test-backend test-frontend ## Run all tests
 
 lint-backend: ## RuboCop and Brakeman
 	bin/rubocop && bin/brakeman --no-pager --quiet

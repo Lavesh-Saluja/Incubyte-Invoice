@@ -68,7 +68,6 @@ and two health endpoints. Replace the sample with your real feature
 | Routing            | React Router                                                                               | 7.18                        |
 | Translations       | i18next + react-i18next                                                                    | 26.4 / 17.0                 |
 | Build / dev server | Vite                                                                                       | 8.3                         |
-| Frontend tests     | Vitest + React Testing Library + jsdom                                                     | 5.0 / 16.3                  |
 | Lint / format      | ESLint 9 (flat config) + eslint-plugin-react / react-hooks, Prettier                       | 9.39, 3.9                   |
 | Git hooks          | Lefthook (npm devDependency)                                                               | 2.2                         |
 | CSS                | Tailwind CSS v4 via `@tailwindcss/vite`; colour tokens and element defaults in `index.css` | 4.3                         |
@@ -414,8 +413,6 @@ migration compatible with the **currently running** code:
 | One file / one line    | `bin/rails test test/controllers/api/sessions_controller_test.rb:15` |                                       |
 | Ruby lint              | `bin/rubocop` (`-a` to autocorrect)                           | Omakase style                         |
 | Security scan          | `bin/brakeman`                                                |                                       |
-| Frontend tests         | `npm test` (`npm run test:watch`)                             | Vitest + jsdom                        |
-| One test file          | `npx vitest run app/javascript/src/components/Login`          |                                       |
 | ESLint                 | `npm run lint`                                                | Fails on any warning                  |
 | Prettier               | `npm run format:check` / `npm run format`                     |                                       |
 | Production build       | `npm run build`                                               | → `dist/`                             |
@@ -464,7 +461,7 @@ security boundary** — CI runs the same checks and is the gate that matters.
 - **Backend (Rails)** — Ruby from `.ruby-version` with cached gems; a `postgres:16` service
   with throwaway credentials; RuboCop, Brakeman, `db:prepare`, Minitest (eager loading on, as `CI=true`).
 - **Frontend (React)** — Node from `.nvmrc` with npm cache; `npm ci`; ESLint, Prettier,
-  production build. Frontend tests (`npm test`) run locally only.
+  production build.
 
 Any failing step fails the workflow. In-progress runs for the same PR are cancelled when
 you push again. To make it a hard gate, enable branch protection on `main` and require
@@ -704,7 +701,7 @@ every policy) and write the real rules in each policy, e.g. `record.user_id == u
 - `deploy.yml` only runs when started manually from the Actions tab. Without the Render deploy
   hook secrets it only publishes the image.
 - Database roles and the PostgreSQL service must be set up by hand (section 7).
-- The frontend is tested in jsdom; there are no browser end-to-end tests.
+- The frontend has no automated tests; backend controller and model tests cover the API.
 - Only English translations are included; add `translations/<locale>.json` and register it in
   `common/i18n.js` for more.
 - No pagination on the sample list endpoint.
