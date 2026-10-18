@@ -1,13 +1,16 @@
 module Api
   class EmployeesController < ApplicationController
     PERMITTED_ATTRIBUTES = %i[first_name last_name email department job_title country].freeze
+    FILTER_PARAMS = %i[q status department country].freeze
     SALARY_ATTRIBUTES = %i[annual_ctc annual_base_pay annual_pf annual_other_components effective_from].freeze
 
     before_action :expire_notice_periods
     before_action :load_employee, only: %i[show update]
 
     def index
-      @page = ::Employees::ListService.new(policy_scope(Employee), page: params[:page], per_page: params[:per_page]).process!
+      @page = ::Employees::ListService.new(
+        policy_scope(Employee), page: params[:page], per_page: params[:per_page], filters: params.slice(*FILTER_PARAMS).permit(*FILTER_PARAMS)
+      ).process!
     end
 
     def show

@@ -3,7 +3,7 @@ export const QUERY_KEYS = {
   CURRENT_USER: 'currentUser',
   EMPLOYEES: 'employees',
   SETTINGS: 'settings',
-  COUNTRIES: 'countries',
+  SELECT_OPTIONS: 'selectOptions',
 }
 
 export const QUERY_STALE_TIME_MS = 30_000

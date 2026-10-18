@@ -3,8 +3,8 @@ import { apiRoutes } from 'routes'
 import { buildUrl } from 'utils/url'
 import { apiRequest } from './client'
 
-const list = ({ page, perPage }, { signal } = {}) => {
-  const query = new URLSearchParams({ page, per_page: perPage })
+const list = ({ page, perPage, filters }, { signal } = {}) => {
+  const query = new URLSearchParams({ ...filters, page, per_page: perPage })
   return apiRequest(`${apiRoutes.employees.index}?${query}`, { signal })
 }
 

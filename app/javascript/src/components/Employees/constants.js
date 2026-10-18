@@ -44,3 +44,11 @@ export const NOTICE_DAYS_FIELD_ID = 'notice-period-days'
 export const DAY_IN_MS = 24 * 60 * 60 * 1000
 
 export const WHOLE_NUMBER_PATTERN = /^\d+$/
+
+export const FILTER_KEYS = ['q', 'status', 'department', 'country']
+
+export const ALL_OPTION = 'all'
+
+export const SEARCH_DEBOUNCE_MS = 300
+
+export const EMPLOYEE_STATUSES = ['active', 'notice_period', 'inactive']
