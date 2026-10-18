@@ -54,7 +54,15 @@ export const DAY_IN_MS = 24 * 60 * 60 * 1000
 
 export const WHOLE_NUMBER_PATTERN = /^\d+$/
 
-export const FILTER_KEYS = ['q', 'status', 'department_id', 'country']
+export const FILTER_KEYS = [
+  'q',
+  'status',
+  'department_id',
+  'country',
+  'leaving_within',
+]
+
+export const LEAVING_WITHIN_DAYS = [7, 10, 30, 90]
 
 export const ALL_OPTION = 'all'
 

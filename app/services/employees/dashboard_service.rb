@@ -2,6 +2,7 @@ module Employees
   class DashboardService
     LEAVING_SOON_DAYS = 10
     TOP_DEPARTMENTS = 10
+    UPCOMING_DEPARTURES_LIMIT = 10
 
     Dashboard = Data.define(:counts, :departments, :upcoming_departures)
 
@@ -39,11 +40,11 @@ module Employees
       end
 
       def upcoming_departures
-        leaving_soon.includes(:department).order(:notice_period_ends_at, :employee_number)
+        leaving_soon.includes(:department).order(:notice_period_ends_at, :employee_number).limit(UPCOMING_DEPARTURES_LIMIT)
       end
 
       def leaving_soon
-        scope.notice_period.where(notice_period_ends_at: Time.current..LEAVING_SOON_DAYS.days.from_now)
+        scope.leaving_within(LEAVING_SOON_DAYS)
       end
   end
 end

@@ -89,6 +89,53 @@ class Employees::ListServiceTest < ActiveSupport::TestCase
     assert_equal [ later ], second_page.records.to_a
   end
 
+  test "filters employees whose notice ends within the given days, soonest first" do
+    later = create(:employee, :on_notice, notice_period_ends_at: 9.days.from_now)
+    sooner = create(:employee, :on_notice, notice_period_ends_at: 2.days.from_now)
+    create(:employee, :on_notice, notice_period_ends_at: 11.days.from_now)
+    create(:employee)
+
+    assert_equal [ sooner, later ], list(filters: { leaving_within: "10" }).records.to_a
+    assert_equal [ sooner ], list(filters: { leaving_within: "7" }).records.to_a
+  end
+
+  test "ignores a notice window that is not a whole number of days within the maximum" do
+    employees = create_list(:employee, 2)
+
+    %w[0 -5 366 ten 1.5].each do |days|
+      assert_equal employees.reverse, list(filters: { leaving_within: days }).records.to_a, days
+    end
+  end
+
+  test "combines the notice window with other filters" do
+    department = create(:department)
+    match = create(:employee, :on_notice, department:, notice_period_ends_at: 3.days.from_now)
+    create(:employee, :on_notice, notice_period_ends_at: 3.days.from_now)
+
+    assert_equal [ match ], list(filters: { leaving_within: "10", department_id: department.id }).records.to_a
+    assert_empty list(filters: { leaving_within: "10", status: "active" }).records
+  end
+
+  test "filters employees whose notice period ends within the given days, soonest first" do
+    later = create(:employee, :on_notice, notice_period_ends_at: 9.days.from_now)
+    sooner = create(:employee, :on_notice, notice_period_ends_at: 2.days.from_now)
+    create(:employee, :on_notice, notice_period_ends_at: 11.days.from_now)
+    create(:employee, :inactive, notice_period_ends_at: 1.day.ago)
+    create(:employee)
+
+    assert_equal [ sooner, later ], list(filters: { leaving_within: "10" }).records.to_a
+    assert_equal [ sooner ], list(filters: { leaving_within: "10", q: sooner.email }).records.to_a
+    assert_empty list(filters: { leaving_within: "10", status: "active" }).records
+  end
+
+  test "ignores a leaving-within value that is not a whole number of days up to a year" do
+    create_list(:employee, 2)
+
+    %w[0 -5 abc 2.5 366].each do |days|
+      assert_equal 2, list(filters: { leaving_within: days }).total_count, days
+    end
+  end
+
   test "keeps newest-first order for other statuses" do
     older, newer = create_list(:employee, 2)
 

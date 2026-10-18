@@ -5,6 +5,8 @@ export const exportTitle = ({ filters }) => {
     filters.status && t(`employees.status.${filters.status}`),
     filters.department,
     filters.country,
+    filters.leaving_within &&
+      t('employees.filters.leavingWithin', { count: filters.leaving_within }),
     filters.q && t('exports.searchLabel', { q: filters.q }),
   ].filter(Boolean)
 

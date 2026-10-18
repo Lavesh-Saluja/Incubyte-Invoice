@@ -5,30 +5,29 @@ import { Link } from 'react-router'
 import DetailSection from 'components/commons/DetailSection'
 import EmptyState from 'components/commons/EmptyState'
 import Initials from 'components/commons/Initials'
-import { DAY_IN_MS } from 'components/Employees/constants'
 import { fullName, initials } from 'components/Employees/utils'
 import { routes } from 'routes'
 import { formatDate } from 'utils/formatDate'
 import { buildUrl } from 'utils/url'
-import { employeesLink } from './utils'
+import { calendarDaysUntil, employeesLink } from './utils'
 
-const UpcomingDepartures = ({ employees, days }) => {
+const UpcomingDepartures = ({ employees, days, total }) => {
   const { t } = useTranslation()
   const [now] = useState(() => Date.now())
-  const daysLeft = (date) =>
-    Math.max(0, Math.ceil((new Date(date).getTime() - now) / DAY_IN_MS))
 
   return (
     <DetailSection
       title={t('dashboard.departures.title')}
       description={t('dashboard.departures.description', { count: days })}
       actions={
-        <Link
-          to={employeesLink({ status: 'notice_period' })}
-          className="text-[13px] font-medium text-primary hover:underline"
-        >
-          {t('dashboard.departures.viewAll')}
-        </Link>
+        total > 0 && (
+          <Link
+            to={employeesLink({ leaving_within: String(days) })}
+            className="text-[13px] font-medium text-primary hover:underline"
+          >
+            {t('dashboard.departures.viewAll', { count: total })}
+          </Link>
+        )
       }
     >
       {employees.length === 0 ? (
@@ -63,7 +62,10 @@ const UpcomingDepartures = ({ employees, days }) => {
                   </span>
                   <span className="block text-xs font-medium text-warning">
                     {t('dashboard.departures.daysLeft', {
-                      count: daysLeft(employee.notice_period_ends_at),
+                      count: calendarDaysUntil(
+                        employee.notice_period_ends_at,
+                        now,
+                      ),
                     })}
                   </span>
                 </span>
