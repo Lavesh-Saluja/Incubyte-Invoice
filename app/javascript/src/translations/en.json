@@ -68,7 +68,8 @@
       "saving": "Saving…",
       "cancel": "Cancel",
       "add": "Add employee",
-      "edit": "Edit"
+      "edit": "Edit",
+      "menu": "Actions for {{name}}"
     },
     "notices": {
       "created": "Employee {{code}} created.",
@@ -94,7 +95,8 @@
     "table": {
       "employee": "Employee",
       "code": "Code",
-      "status": "Status"
+      "status": "Status",
+      "actions": "Actions"
     },
     "pagination": {
       "range": "Showing {{from}}–{{to}} of {{total}}",
@@ -109,7 +111,32 @@
       "noticeEnds": "Ends",
       "record": "Record",
       "joined": "Joined",
-      "updated": "Last updated"
+      "updated": "Last updated",
+      "noticeEnded": "Ended"
+    },
+    "notice": {
+      "start": "Put on notice",
+      "starting": "Starting…",
+      "remove": "Remove from notice period",
+      "removing": "Removing…",
+      "startTitle": "Put employee on notice?",
+      "startDescription": "{{name}} will be marked as on notice from today and become inactive when the notice period ends.",
+      "days": "Notice period (days)",
+      "endsOn": "Notice ends on {{date}}.",
+      "endsNow": "The employee becomes inactive immediately.",
+      "daysInvalid": "Enter a whole number of days from 0 to {{max}}.",
+      "started": "{{name}} is now on notice.",
+      "removeTitle": "Remove from notice period?",
+      "removeDescription": {
+        "notice_period": "{{name}} will return to active and the notice dates will be cleared.",
+        "inactive": "{{name}} will be reactivated and the notice dates will be cleared."
+      },
+      "removed": "{{name}} is active again.",
+      "until": "Until {{date}}"
+    },
+    "edit": {
+      "inactive": "Inactive employees can’t be edited. Remove them from the notice period to reactivate them first.",
+      "viewEmployee": "View employee"
     }
   },
   "nav": {

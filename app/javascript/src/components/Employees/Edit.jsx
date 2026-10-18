@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import LoadError from 'components/commons/LoadError'
 import PageHeader from 'components/commons/PageHeader'
@@ -12,7 +12,7 @@ import { routes } from 'routes'
 import { buildUrl } from 'utils/url'
 import StatusBadge from './StatusBadge'
 import Form from './Form'
-import { fullName } from './utils'
+import { fullName, isEditable } from './utils'
 
 const Edit = () => {
   const { t } = useTranslation()
@@ -54,17 +54,33 @@ const Edit = () => {
             </span>
           }
         />
-        <Card>
-          <CardContent>
-            <Form
-              employee={employee}
-              cancelTo={showPath}
-              onSubmit={handleSubmit}
-              submitLabel={t('employees.actions.save')}
-              submittingLabel={t('employees.actions.saving')}
-            />
-          </CardContent>
-        </Card>
+        {isEditable(employee) ? (
+          <Card>
+            <CardContent>
+              <Form
+                employee={employee}
+                cancelTo={showPath}
+                onSubmit={handleSubmit}
+                submitLabel={t('employees.actions.save')}
+                submittingLabel={t('employees.actions.saving')}
+              />
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="text-sm">
+              <p className="text-muted-foreground">
+                {t('employees.edit.inactive')}
+              </p>
+              <Link
+                to={showPath}
+                className="mt-3 inline-block text-primary underline"
+              >
+                {t('employees.edit.viewEmployee')}
+              </Link>
+            </CardContent>
+          </Card>
+        )}
       </>
     )
   }

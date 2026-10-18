@@ -1,4 +1,5 @@
 import { Plus, Users } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
 import LoadError from 'components/commons/LoadError'
@@ -8,12 +9,14 @@ import { Card } from 'components/ui/card'
 import { useFetchEmployees } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
 import { EMPLOYEES_PER_PAGE } from './constants'
+import NoticeDialog from './NoticeDialog'
 import Pagination from './Pagination'
 import Table from './Table'
 
 const Employees = () => {
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
+  const [noticeDialog, setNoticeDialog] = useState(null)
   const page = Math.max(Number(searchParams.get('page')) || 1, 1)
   const { data, isPending, isError, error, refetch } = useFetchEmployees({
     page,
@@ -51,7 +54,7 @@ const Employees = () => {
 
     return (
       <>
-        <Table employees={data.employees} />
+        <Table employees={data.employees} onNoticeAction={setNoticeDialog} />
         <Pagination
           meta={data.meta}
           onPageChange={(next) => setSearchParams({ page: next })}
@@ -68,6 +71,10 @@ const Employees = () => {
         actions={addButton}
       />
       <Card className="gap-0 overflow-hidden py-0">{renderContent()}</Card>
+      <NoticeDialog
+        dialog={noticeDialog}
+        onClose={() => setNoticeDialog(null)}
+      />
     </main>
   )
 }

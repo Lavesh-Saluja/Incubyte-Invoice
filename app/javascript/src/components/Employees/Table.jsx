@@ -8,12 +8,15 @@ import {
   TableHeader,
   TableRow,
 } from 'components/ui/table'
+import { cn } from 'cn'
 import { routes } from 'routes'
+import { formatDate } from 'utils/formatDate'
 import { buildUrl } from 'utils/url'
+import RowActions from './RowActions'
 import StatusBadge from './StatusBadge'
 import { fullName } from './utils'
 
-const Table = ({ employees }) => {
+const Table = ({ employees, onNoticeAction }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const showPath = (employee) =>
@@ -29,15 +32,24 @@ const Table = ({ employees }) => {
           <TableHead>{t('employees.fields.department')}</TableHead>
           <TableHead>{t('employees.fields.country')}</TableHead>
           <TableHead>{t('employees.table.status')}</TableHead>
+          <TableHead className="w-0">
+            <span className="sr-only">{t('employees.table.actions')}</span>
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {employees.map((employee) => (
           <TableRow
             key={employee.id}
-            className="cursor-pointer"
+            className={cn(
+              'cursor-pointer',
+              employee.status === 'inactive' &&
+                'text-muted-foreground opacity-60',
+            )}
             onClick={(event) => {
-              if (!event.target.closest('a')) navigate(showPath(employee))
+              const isOwnContent = event.currentTarget.contains(event.target)
+              const isControl = event.target.closest('a, button')
+              if (isOwnContent && !isControl) navigate(showPath(employee))
             }}
           >
             <TableCell>
@@ -59,6 +71,16 @@ const Table = ({ employees }) => {
             <TableCell>{employee.country}</TableCell>
             <TableCell>
               <StatusBadge status={employee.status} />
+              {employee.status === 'notice_period' && (
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {t('employees.notice.until', {
+                    date: formatDate(employee.notice_period_ends_at),
+                  })}
+                </div>
+              )}
+            </TableCell>
+            <TableCell className="text-right">
+              <RowActions employee={employee} onNoticeAction={onNoticeAction} />
             </TableCell>
           </TableRow>
         ))}

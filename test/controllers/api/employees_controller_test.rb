@@ -83,6 +83,14 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "page" => 1, "per_page" => 25, "total_count" => 2, "total_pages" => 1 }, json_response["meta"])
   end
 
+  test "shows employees whose notice period has ended as inactive" do
+    create(:employee, :on_notice, notice_period_started_at: 31.days.ago, notice_period_ends_at: 1.minute.ago)
+
+    get "/api/employees"
+
+    assert_equal [ "inactive" ], json_response["employees"].pluck("status")
+  end
+
   test "returns the requested page" do
     employees = create_list(:employee, 3).reverse
 
@@ -147,6 +155,25 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_equal [ "can't be blank" ], json_response.dig("details", "last_name")
     assert_equal "Rao", employee.reload.last_name
+  end
+
+  test "an inactive employee cannot be edited" do
+    employee = create(:employee, :inactive, job_title: "Analyst")
+
+    patch "/api/employees/#{employee.id}", params: { employee: { job_title: "Manager" } }, as: :json
+
+    assert_response :unprocessable_content
+    assert_match(/inactive/, json_response.dig("details", "status").first)
+    assert_equal "Analyst", employee.reload.job_title
+  end
+
+  test "an employee on notice can still be edited" do
+    employee = create(:employee, :on_notice)
+
+    patch "/api/employees/#{employee.id}", params: { employee: { job_title: "Manager" } }, as: :json
+
+    assert_response :ok
+    assert_equal "Manager", employee.reload.job_title
   end
 
   test "responds 404 when updating an unknown employee" do

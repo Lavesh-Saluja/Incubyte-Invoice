@@ -12,3 +12,9 @@ en:
     cross_site_request: "Cross-site requests are not allowed"
     unsupported_media_type: "Request body must be JSON"
     conflict: "A record with these details already exists"
+  activemodel:
+    errors:
+      messages:
+        must_be_active: "must be active to start a notice period"
+        must_be_on_notice_or_inactive: "must be on notice or inactive to remove the notice period"
+        inactive_not_editable: "is inactive, so the details cannot be edited. Remove the notice period to reactivate the employee first"
