@@ -17,6 +17,13 @@ class EmployeeTest < ActiveSupport::TestCase
     assert build(:employee).valid?
   end
 
+  test "has no salary until one is added" do
+    employee = create(:employee)
+
+    assert_nil employee.salary
+    assert_equal create(:salary, employee:), employee.reload.salary
+  end
+
   test "uses a UUID primary key" do
     assert_match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/, create(:employee).id)
   end

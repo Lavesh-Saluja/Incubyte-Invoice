@@ -4,6 +4,8 @@ class Employee < ApplicationRecord
 
   attr_readonly :employee_number, :employee_code
 
+  has_one :salary, dependent: :destroy
+
   enum :status, { active: "active", notice_period: "notice_period", inactive: "inactive" },
     default: :active, validate: true
 
