@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     end
 
     resource :session, only: %i[show create destroy]
-    resources :employees, only: %i[index show create update]
+    resources :employees, only: %i[index show create update] do
+      resource :notice_period, only: %i[create destroy], module: :employees
+    end
+    resource :settings, only: :show
   end
 end

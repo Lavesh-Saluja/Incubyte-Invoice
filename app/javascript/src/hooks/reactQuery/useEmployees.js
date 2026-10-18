@@ -38,3 +38,9 @@ const useSaveEmployee = (mutationFn) => {
 export const useCreateEmployee = () => useSaveEmployee(employeesApi.create)
 
 export const useUpdateEmployee = () => useSaveEmployee(employeesApi.update)
+
+export const useStartNoticePeriod = () =>
+  useSaveEmployee(employeesApi.startNoticePeriod)
+
+export const useRemoveNoticePeriod = () =>
+  useSaveEmployee(employeesApi.removeNoticePeriod)

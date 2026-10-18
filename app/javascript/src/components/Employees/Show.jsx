@@ -1,4 +1,5 @@
 import { ArrowLeft, Pencil } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import DetailList from 'components/commons/DetailList'
@@ -9,12 +10,14 @@ import { useShowEmployee } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
 import { formatDate } from 'utils/formatDate'
 import { buildUrl } from 'utils/url'
+import NoticeDialog from './NoticeDialog'
 import StatusBadge from './StatusBadge'
-import { fullName, initials } from './utils'
+import { fullName, initials, isEditable, noticeActionFor } from './utils'
 
 const Show = () => {
   const { t } = useTranslation()
   const { id } = useParams()
+  const [noticeDialog, setNoticeDialog] = useState(null)
   const {
     data: employee,
     isPending,
@@ -54,12 +57,27 @@ const Show = () => {
               </div>
             </div>
           </div>
-          <Button variant="outline" asChild>
-            <Link to={buildUrl(routes.employees.edit, { id: employee.id })}>
-              <Pencil />
-              {t('employees.actions.edit')}
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() =>
+                setNoticeDialog({
+                  action: noticeActionFor(employee),
+                  employee,
+                })
+              }
+            >
+              {t(`employees.notice.${noticeActionFor(employee)}`)}
+            </Button>
+            {isEditable(employee) && (
+              <Button variant="outline" asChild>
+                <Link to={buildUrl(routes.employees.edit, { id: employee.id })}>
+                  <Pencil />
+                  {t('employees.actions.edit')}
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid items-start gap-6 lg:grid-cols-3">
@@ -96,7 +114,11 @@ const Show = () => {
                       value: formatDate(employee.notice_period_started_at),
                     },
                     {
-                      label: t('employees.show.noticeEnds'),
+                      label: t(
+                        employee.status === 'inactive'
+                          ? 'employees.show.noticeEnded'
+                          : 'employees.show.noticeEnds',
+                      ),
                       value: formatDate(employee.notice_period_ends_at),
                     },
                   ]}
@@ -145,6 +167,10 @@ const Show = () => {
         {t('employees.show.back')}
       </Link>
       {renderContent()}
+      <NoticeDialog
+        dialog={noticeDialog}
+        onClose={() => setNoticeDialog(null)}
+      />
     </main>
   )
 }

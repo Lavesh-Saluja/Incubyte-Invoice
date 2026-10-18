@@ -8,6 +8,8 @@ class EmployeePolicyTest < ActiveSupport::TestCase
     assert policy.show?
     assert policy.create?
     assert policy.update?
+    assert policy.start_notice_period?
+    assert policy.remove_notice_period?
   end
 
   test "denies everything without a user" do
@@ -17,6 +19,8 @@ class EmployeePolicyTest < ActiveSupport::TestCase
     assert_not policy.show?
     assert_not policy.create?
     assert_not policy.update?
+    assert_not policy.start_notice_period?
+    assert_not policy.remove_notice_period?
     assert_not policy.destroy?
   end
 

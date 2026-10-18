@@ -2,10 +2,11 @@ module Api
   class EmployeesController < ApplicationController
     PERMITTED_ATTRIBUTES = %i[first_name last_name email department job_title country].freeze
 
+    before_action :expire_notice_periods
     before_action :load_employee, only: %i[show update]
 
     def index
-      @page = Employees::ListService.new(policy_scope(Employee), page: params[:page], per_page: params[:per_page]).process!
+      @page = ::Employees::ListService.new(policy_scope(Employee), page: params[:page], per_page: params[:per_page]).process!
     end
 
     def show
@@ -13,16 +14,20 @@ module Api
 
     def create
       authorize Employee
-      @employee = Employees::CreateService.new(employee_params).process!
+      @employee = ::Employees::CreateService.new(employee_params).process!
       render :show, status: :created
     end
 
     def update
-      Employees::UpdateService.new(@employee, employee_params).process!
+      ::Employees::UpdateService.new(@employee, employee_params).process!
       render :show
     end
 
     private
+      def expire_notice_periods
+        ::Employees::ExpireNoticePeriodsService.new.process!
+      end
+
       def load_employee
         @employee = Employee.find(params[:id])
         authorize @employee

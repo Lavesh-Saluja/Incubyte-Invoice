@@ -17,6 +17,11 @@ class Employee < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :department, :job_title, :country, presence: true
 
+  DEFAULT_NOTICE_PERIOD_DAYS = Integer(ENV.fetch("NOTICE_PERIOD_DAYS", 30))
+  NOTICE_PERIOD_MAX_DAYS = 365
+
+  scope :with_expired_notice_period, -> { notice_period.where(notice_period_ends_at: ..Time.current) }
+
   def self.next_employee_number
     connection.select_value("SELECT nextval(pg_get_serial_sequence('employees', 'employee_number'))")
   end

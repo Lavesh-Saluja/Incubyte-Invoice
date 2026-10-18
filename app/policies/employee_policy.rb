@@ -15,6 +15,14 @@ class EmployeePolicy < ApplicationPolicy
     user&.hr?
   end
 
+  def start_notice_period?
+    user&.hr?
+  end
+
+  def remove_notice_period?
+    user&.hr?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       user&.hr? ? scope.all : scope.none

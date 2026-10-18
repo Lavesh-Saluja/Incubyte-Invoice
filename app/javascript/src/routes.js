@@ -21,5 +21,7 @@ export const apiRoutes = {
   employees: {
     index: '/api/employees',
     show: '/api/employees/:id',
+    noticePeriod: '/api/employees/:id/notice_period',
   },
+  settings: '/api/settings',
 }

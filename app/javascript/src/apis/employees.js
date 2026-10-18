@@ -32,6 +32,29 @@ const update = async ({ id, payload }) => {
   return employee
 }
 
-const employeesApi = { list, show, create, update }
+const startNoticePeriod = async ({ id, days }) => {
+  const { employee } = await apiRequest(
+    buildUrl(apiRoutes.employees.noticePeriod, { id }),
+    { method: HTTP_METHODS.POST, body: { notice_period: { days } } },
+  )
+  return employee
+}
+
+const removeNoticePeriod = async (id) => {
+  const { employee } = await apiRequest(
+    buildUrl(apiRoutes.employees.noticePeriod, { id }),
+    { method: HTTP_METHODS.DELETE },
+  )
+  return employee
+}
+
+const employeesApi = {
+  list,
+  show,
+  create,
+  update,
+  startNoticePeriod,
+  removeNoticePeriod,
+}
 
 export default employeesApi

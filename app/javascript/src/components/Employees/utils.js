@@ -1,6 +1,11 @@
 import { t } from 'i18next'
 import { EMAIL_PATTERN } from 'constants'
-import { FORM_FIELDS, NAME_FIELDS, NAME_MAX_LENGTH } from './constants'
+import {
+  FORM_FIELDS,
+  NAME_FIELDS,
+  NAME_MAX_LENGTH,
+  NOTICE_ACTIONS,
+} from './constants'
 
 export const fieldId = (name) => `employee-${name}`
 
@@ -33,6 +38,11 @@ export const validateEmployee = (values) => {
 
   return errors
 }
+
+export const noticeActionFor = (employee) =>
+  employee.status === 'active' ? NOTICE_ACTIONS.START : NOTICE_ACTIONS.REMOVE
+
+export const isEditable = (employee) => employee.status !== 'inactive'
 
 export const fullName = (employee) =>
   `${employee.first_name} ${employee.last_name}`
