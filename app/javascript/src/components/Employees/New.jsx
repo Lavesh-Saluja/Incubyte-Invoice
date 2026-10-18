@@ -33,7 +33,6 @@ const New = () => {
             cancelTo={routes.employees.index}
             onSubmit={handleSubmit}
             submitLabel={t('employees.actions.create')}
-            submittingLabel={t('employees.actions.creating')}
           />
         </CardContent>
       </Card>

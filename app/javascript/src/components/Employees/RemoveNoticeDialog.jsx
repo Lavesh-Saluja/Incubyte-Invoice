@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import LoadingButton from 'components/commons/LoadingButton'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -9,7 +10,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from 'components/ui/alert-dialog'
-import { Button } from 'components/ui/button'
 import { useRemoveNoticePeriod } from 'hooks/reactQuery/useEmployees'
 import { getErrorMessage } from 'utils/errors'
 import { fullName } from './utils'
@@ -45,11 +45,9 @@ const RemoveNoticeDialog = ({ employee, onClose }) => {
           <AlertDialogCancel disabled={isPending}>
             {t('employees.actions.cancel')}
           </AlertDialogCancel>
-          <Button onClick={handleConfirm} disabled={isPending}>
-            {isPending
-              ? t('employees.notice.removing')
-              : t('employees.notice.remove')}
-          </Button>
+          <LoadingButton onClick={handleConfirm} loading={isPending}>
+            {t('employees.notice.remove')}
+          </LoadingButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

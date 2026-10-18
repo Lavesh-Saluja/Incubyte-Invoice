@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
 import LoadError from 'components/commons/LoadError'
+import Spinner from 'components/commons/Spinner'
 import PageHeader from 'components/commons/PageHeader'
 import { Button } from 'components/ui/button'
 import { Card } from 'components/ui/card'
@@ -92,12 +93,7 @@ const Employees = () => {
   )
 
   const renderContent = () => {
-    if (isPending)
-      return (
-        <p role="status" className="p-6 text-sm text-muted-foreground">
-          {t('employees.list.loading')}
-        </p>
-      )
+    if (isPending) return <Spinner label={t('employees.list.loading')} />
     if (isError) return <LoadError error={error} onRetry={() => refetch()} />
     if (data.meta.total_count === 0)
       return hasFilters ? (

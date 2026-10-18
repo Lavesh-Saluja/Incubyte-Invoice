@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink, Outlet } from 'react-router'
 import { cn } from 'cn'
-import { Button } from 'components/ui/button'
+import LoadingButton from 'components/commons/LoadingButton'
 import { useCurrentUser, useLogout } from 'hooks/reactQuery/useSession'
 import { routes } from 'routes'
 
@@ -18,7 +18,7 @@ const AppLayout = () => {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="border-b bg-card">
+      <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-6">
             <Link to={routes.root} className="font-semibold">
@@ -52,14 +52,14 @@ const AppLayout = () => {
             <span className="hidden text-muted-foreground sm:inline">
               {user?.name}
             </span>
-            <Button
+            <LoadingButton
               variant="outline"
               size="sm"
               onClick={() => logout.mutate()}
-              disabled={logout.isPending}
+              loading={logout.isPending}
             >
-              {logout.isPending ? t('header.loggingOut') : t('header.logout')}
-            </Button>
+              {t('header.logout')}
+            </LoadingButton>
           </div>
         </div>
       </header>
