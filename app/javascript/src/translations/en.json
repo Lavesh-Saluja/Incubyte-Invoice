@@ -5,7 +5,7 @@
   },
   "dashboard": {
     "title": "Home",
-    "loading": "Loading dashboard…",
+    "loading": "Loading dashboard",
     "cards": {
       "current_headcount": {
         "label": "Current headcount",
@@ -50,7 +50,7 @@
     "percent": "{{value}}%"
   },
   "auth": {
-    "checking": "Checking your session…"
+    "checking": "Checking your session"
   },
   "login": {
     "title": "Sign in",
@@ -58,7 +58,6 @@
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",
-    "submitting": "Signing in…",
     "validation": {
       "emailRequired": "Enter your email address.",
       "emailInvalid": "Enter a valid email address, like name@acme.com.",
@@ -66,11 +65,9 @@
     }
   },
   "header": {
-    "logout": "Log out",
-    "loggingOut": "Logging out…"
+    "logout": "Log out"
   },
   "common": {
-    "loading": "Loading…",
     "retry": "Try again"
   },
   "errors": {
@@ -87,10 +84,11 @@
   "version": {
     "summary": "Web {{web}} · API {{api}}",
     "development": "development",
-    "unavailable": "unavailable"
+    "unavailable": "unavailable",
+    "checking": "Checking the API version"
   },
   "employees": {
-    "loading": "Loading employee…",
+    "loading": "Loading employee",
     "fields": {
       "first_name": "First name",
       "last_name": "Last name",
@@ -105,9 +103,7 @@
     },
     "actions": {
       "create": "Create employee",
-      "creating": "Creating…",
       "save": "Save changes",
-      "saving": "Saving…",
       "cancel": "Cancel",
       "add": "Add employee",
       "edit": "Edit",
@@ -131,7 +127,7 @@
     "list": {
       "title": "Employees",
       "description": "Everyone at ACME and their current employment status.",
-      "loading": "Loading employees…",
+      "loading": "Loading employees",
       "emptyTitle": "No employees yet",
       "emptyDescription": "Add your first employee to start managing salaries."
     },
@@ -159,9 +155,7 @@
     },
     "notice": {
       "start": "Put on notice",
-      "starting": "Starting…",
       "remove": "Remove from notice period",
-      "removing": "Removing…",
       "startTitle": "Put employee on notice?",
       "startDescription": "{{name}} will be marked as on notice from today and become inactive when the notice period ends.",
       "days": "Notice period (days)",
@@ -188,8 +182,7 @@
       "salaryDescription": "Annual amounts in {{currency}}, the currency of the employee’s country.",
       "salaryNoCountry": "Annual amounts. Choose a country to set the currency.",
       "countryPlaceholder": "Select a country",
-      "countriesLoading": "Loading countries…",
-      "countrySearch": "Search countries…",
+      "countrySearch": "Search countries",
       "countryEmpty": "No country found."
     },
     "salary": {

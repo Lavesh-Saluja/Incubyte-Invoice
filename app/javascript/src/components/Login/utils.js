@@ -1,16 +1,13 @@
 import { t } from 'i18next'
+import * as yup from 'yup'
 import { EMAIL_PATTERN } from 'constants'
 
-export const errorId = (fieldId) => `${fieldId}-error`
-
-export const validateCredentials = ({ email, password }) => {
-  const errors = {}
-  const trimmedEmail = email.trim()
-
-  if (!trimmedEmail) errors.email = t('login.validation.emailRequired')
-  else if (!EMAIL_PATTERN.test(trimmedEmail))
-    errors.email = t('login.validation.emailInvalid')
-  if (!password) errors.password = t('login.validation.passwordRequired')
-
-  return errors
-}
+export const loginSchema = () =>
+  yup.object({
+    email: yup
+      .string()
+      .trim()
+      .required(t('login.validation.emailRequired'))
+      .matches(EMAIL_PATTERN, t('login.validation.emailInvalid')),
+    password: yup.string().required(t('login.validation.passwordRequired')),
+  })

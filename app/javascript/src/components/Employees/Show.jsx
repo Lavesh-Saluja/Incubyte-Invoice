@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router'
 import DetailList from 'components/commons/DetailList'
 import DetailSection from 'components/commons/DetailSection'
 import LoadError from 'components/commons/LoadError'
+import Spinner from 'components/commons/Spinner'
 import { Button } from 'components/ui/button'
 import { useShowEmployee } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
@@ -29,11 +30,7 @@ const Show = () => {
 
   const renderContent = () => {
     if (isPending)
-      return (
-        <p role="status" className="text-sm text-muted-foreground">
-          {t('employees.loading')}
-        </p>
-      )
+      return <Spinner label={t('employees.loading')} className="min-h-[60vh]" />
     if (isError) return <LoadError error={error} onRetry={() => refetch()} />
 
     const hasNoticePeriod = Boolean(employee.notice_period_started_at)

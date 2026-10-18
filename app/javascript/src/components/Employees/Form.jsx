@@ -1,22 +1,22 @@
-import { useState } from 'react'
+import { Form as FormikForm, Formik, useFormikContext } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
 import { ApiError } from 'apis/client'
+import FormField from 'components/commons/FormField'
+import SubmitButton from 'components/commons/SubmitButton'
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
-import { Label } from 'components/ui/label'
 import { useCountries } from 'hooks/reactQuery/useSelectOptions'
 import { getErrorMessage } from 'utils/errors'
 import { AMOUNT_FIELDS, DETAIL_FIELDS } from './constants'
 import CountrySelect from './CountrySelect'
 import {
-  errorId,
+  employeeSchema,
   fieldId,
   toFieldErrors,
   toFormValues,
   toPayload,
-  validateEmployee,
 } from './utils'
 
 const Section = ({ title, description, children }) => (
@@ -29,103 +29,44 @@ const Section = ({ title, description, children }) => (
   </section>
 )
 
-const Field = ({ name, label, errors, children }) => (
-  <div className="flex flex-col gap-2">
-    <Label htmlFor={fieldId(name)}>{label}</Label>
-    {children}
-    {errors?.[name] && (
-      <p
-        id={errorId(name)}
-        className="text-sm text-destructive first-letter:uppercase"
-      >
-        {errors[name].join(' ')}
-      </p>
-    )}
-  </div>
-)
-
-const Form = ({
-  employee = null,
-  cancelTo,
-  onSubmit,
-  submitLabel,
-  submittingLabel,
-}) => {
+const Fields = ({ countries, cancelTo, submitLabel }) => {
   const { t } = useTranslation()
-  const { data: countries } = useCountries()
-  const [values, setValues] = useState(() => toFormValues(employee))
-  const [errors, setErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { values } = useFormikContext()
   const currency = countries?.find(
     (country) => country.code === values.country,
   )?.currency
 
-  const setValue = (name, value) =>
-    setValues((current) => ({ ...current, [name]: value }))
-
-  const ariaFor = (name) => ({
-    'aria-invalid': Boolean(errors[name]),
-    'aria-describedby': errors[name] ? errorId(name) : undefined,
-  })
-
-  const inputProps = (name) => ({
-    id: fieldId(name),
-    name,
-    value: values[name],
-    onChange: (event) => setValue(name, event.target.value),
-    ...ariaFor(name),
-  })
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const clientErrors = validateEmployee(values)
-    setErrors(clientErrors)
-    if (Object.keys(clientErrors).length > 0) return
-
-    setIsSubmitting(true)
-    try {
-      await onSubmit(toPayload(values))
-    } catch (error) {
-      setErrors(error instanceof ApiError ? toFieldErrors(error.details) : {})
-      toast.error(getErrorMessage(error))
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
+    <FormikForm noValidate className="flex flex-col gap-8">
       <Section
         title={t('employees.form.detailsTitle')}
         description={t('employees.form.detailsDescription')}
       >
         {DETAIL_FIELDS.map(({ name, type = 'text', autoComplete }) => (
-          <Field
+          <FormField
             key={name}
             name={name}
+            id={fieldId(name)}
             label={t(`employees.fields.${name}`)}
-            errors={errors}
-          >
-            <Input
-              type={type}
-              autoComplete={autoComplete}
-              {...inputProps(name)}
-            />
-          </Field>
-        ))}
-        <Field
-          name="country"
-          label={t('employees.fields.country')}
-          errors={errors}
-        >
-          <CountrySelect
-            id={fieldId('country')}
-            value={values.country}
-            countries={countries}
-            onChange={(code) => setValue('country', code)}
-            {...ariaFor('country')}
+            type={type}
+            autoComplete={autoComplete}
           />
-        </Field>
+        ))}
+        <FormField
+          name="country"
+          id={fieldId('country')}
+          label={t('employees.fields.country')}
+        >
+          {({ field, helpers, ariaProps }) => (
+            <CountrySelect
+              value={field.value}
+              countries={countries}
+              onChange={(code) => helpers.setValue(code)}
+              onClose={() => helpers.setTouched(true)}
+              {...ariaProps}
+            />
+          )}
+        </FormField>
       </Section>
 
       <div className="border-t" />
@@ -139,44 +80,72 @@ const Form = ({
         }
       >
         {AMOUNT_FIELDS.map((name) => (
-          <Field
+          <FormField
             key={name}
             name={name}
+            id={fieldId(name)}
             label={t(`employees.salary.${name}`)}
-            errors={errors}
           >
-            <div className="relative">
-              <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground">
-                {currency ?? '—'}
-              </span>
-              <Input
-                type="text"
-                inputMode="decimal"
-                autoComplete="off"
-                className="pl-14"
-                {...inputProps(name)}
-              />
-            </div>
-          </Field>
+            {({ field, ariaProps }) => (
+              <div className="relative">
+                <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground">
+                  {currency ?? '—'}
+                </span>
+                <Input
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  className="pl-14"
+                  {...field}
+                  {...ariaProps}
+                />
+              </div>
+            )}
+          </FormField>
         ))}
-        <Field
+        <FormField
           name="effective_from"
+          id={fieldId('effective_from')}
           label={t('employees.salary.effective_from')}
-          errors={errors}
-        >
-          <Input type="date" {...inputProps('effective_from')} />
-        </Field>
+          type="date"
+        />
       </Section>
 
       <div className="flex justify-end gap-2 border-t pt-6">
         <Button variant="outline" asChild>
           <Link to={cancelTo}>{t('employees.actions.cancel')}</Link>
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? submittingLabel : submitLabel}
-        </Button>
+        <SubmitButton>{submitLabel}</SubmitButton>
       </div>
-    </form>
+    </FormikForm>
+  )
+}
+
+const Form = ({ employee = null, cancelTo, onSubmit, submitLabel }) => {
+  const { data: countries } = useCountries()
+
+  const handleSubmit = async (values, { setErrors }) => {
+    try {
+      await onSubmit(toPayload(values))
+    } catch (error) {
+      if (error instanceof ApiError) setErrors(toFieldErrors(error.details))
+      toast.error(getErrorMessage(error))
+    }
+  }
+
+  return (
+    <Formik
+      initialValues={toFormValues(employee)}
+      validationSchema={employeeSchema()}
+      validateOnMount
+      onSubmit={handleSubmit}
+    >
+      <Fields
+        countries={countries}
+        cancelTo={cancelTo}
+        submitLabel={submitLabel}
+      />
+    </Formik>
   )
 }
 

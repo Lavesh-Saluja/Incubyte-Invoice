@@ -1,4 +1,4 @@
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from 'cn'
@@ -13,17 +13,26 @@ import {
 } from 'components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover'
 
-const CountrySelect = ({ id, value, countries, onChange, ...ariaProps }) => {
+const CountrySelect = ({
+  id,
+  value,
+  countries,
+  onChange,
+  onClose,
+  ...ariaProps
+}) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const selected = countries?.find((country) => country.code === value)
 
-  const placeholder = countries
-    ? t('employees.form.countryPlaceholder')
-    : t('employees.form.countriesLoading')
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (!next) onClose?.()
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           id={id}
@@ -32,15 +41,21 @@ const CountrySelect = ({ id, value, countries, onChange, ...ariaProps }) => {
           role="combobox"
           aria-expanded={open}
           disabled={!countries}
+          aria-busy={!countries}
           className="w-full justify-between font-normal"
           {...ariaProps}
         >
           <span
             className={cn('truncate', !selected && 'text-muted-foreground')}
           >
-            {selected?.name ?? placeholder}
+            {selected?.name ??
+              (countries && t('employees.form.countryPlaceholder'))}
           </span>
-          <ChevronsUpDown className="opacity-50" />
+          {countries ? (
+            <ChevronsUpDown className="opacity-50" />
+          ) : (
+            <Loader2 aria-hidden="true" className="animate-spin" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) p-0">

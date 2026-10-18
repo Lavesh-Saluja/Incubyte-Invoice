@@ -27,8 +27,6 @@ export const SALARY_ERROR_PREFIX = 'salary.'
 
 export const AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/
 
-export const NAME_FIELDS = ['first_name', 'last_name']
-
 export const STATUS_BADGE_CLASSES = {
   active: 'border-success/20 bg-success-surface text-success',
   notice_period: 'border-warning/30 bg-warning-surface text-warning',

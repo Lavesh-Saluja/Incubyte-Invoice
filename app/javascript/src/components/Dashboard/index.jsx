@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import LoadError from 'components/commons/LoadError'
+import Spinner from 'components/commons/Spinner'
 import { useDashboard } from 'hooks/reactQuery/useDashboard'
 import { STAT_CARDS } from './constants'
 import DepartmentTable from './DepartmentTable'
@@ -13,11 +14,7 @@ const Dashboard = () => {
 
   const renderContent = () => {
     if (isPending)
-      return (
-        <p role="status" className="text-sm text-muted-foreground">
-          {t('dashboard.loading')}
-        </p>
-      )
+      return <Spinner label={t('dashboard.loading')} className="min-h-[60vh]" />
     if (isError) return <LoadError error={error} onRetry={() => refetch()} />
 
     const { counts, departments, upcoming_departures, leaving_soon_days } = data

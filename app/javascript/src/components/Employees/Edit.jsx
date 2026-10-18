@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import LoadError from 'components/commons/LoadError'
+import Spinner from 'components/commons/Spinner'
 import PageHeader from 'components/commons/PageHeader'
 import { Card, CardContent } from 'components/ui/card'
 import {
@@ -36,11 +37,7 @@ const Edit = () => {
 
   const renderContent = () => {
     if (isPending)
-      return (
-        <p role="status" className="text-sm text-muted-foreground">
-          {t('employees.loading')}
-        </p>
-      )
+      return <Spinner label={t('employees.loading')} className="min-h-[60vh]" />
     if (isError) return <LoadError error={error} onRetry={() => refetch()} />
 
     return (
@@ -62,7 +59,6 @@ const Edit = () => {
                 cancelTo={showPath}
                 onSubmit={handleSubmit}
                 submitLabel={t('employees.actions.save')}
-                submittingLabel={t('employees.actions.saving')}
               />
             </CardContent>
           </Card>

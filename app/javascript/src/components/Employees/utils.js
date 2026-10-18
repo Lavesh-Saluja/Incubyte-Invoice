@@ -1,19 +1,18 @@
 import { t } from 'i18next'
+import * as yup from 'yup'
 import { EMAIL_PATTERN } from 'constants'
 import {
   AMOUNT_FIELDS,
   AMOUNT_PATTERN,
   FORM_FIELDS,
-  NAME_FIELDS,
   NAME_MAX_LENGTH,
   NOTICE_ACTIONS,
   SALARY_ERROR_PREFIX,
   SALARY_FIELDS,
+  WHOLE_NUMBER_PATTERN,
 } from './constants'
 
 export const fieldId = (name) => `employee-${name}`
-
-export const errorId = (name) => `${fieldId(name)}-error`
 
 const formValue = (employee, name) => {
   const value = SALARY_FIELDS.includes(name)
@@ -47,28 +46,52 @@ export const toFieldErrors = (details) =>
   Object.fromEntries(
     Object.entries(details).map(([key, messages]) => [
       key.replace(SALARY_ERROR_PREFIX, ''),
-      messages,
+      messages.join(' '),
     ]),
   )
 
-const fieldError = (name, value) => {
-  if (!value) return t('employees.validation.required')
-  if (NAME_FIELDS.includes(name) && value.length > NAME_MAX_LENGTH)
-    return t('employees.validation.tooLong', { count: NAME_MAX_LENGTH })
-  if (name === 'email' && !EMAIL_PATTERN.test(value))
-    return t('employees.validation.emailInvalid')
-  if (AMOUNT_FIELDS.includes(name) && !AMOUNT_PATTERN.test(value))
-    return t('employees.validation.amountInvalid')
+const requiredText = () =>
+  yup.string().trim().required(t('employees.validation.required'))
 
-  return null
-}
-
-export const validateEmployee = (values) =>
-  Object.fromEntries(
-    FORM_FIELDS.map((name) => [name, fieldError(name, values[name].trim())])
-      .filter(([, error]) => error)
-      .map(([name, error]) => [name, [error]]),
+const nameText = () =>
+  requiredText().max(
+    NAME_MAX_LENGTH,
+    t('employees.validation.tooLong', { count: NAME_MAX_LENGTH }),
   )
+
+const amount = () =>
+  requiredText().matches(
+    AMOUNT_PATTERN,
+    t('employees.validation.amountInvalid'),
+  )
+
+export const employeeSchema = () =>
+  yup.object({
+    first_name: nameText(),
+    last_name: nameText(),
+    email: requiredText().matches(
+      EMAIL_PATTERN,
+      t('employees.validation.emailInvalid'),
+    ),
+    job_title: requiredText(),
+    department: requiredText(),
+    country: requiredText(),
+    ...Object.fromEntries(AMOUNT_FIELDS.map((name) => [name, amount()])),
+    effective_from: requiredText(),
+  })
+
+export const noticeDaysSchema = (max) => {
+  const message = t('employees.notice.daysInvalid', { max })
+
+  return yup.object({
+    days: yup
+      .string()
+      .trim()
+      .required(message)
+      .matches(WHOLE_NUMBER_PATTERN, message)
+      .test('max', message, (value) => Number(value) <= max),
+  })
+}
 
 export const noticeActionFor = (employee) =>
   employee.status === 'active' ? NOTICE_ACTIONS.START : NOTICE_ACTIONS.REMOVE
