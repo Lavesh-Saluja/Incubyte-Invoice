@@ -12,6 +12,7 @@ import EmployeeImport from 'components/EmployeeImport'
 import ShowEmployee from 'components/Employees/Show'
 import Login from 'components/Login'
 import NotFound from 'components/NotFound'
+import Pay from 'components/Pay'
 import { Toaster } from 'components/ui/sonner'
 import { TOAST_TOP_OFFSET } from 'constants'
 import { routes } from 'routes'
@@ -29,6 +30,7 @@ const App = () => {
             <Route path={routes.root} element={<Dashboard />} />
             <Route path={routes.departments.index} element={<Departments />} />
             <Route path={routes.exports.index} element={<Exports />} />
+            <Route path={routes.pay.index} element={<Pay />} />
             <Route path={routes.employees.index} element={<Employees />} />
             <Route path={routes.employees.new} element={<NewEmployee />} />
             <Route

@@ -7,6 +7,7 @@ export const QUERY_KEYS = {
   DASHBOARD: 'dashboard',
   DEPARTMENTS: 'departments',
   EXPORTS: 'exports',
+  PAY_SUMMARY: 'paySummary',
 }
 
 export const QUERY_STALE_TIME_MS = 30_000
