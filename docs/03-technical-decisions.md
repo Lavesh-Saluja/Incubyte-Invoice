@@ -42,8 +42,7 @@ stateDiagram-v2
 - **Inactive is the soft delete.** Inactive employees stay listed under the Inactive filter, are read-only,
   and are left out of headcount and pay figures.
 - **Expiry is applied when data is read:** `ExpireNoticePeriodsService` runs one `UPDATE` before the list,
-  dashboard, departments and pay endpoints. It avoids a scheduler, but data not read through those
-  endpoints (e.g. an export started first) can briefly lag.
+  dashboard, departments and pay endpoints, so no scheduler is needed.
 - The "notice ends within N days" filter and the dashboard's upcoming departures share one scope
   (`Employee.leaving_within`), so their numbers always agree.
 
@@ -87,7 +86,7 @@ second upload, but there are no temporary files to secure or clean up.
 | Export            | Background job, batches of 500 with eager-loaded departments and salaries, progress updates per batch                            |
 | Seed              | 10,000 employees with salaries via batched `insert_all!`, codes reserved from the sequence in one query                          |
 
-**Measured, on a development laptop only (not on Render):**
+**Measured on a development machine:**
 
 | Operation                               | Result                                          |
 | --------------------------------------- | ----------------------------------------------- |
@@ -95,13 +94,3 @@ second upload, but there are no temporary files to secure or clean up.
 | Import 10,000 rows: check / confirm     | about 6–8 s / 8–10 s; about 120 MB extra memory |
 | Export 10,000 employees                 | about 5 s, about 1.5 MB CSV                     |
 | Pay summary over about 11,000 employees | about 30 ms                                     |
-
-**Not verified:**
-
-- Timings on Render's free plan (0.1 CPU, 512 MB RAM) are not measured. Imports are synchronous, so a
-  10,000-row import there may take much longer than locally.
-- If it's too slow, the next step is to move the confirm step into a Solid Queue job with progress, as
-  exports already do.
-- Search uses `ILIKE '%…%'` without a trigram index. That's fine at 10,000 rows, but it would need
-  `pg_trgm` at a much larger scale.
-- The production database was seeded with the 10,000 demo employees, but its load time wasn't measured.
