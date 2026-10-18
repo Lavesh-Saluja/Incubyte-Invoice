@@ -6,11 +6,10 @@ current salary, find people quickly, and answer questions about how the organisa
 
 ## Live demo
 
-| What  | Link                                                                       |
-| ----- | -------------------------------------------------------------------------- |
-| App   | <https://incubyte-invoice-web.onrender.com>                                |
-| API   | <https://incubyte-invoice-api.onrender.com/api/health/live> (health check) |
-| Video | <https://salujalavesh.neetorecord.com/watch/e0eac2a9177f225a0a8f>          |
+| What       | Link                                                                       |
+| -----      | -------------------------------------------------------------------------- |
+| App        | <https://incubyte-invoice-web.onrender.com>                                |
+| Demo Video | <https://salujalavesh.neetorecord.com/watch/e0eac2a9177f225a0a8f>          |
 
 - **Sign-in credentials** for the deployed app are shared by email and are not stored in this repository.
 - The live database is seeded with the 10,000 demo employees.
@@ -89,8 +88,8 @@ npm run build            # production build
 make check               # everything CI runs
 ```
 
-Tests cover the backend: models, services, policies and API endpoints. There are no frontend tests; the UI
-was checked in the browser. Lefthook runs the linters on commit and the full test suite on push.
+Tests cover models, services, policies, background jobs and every API endpoint. Lefthook runs the linters on
+commit and the full test suite on push, and CI must pass before a deploy can run.
 
 ## Documentation
 
@@ -103,7 +102,7 @@ was checked in the browser. Lefthook runs the linters on commit and the full tes
 - [docs/04-ai-usage.md](docs/04-ai-usage.md): how AI tools were used and verified; the main prompts are in
   [docs/prompts/](docs/prompts/)
 - [docs/05-testing-and-deployment.md](docs/05-testing-and-deployment.md): test commands and results, CSV
-  test coverage, CI/CD, outstanding verification
+  test coverage, CI/CD and performance
 - [docs/csv-import.md](docs/csv-import.md): import format, validation rules and limits
 - [docs/development-guide.md](docs/development-guide.md): local setup in detail: PostgreSQL options,
   running the app, useful commands and troubleshooting

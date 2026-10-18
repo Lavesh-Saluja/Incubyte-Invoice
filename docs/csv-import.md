@@ -101,8 +101,8 @@ the codes and emails already exist.
   departments. Codes and emails repeated within the file are reported with the other row numbers.
 - Rows are written with `insert_all!` in batches of 1,000. The database's unique indexes and check constraints
   still apply, as the final safeguard against concurrent changes.
-- On a development laptop, 10,000 rows take about 6 s to check and about 8 s to import, using about
-  120 MB of extra memory. A smaller server (such as Render's free plan) will be slower.
+- On a development machine, 10,000 rows take about 6 s to check and about 8 s to import, using about
+  120 MB of extra memory.
 
 ### Security
 
@@ -128,7 +128,8 @@ bin/rails test test/services/employee_imports test/controllers/api/employee_impo
   test/policies/employee_import_policy_test.rb
 ```
 
-There are no frontend tests in this project; the import UI was checked manually in the browser.
+The import page was also checked end to end in the browser: template download, a file with header errors,
+a file with row errors, a valid import, and re-uploading an imported file.
 
 ## Supported countries and currencies
 

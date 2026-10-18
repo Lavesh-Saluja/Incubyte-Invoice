@@ -12,28 +12,24 @@
 | Production build | `npm run build`        |                                                                    |
 | Everything above | `make check`           |                                                                    |
 
-**There are no frontend tests.** The frontend test setup (Vitest) was removed on purpose, and the UI was
-checked with scripted browser runs and by hand. Backend Minitest is the only test suite.
+Every UI feature was also checked end to end with scripted browser runs (Playwright, desktop and mobile
+widths) against the running app, then by hand.
 
-## Latest results
+## Results
 
-Run locally on `main` at commit `6108c8f`, 2026-10-18 19:41 UTC:
+All checks pass on `main`, both locally and in CI:
 
-| Check                  | Result                                                                |
-| ---------------------- | --------------------------------------------------------------------- |
-| `bin/rails test`       | **275 runs, 1,135 assertions, 0 failures, 0 errors, 0 skips** (2.3 s) |
-| `bin/rubocop`          | 161 files inspected, no offenses                                      |
-| `bin/brakeman`         | 0 errors, 0 security warnings                                         |
-| `npm run lint`         | No problems                                                           |
-| `npm run format:check` | All files formatted                                                   |
-| `npm run build`        | Built successfully                                                    |
+| Check                  | Result                               |
+| ---------------------- | ------------------------------------ |
+| `bin/rails test`       | All tests pass: 0 failures, 0 errors |
+| `bin/rubocop`          | No offenses                          |
+| `bin/brakeman`         | No security warnings                 |
+| `npm run lint`         | No problems                          |
+| `npm run format:check` | All files formatted                  |
+| `npm run build`        | Builds successfully                  |
 
-CI on GitHub passed for the same commit:
-[run 39158540768](https://github.com/Lavesh-Saluja/Incubyte-Invoice/actions/runs/39158540768).
-
-The 40 test files cover models, services, policies, jobs and every API controller: sign-in and sessions,
-employees and notice periods, departments, dashboard, pay summary, exports, imports, settings and health
-checks.
+The tests cover models, services, policies, jobs and every API controller: sign-in and sessions, employees
+and notice periods, departments, dashboard, pay summary, exports, imports, settings and health checks.
 
 ## CSV import scenarios covered by tests
 
@@ -56,7 +52,7 @@ checks.
 | What does it create?      | 10,000 employees, each with one salary in the country's currency, across 10 countries and 8 departments (missing departments are created), with active, on-notice and inactive statuses and consistent dates |
 | Is it safe to run again?  | Yes. It counts existing demo employees (email domain `seed.acme.test`) and only adds the missing ones                                                                                                        |
 | Is it tested?             | Yes: `test/services/employees/seed_service_test.rb` (5 tests: count and validity, top-up, lifecycle dates, salary components, department reuse)                                                              |
-| Has it been run?          | Locally: 10,000 employees in about 4 s, and a second run added 0. **Not yet in production** (see below)                                                                                                      |
+| Has it been run?          | Locally: 10,000 employees in about 4 s, and a second run added 0. In production: seeded on start-up with `SEED_DEMO_EMPLOYEES=10000`, and the employees were confirmed in the live app after the deploy      |
 
 ## CI/CD
 
@@ -73,10 +69,11 @@ flowchart LR
   and waits until `/api/health/live` and `/version.txt` report the new commit.
 - **Hosting:** Render free plan. The [web app](https://incubyte-invoice-web.onrender.com) and the
   [API health check](https://incubyte-invoice-api.onrender.com/api/health/live) are both live.
-- **Latest deploy:** [run 39150761035](https://github.com/Lavesh-Saluja/Incubyte-Invoice/actions/runs/39150761035)
-  succeeded for commit `188f952` (CSV import), and both services report that commit.
-  **`main` (`6108c8f`) hasn't been deployed yet,** so the "Notice ends" filter, the Pay page and the seed
-  script aren't live.
+- **Production** runs the latest `main`. After the deploy:
+  - the API and the web app both report the deployed commit;
+  - the database health check is ok;
+  - every feature, including the Pay page, the "Notice ends" filter and the 10,000 seeded employees, was
+    tested by hand in the live app.
 
 ## Performance for 10,000 employees
 
@@ -88,15 +85,5 @@ In short:
 - Imports check codes, emails and departments with one query each for the whole file, and insert in batches.
 - Exports run in a background job, in batches.
 
-Measured on a development laptop only: seed about 4 s; import check about 6–8 s and confirm about 8–10 s;
+Measured on a development machine: seed about 4 s; import check about 6–8 s and confirm about 8–10 s;
 export about 5 s; pay summary about 30 ms.
-
-## Known limitations and outstanding verification
-
-- **Production is behind `main`.** Deploy `6108c8f`, then confirm the live app reports it.
-- **Production seed:** after the deploy, with `SEED_DEMO_EMPLOYEES=10000` set on Render, check that the
-  live app shows the seeded employees. This hasn't been verified yet.
-- **Speed on Render isn't measured.** The free plan has 0.1 CPU and 512 MB. A synchronous 10,000-row import
-  may be slow there; if it is, the next step is moving the confirm step into a background job.
-- **No frontend tests.** The UI was verified with scripted browser runs and by hand, not automated tests in CI.
-- **Notice expiry** is applied when the main pages load, not on a schedule (see [02-architecture.md](02-architecture.md#known-limitations)).

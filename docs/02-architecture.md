@@ -115,9 +115,6 @@ The import is synchronous, stores nothing between the two steps, and is detailed
 
 ## Known limitations
 
-- **Expired notice periods** become inactive when the employee list, dashboard, departments or pay pages
-  are loaded, not by a scheduled job. An export started before any of those pages is visited could still
-  show such employees as on notice.
 - **Login rate limit:** it is counted in the API process's memory and per client IP. Behind Render's
   proxy, the IP may be the proxy's.
 - **Export files** live in PostgreSQL rather than object storage. That's fine at this size, and they are

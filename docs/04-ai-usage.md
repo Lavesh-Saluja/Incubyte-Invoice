@@ -2,8 +2,7 @@
 
 The solution was built with **Claude Code**, Anthropic's coding agent, running in this repository. It read
 the code, ran commands and tests, edited files and checked the UI in a headless browser. I set the scope,
-made the product decisions, reviewed the changes, and merged every pull request (24 merged PRs, 58 commits on
-`main`). The agent committed and pushed only when I said "commit and push", and I ran every deploy.
+made the product decisions, reviewed the changes, and merged every pull request. The agent committed and pushed only when I said "commit and push", and I ran every deploy.
 
 **Where the prompts come from:** the main prompts are taken from the Claude Code session history and
 saved in [`docs/prompts/`](prompts/). Spelling, grammar and formatting were corrected for readability; the
@@ -79,7 +78,6 @@ Real issues from this project, and how they were found:
 | -------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Scope          | No sign-up, roles or multi-tenancy; no salary history or payroll; employees become inactive instead of being deleted      |
 | Infrastructure | Rejected the agent's proposal to configure trusted proxies for rate limiting ("not a devops project, keep it simple")     |
-| Tests          | Removed the frontend test setup; backend Minitest is the only suite                                                       |
 | Dashboard      | Dropped org-wide average and median salary; added a per-country Pay page after the brief check                            |
 | Export         | One export at a time (a new one cancels the old); files kept in the database for 24 hours                                 |
 | CSV import     | Keep the file's employee codes; accept country names or codes; strict notice dates; salary effective from the import date |
