@@ -71,7 +71,7 @@ DB_PASSWORD=choose-a-local-password
 Use this only if you don't want a native PostgreSQL. Rails and Vite still run natively.
 
 ```bash
-docker compose up -d db         # or: make db-up   (docker-compose v1 also works)
+docker compose up -d db         # docker-compose v1 also works
 docker compose ps               # wait for "healthy"
 ```
 
@@ -91,7 +91,7 @@ DB_PASSWORD=starter_local_only
 
 ```bash
 git clone <repository-url> && cd <repository-folder>
-bin/setup                       # or: make setup
+bin/setup
 ```
 
 `bin/setup` is safe to rerun and never drops data. It:
@@ -104,8 +104,8 @@ bin/setup                       # or: make setup
 ## 5. Run
 
 ```bash
-bin/rails server                # terminal 1: API on http://localhost:3000 (or: make backend)
-npm run dev                     # terminal 2: app on http://localhost:5173 (or: make frontend)
+bin/rails server                # terminal 1: API on http://localhost:3000
+npm run dev                     # terminal 2: app on http://localhost:5173
 ```
 
 Open <http://localhost:5173> and sign in with `hr@acme.test` / `password1234`. This account exists only in
@@ -126,7 +126,6 @@ needed.
 | Seed again (only tops up what's missing) | `bin/rails db:seed`                                          |
 | Change the number of demo employees      | `COUNT=500 bin/rails employees:seed_demo`                    |
 | ⚠️ Reset the development database        | `bin/rails db:reset` (drops, recreates, loads schema, seeds) |
-| Run every check CI runs                  | `make check`                                                 |
 
 ## 7. Optional settings
 
@@ -156,4 +155,4 @@ All optional; set them in `.env`. See `.env.example` for the full list.
 | Port 3000 or 5173 already in use                                       | `bin/rails server -p 3001` with `DEV_API_PROXY_TARGET=http://localhost:3001`; Vite picks the next free port |
 | The app says it can't reach the server                                 | Rails isn't running on the proxy target                                                                     |
 | `This project is configured to use npm` when running `yarn`            | Use npm. If Yarn already ran, delete `yarn.lock`, `.yarn/`, `.pnp.*` and `node_modules`, then run `npm ci`  |
-| Git hooks don't run                                                    | `make hooks`, and check that `git config core.hooksPath` is unset                                           |
+| Git hooks don't run                                                    | `npx lefthook install`, and check that `git config core.hooksPath` is unset                                 |

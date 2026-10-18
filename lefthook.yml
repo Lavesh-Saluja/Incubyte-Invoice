@@ -1,6 +1,6 @@
 # Lightweight local Git hooks. GitHub Actions CI is the authoritative quality gate.
 #
-# Installed automatically by `npm install` / `npm ci` (or run `make hooks`).
+# Installed automatically by `npm install` / `npm ci` (or run `npx lefthook install`).
 # Skip once, deliberately:  git commit --no-verify   |   LEFTHOOK=0 git push
 # Personal overrides go in lefthook-local.yml (git-ignored).
 

@@ -10,7 +10,6 @@
 | ESLint           | `npm run lint`         | Fails on any warning; also enforces i18n (no text literals in JSX) |
 | Prettier         | `npm run format:check` |                                                                    |
 | Production build | `npm run build`        |                                                                    |
-| Everything above | `make check`           |                                                                    |
 
 Every UI feature was also checked end to end with scripted browser runs (Playwright, desktop and mobile
 widths) against the running app, then by hand.
