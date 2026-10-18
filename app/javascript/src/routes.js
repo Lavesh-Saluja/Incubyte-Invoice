@@ -7,6 +7,9 @@ export const routes = {
   departments: {
     index: '/departments',
   },
+  exports: {
+    index: '/exports',
+  },
   employees: {
     index: '/employees',
     new: '/employees/new',
@@ -29,6 +32,11 @@ export const apiRoutes = {
   settings: '/api/settings',
   dashboard: '/api/dashboard',
   departments: '/api/departments',
+  exports: {
+    index: '/api/exports',
+    show: '/api/exports/:id',
+    download: '/api/exports/:id/download',
+  },
   selectOptions: {
     countries: '/api/select_options/countries',
     departments: '/api/select_options/departments',

@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     resource :settings, only: :show
     resource :dashboard, only: :show
     resources :departments, only: %i[index create]
+    resources :exports, only: %i[index show create] do
+      get :download, on: :member
+    end
     namespace :select_options do
       resources :countries, only: :index
       resources :departments, only: :index

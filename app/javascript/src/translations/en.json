@@ -79,6 +79,48 @@
       "nameTooLong": "Use at most {{count}} characters."
     }
   },
+  "exports": {
+    "title": "Exports",
+    "description": "Your exports from the last 24 hours. Files are deleted after that.",
+    "loading": "Loading exports",
+    "emptyTitle": "No recent exports",
+    "emptyDescription": "Export employees from the Employees page, using any filters you need.",
+    "goToEmployees": "Go to Employees",
+    "allEmployees": "All employees",
+    "searchLabel": "“{{q}}”",
+    "table": {
+      "export": "Export",
+      "requested": "Requested",
+      "rows": "Rows",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "statuses": {
+      "queued": "Queued",
+      "processing": "In progress",
+      "processingProgress": "In progress · {{progress}}%",
+      "completed": "Ready",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "export": "Export",
+      "download": "Download",
+      "retry": "Try again",
+      "dismiss": "Dismiss",
+      "downloadAgain": "Download again"
+    },
+    "toast": {
+      "preparing": "Preparing export",
+      "preparingDetail": "Your export will start in a moment.",
+      "exporting": "Exporting employees",
+      "progress": "{{done}} of {{total}} employees",
+      "ready": "Export ready",
+      "readyDetail": "{{count}} employees · CSV",
+      "failed": "Export failed",
+      "downloaded": "Export downloaded"
+    }
+  },
   "auth": {
     "checking": "Checking your session"
   },
@@ -106,7 +148,8 @@
   "common": {
     "retry": "Try again",
     "requiredMark": "*",
-    "separator": "·"
+    "separator": "·",
+    "none": "—"
   },
   "errors": {
     "network": "Could not reach the server. Check that the API is running and try again.",
@@ -271,7 +314,8 @@
     "description": "Navigate between sections of ACME Salary",
     "open": "Open navigation",
     "breadcrumb": "Breadcrumb",
-    "departments": "Departments"
+    "departments": "Departments",
+    "exports": "Exports"
   },
   "ui": {
     "close": "Close"

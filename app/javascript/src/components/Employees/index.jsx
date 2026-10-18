@@ -1,4 +1,4 @@
-import { Plus, SearchX, Users } from 'lucide-react'
+import { Download, Plus, SearchX, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
@@ -9,9 +9,14 @@ import PageHeader from 'components/commons/PageHeader'
 import { Button } from 'components/ui/button'
 import { Card } from 'components/ui/card'
 import { useFetchEmployees } from 'hooks/reactQuery/useEmployees'
+import { useCreateExport } from 'hooks/reactQuery/useExports'
 import { useCountries, useDepartments } from 'hooks/reactQuery/useSelectOptions'
 import { useDebouncedValue } from 'hooks/useDebouncedValue'
 import { routes } from 'routes'
+import { toast } from 'sonner'
+import LoadingButton from 'components/commons/LoadingButton'
+import { getErrorMessage } from 'utils/errors'
+import { markStartedHere } from 'utils/exports'
 import ActiveFilters from './ActiveFilters'
 import {
   EMPLOYEE_STATUSES,
@@ -75,6 +80,34 @@ const Employees = () => {
       Object.fromEntries([...FILTER_KEYS, 'page'].map((key) => [key, ''])),
     )
 
+  const { mutate: createExport, isPending: isStartingExport } =
+    useCreateExport()
+
+  const startExport = () =>
+    createExport(
+      Object.fromEntries(
+        Object.entries({ ...filters, q: filters.q.trim() }).filter(
+          ([, value]) => Boolean(value),
+        ),
+      ),
+      {
+        onSuccess: (created) => markStartedHere(created.id),
+        onError: (error) => toast.error(getErrorMessage(error)),
+      },
+    )
+
+  const exportButton = (
+    <LoadingButton
+      variant="outline"
+      onClick={startExport}
+      loading={isStartingExport}
+      disabled={!data || data.meta.total_count === 0}
+    >
+      <Download />
+      {t('exports.actions.export')}
+    </LoadingButton>
+  )
+
   const addButton = (
     <Button asChild>
       <Link to={routes.employees.new}>
@@ -124,7 +157,12 @@ const Employees = () => {
       <PageHeader
         title={t('employees.list.title')}
         description={t('employees.list.description')}
-        actions={addButton}
+        actions={
+          <>
+            {exportButton}
+            {addButton}
+          </>
+        }
       />
       <div className="mb-4 flex flex-col gap-3">
         <Filters
