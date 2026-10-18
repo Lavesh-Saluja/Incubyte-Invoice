@@ -34,7 +34,17 @@ class Employee < ApplicationRecord
   scope :leaving_within, ->(days) { notice_period.where(notice_period_ends_at: Time.current..days.days.from_now) }
 
   def self.next_employee_number
-    connection.select_value("SELECT nextval(pg_get_serial_sequence('employees', 'employee_number'))")
+    next_employee_numbers(1).first
+  end
+
+  def self.next_employee_numbers(count)
+    connection.select_values(sanitize_sql_array([
+      "SELECT nextval(pg_get_serial_sequence('employees', 'employee_number')) FROM generate_series(1, ?)", Integer(count)
+    ]))
+  end
+
+  def self.code_for(number, year: Time.current.year)
+    format("%s-%d-%06d", CODE_PREFIX, year, number)
   end
 
   def country_name
@@ -53,6 +63,6 @@ class Employee < ApplicationRecord
     def assign_employee_code
       @sequence_number ||= self.class.next_employee_number
       self.employee_number = @sequence_number
-      self.employee_code = format("%s-%d-%06d", CODE_PREFIX, Time.current.year, @sequence_number)
+      self.employee_code = self.class.code_for(@sequence_number)
     end
 end

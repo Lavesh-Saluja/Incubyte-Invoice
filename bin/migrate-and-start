@@ -1,7 +1,8 @@
 #!/bin/bash -e
 
 # Production start command for hosts without a release / pre-deploy step (Render's free
-# plan). Applies pending migrations, provisions the HR account, then starts the server.
+# plan). Applies pending migrations, provisions the HR account, tops up demo employees when
+# SEED_DEMO_EMPLOYEES is set (e.g. 10000), then starts the server.
 #
 # Use it ONLY with a single instance: with several replicas each one would try to migrate.
 # On a paid plan, use a pre-deploy command (bin/rails db:migrate) and the image's default
@@ -9,4 +10,7 @@
 
 ./bin/rails db:migrate
 ./bin/rails users:provision_hr
+if [ -n "$SEED_DEMO_EMPLOYEES" ]; then
+  COUNT="$SEED_DEMO_EMPLOYEES" ./bin/rails employees:seed_demo
+fi
 exec ./bin/rails server
