@@ -10,5 +10,5 @@ class Salary < ApplicationRecord
             :annual_other_components,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :employee_id, uniqueness: true
+  validates :employee_id, uniqueness: true, on: %i[create update]
 end

@@ -1,4 +1,4 @@
-import { Download, Plus, SearchX, Users } from 'lucide-react'
+import { Download, Plus, SearchX, Upload, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
@@ -108,6 +108,15 @@ const Employees = () => {
     </LoadingButton>
   )
 
+  const importButton = (
+    <Button variant="outline" asChild>
+      <Link to={routes.employees.import}>
+        <Upload />
+        {t('employeeImport.actions.open')}
+      </Link>
+    </Button>
+  )
+
   const addButton = (
     <Button asChild>
       <Link to={routes.employees.new}>
@@ -159,6 +168,7 @@ const Employees = () => {
         description={t('employees.list.description')}
         actions={
           <>
+            {importButton}
             {exportButton}
             {addButton}
           </>

@@ -4,6 +4,7 @@ import { cn } from 'cn'
 const TONES = {
   warning: 'border-warning/25 bg-warning-surface text-warning',
   info: 'border-primary/20 bg-accent text-accent-foreground',
+  error: 'border-destructive/25 bg-destructive-surface text-destructive',
 }
 
 const Callout = ({ tone = 'info', children }) => (

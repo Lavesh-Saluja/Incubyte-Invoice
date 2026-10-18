@@ -13,6 +13,7 @@ export const routes = {
   employees: {
     index: '/employees',
     new: '/employees/new',
+    import: '/employees/import',
     show: '/employees/:id',
     edit: '/employees/:id/edit',
   },
@@ -28,6 +29,11 @@ export const apiRoutes = {
     index: '/api/employees',
     show: '/api/employees/:id',
     noticePeriod: '/api/employees/:id/notice_period',
+  },
+  employeeImports: {
+    create: '/api/employee_imports',
+    preview: '/api/employee_imports/preview',
+    template: '/api/employee_imports/template',
   },
   settings: '/api/settings',
   dashboard: '/api/dashboard',

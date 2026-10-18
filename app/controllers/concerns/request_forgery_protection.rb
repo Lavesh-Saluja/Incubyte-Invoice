@@ -5,6 +5,7 @@ module RequestForgeryProtection
   ALLOWED_FETCH_SITES = [ nil, "same-origin", "none" ].freeze
 
   included do
+    class_attribute :accepted_body_types, default: [ Mime[:json].to_s ]
     before_action :verify_request_origin
   end
 
@@ -14,7 +15,7 @@ module RequestForgeryProtection
 
       if ALLOWED_FETCH_SITES.exclude?(request.headers["Sec-Fetch-Site"])
         render_error(I18n.t("errors.cross_site_request"), :forbidden)
-      elsif request.content_length.to_i.positive? && request.media_type != Mime[:json].to_s
+      elsif request.content_length.to_i.positive? && accepted_body_types.exclude?(request.media_type)
         render_error(I18n.t("errors.unsupported_media_type"), :unsupported_media_type)
       end
     end
