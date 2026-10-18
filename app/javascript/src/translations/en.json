@@ -38,14 +38,15 @@
     },
     "departures": {
       "title": "Upcoming departures",
-      "description_one": "Notice periods ending in the next {{count}} day.",
-      "description_other": "Notice periods ending in the next {{count}} days.",
-      "empty_one": "No one is leaving in the next {{count}} day.",
-      "empty_other": "No one is leaving in the next {{count}} days.",
-      "viewAll": "View all employees on notice",
-      "inDays_zero": "Last day today",
-      "inDays_one": "In {{count}} day",
-      "inDays_other": "In {{count}} days"
+      "viewAll": "View all",
+      "description_one": "Next {{count}} day",
+      "description_other": "Next {{count}} days",
+      "emptyTitle": "No upcoming departures",
+      "empty_one": "No notice periods end in the next {{count}} day.",
+      "empty_other": "No notice periods end in the next {{count}} days.",
+      "daysLeft_zero": "Last day today",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left"
     },
     "percent": "{{value}}%"
   },
@@ -53,8 +54,8 @@
     "checking": "Checking your session"
   },
   "login": {
-    "title": "Sign in",
-    "description": "Use your HR account to manage employee salaries.",
+    "title": "Welcome back",
+    "description": "Sign in to your HR account to manage employees and salaries.",
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",
@@ -62,13 +63,21 @@
       "emailRequired": "Enter your email address.",
       "emailInvalid": "Enter a valid email address, like name@acme.com.",
       "passwordRequired": "Enter your password."
-    }
+    },
+    "tagline": "Manage your global workforce with confidence.",
+    "taglineDetail": "Employee records, salaries and notice periods for every ACME team, in one place.",
+    "footer": "For ACME HR staff only.",
+    "emailPlaceholder": "name@acme.com",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "header": {
     "logout": "Log out"
   },
   "common": {
-    "retry": "Try again"
+    "retry": "Try again",
+    "requiredMark": "*",
+    "separator": "·"
   },
   "errors": {
     "network": "Could not reach the server. Check that the API is running and try again.",
@@ -99,7 +108,7 @@
     },
     "new": {
       "title": "Add employee",
-      "description": "Add the employee’s details and salary. The employee code is generated automatically."
+      "description": "Add the employee’s details and current salary. The employee code is generated automatically."
     },
     "actions": {
       "create": "Create employee",
@@ -138,13 +147,15 @@
       "actions": "Actions"
     },
     "pagination": {
-      "range": "Showing {{from}}–{{to}} of {{total}}",
+      "range": "Showing {{from}}–{{to}} of {{total}} employees",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "label": "Pagination",
+      "page": "Page {{page}}"
     },
     "show": {
       "back": "Employees",
-      "employment": "Employment",
+      "employment": "Employment details",
       "noticePeriod": "Notice period",
       "noticeStarted": "Started",
       "noticeEnds": "Ends",
@@ -156,10 +167,10 @@
     "notice": {
       "start": "Put on notice",
       "remove": "Remove from notice period",
-      "startTitle": "Put employee on notice?",
-      "startDescription": "{{name}} will be marked as on notice from today and become inactive when the notice period ends.",
-      "days": "Notice period (days)",
-      "endsOn": "Notice ends on {{date}}.",
+      "startTitle": "Put employee on notice",
+      "startDescription": "{{name}} will be marked as on notice from today.",
+      "days": "Notice period",
+      "endsOn": "Notice ends on <strong>{{date}}</strong>.",
       "endsNow": "The employee becomes inactive immediately.",
       "daysInvalid": "Enter a whole number of days from 0 to {{max}}.",
       "started": "{{name}} is now on notice.",
@@ -169,24 +180,28 @@
         "inactive": "{{name}} will be reactivated and the notice dates will be cleared."
       },
       "removed": "{{name}} is active again.",
-      "until": "Until {{date}}"
+      "until": "Until {{date}}",
+      "daysUnit": "days",
+      "consequence": "The employee stays in the system during the notice period and is automatically marked inactive on the end date."
     },
     "edit": {
       "inactive": "Inactive employees can’t be edited. Remove them from the notice period to reactivate them first.",
-      "viewEmployee": "View employee"
+      "viewEmployee": "View employee",
+      "title": "Edit employee"
     },
     "form": {
       "detailsTitle": "Employee details",
-      "detailsDescription": "Who the employee is and where they work. The country sets the salary currency.",
-      "salaryTitle": "Salary",
+      "detailsDescription": "Who the employee is and where they work.",
+      "salaryTitle": "Salary information",
       "salaryDescription": "Annual amounts in {{currency}}, the currency of the employee’s country.",
       "salaryNoCountry": "Annual amounts. Choose a country to set the currency.",
       "countryPlaceholder": "Select a country",
       "countrySearch": "Search countries",
-      "countryEmpty": "No country found."
+      "countryEmpty": "No country found.",
+      "countryHint": "Sets the salary currency."
     },
     "salary": {
-      "title": "Salary",
+      "title": "Current salary",
       "description": "Annual amounts in {{currency}}, effective from {{date}}.",
       "none": "No salary recorded yet.",
       "add": "Add salary",
@@ -217,7 +232,11 @@
   },
   "nav": {
     "home": "Home",
-    "employees": "Employees"
+    "employees": "Employees",
+    "label": "Main navigation",
+    "description": "Navigate between sections of ACME Salary",
+    "open": "Open navigation",
+    "breadcrumb": "Breadcrumb"
   },
   "ui": {
     "close": "Close"

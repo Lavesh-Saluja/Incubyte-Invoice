@@ -27,11 +27,22 @@ export const SALARY_ERROR_PREFIX = 'salary.'
 
 export const AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/
 
-export const STATUS_BADGE_CLASSES = {
-  active: 'border-success/20 bg-success-surface text-success',
-  notice_period: 'border-warning/30 bg-warning-surface text-warning',
-  inactive: 'border-destructive/20 bg-destructive-surface text-destructive',
+export const STATUS_STYLES = {
+  active: {
+    pill: 'bg-success-surface text-success ring-success/20',
+    dot: 'bg-success',
+  },
+  notice_period: {
+    pill: 'bg-warning-surface text-warning ring-warning/25',
+    dot: 'bg-warning',
+  },
+  inactive: {
+    pill: 'bg-destructive-surface text-destructive ring-destructive/20',
+    dot: 'bg-destructive',
+  },
 }
+
+export const PAGE_WINDOW = 1
 
 export const EMPLOYEES_PER_PAGE = 25
 

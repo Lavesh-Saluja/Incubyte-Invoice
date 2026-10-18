@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { Route, Routes } from 'react-router'
 import AppLayout from 'components/commons/AppLayout'
 import RequireAuth from 'components/commons/RequireAuth'
-import VersionFooter from 'components/commons/VersionFooter'
 import Dashboard from 'components/Dashboard'
 import Employees from 'components/Employees'
 import EditEmployee from 'components/Employees/Edit'
@@ -32,7 +31,6 @@ const App = () => {
         </Route>
         <Route path={routes.notFound} element={<NotFound />} />
       </Routes>
-      <VersionFooter />
       <Toaster position="top-right" />
     </>
   )

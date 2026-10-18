@@ -37,13 +37,14 @@ const Dashboard = () => {
                 percent: percentOfHeadcount(counts[key]),
               })}
               value={counts[key]}
+              highlight={key === 'notice_period' && counts.leaving_soon > 0}
               icon={icon}
               iconClassName={iconClassName}
             />
           ))}
         </div>
         <div className="grid items-start gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <DepartmentTable
               departments={departments}
               headcount={counts.current_headcount}
@@ -59,10 +60,10 @@ const Dashboard = () => {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <div>
       <h1 className="sr-only">{t('dashboard.title')}</h1>
       {renderContent()}
-    </main>
+    </div>
   )
 }
 

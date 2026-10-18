@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import PageHeader from 'components/commons/PageHeader'
-import { Card, CardContent } from 'components/ui/card'
 import { useCreateEmployee } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
 import { buildUrl } from 'utils/url'
@@ -22,21 +21,21 @@ const New = () => {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-4xl">
       <PageHeader
         title={t('employees.new.title')}
         description={t('employees.new.description')}
+        breadcrumbs={[
+          { label: t('nav.employees'), to: routes.employees.index },
+          { label: t('employees.new.title') },
+        ]}
       />
-      <Card>
-        <CardContent>
-          <Form
-            cancelTo={routes.employees.index}
-            onSubmit={handleSubmit}
-            submitLabel={t('employees.actions.create')}
-          />
-        </CardContent>
-      </Card>
-    </main>
+      <Form
+        cancelTo={routes.employees.index}
+        onSubmit={handleSubmit}
+        submitLabel={t('employees.actions.create')}
+      />
+    </div>
   )
 }
 

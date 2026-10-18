@@ -1,30 +1,46 @@
-import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router'
-import { Card } from 'components/ui/card'
+import { cn } from 'cn'
 import { formatNumber } from 'utils/formatNumber'
 
-const StatCard = ({ to, label, value, hint, icon: Icon, iconClassName }) => (
+const StatCard = ({
+  to,
+  label,
+  value,
+  hint,
+  highlight = false,
+  icon: Icon,
+  iconClassName,
+}) => (
   <Link
     to={to}
-    className="group rounded-xl focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+    className="group flex items-start gap-4 rounded-lg border bg-card p-5 shadow-xs transition-colors hover:border-primary/40 hover:bg-accent/40 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
   >
-    <Card className="h-full gap-4 px-5 py-5 transition-all group-hover:border-primary/40 group-hover:shadow-md">
-      <div className="flex items-center justify-between gap-3">
+    <span
+      className={cn(
+        'flex size-10 shrink-0 items-center justify-center rounded-lg',
+        iconClassName,
+      )}
+    >
+      <Icon className="size-5" />
+    </span>
+    <span className="min-w-0">
+      <span className="block text-[13px] font-medium text-muted-foreground">
+        {label}
+      </span>
+      <span className="mt-1 block text-[28px] leading-8 font-semibold tracking-tight tabular-nums">
+        {formatNumber(value)}
+      </span>
+      {hint && (
         <span
-          className={`flex size-10 items-center justify-center rounded-lg ${iconClassName}`}
+          className={cn(
+            'mt-1 block text-xs',
+            highlight ? 'font-medium text-warning' : 'text-muted-foreground',
+          )}
         >
-          <Icon className="size-5" />
+          {hint}
         </span>
-        <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-      </div>
-      <div>
-        <div className="text-sm font-medium text-muted-foreground">{label}</div>
-        <div className="mt-1 text-3xl font-semibold tracking-tight tabular-nums">
-          {formatNumber(value)}
-        </div>
-      </div>
-      {hint && <p className="text-sm text-muted-foreground">{hint}</p>}
-    </Card>
+      )}
+    </span>
   </Link>
 )
 
