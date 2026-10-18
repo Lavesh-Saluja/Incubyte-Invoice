@@ -6,10 +6,10 @@ current salary, find people quickly, and answer questions about how the organisa
 
 ## Live demo
 
-| What       | Link                                                                       |
-| -----      | -------------------------------------------------------------------------- |
-| App        | <https://incubyte-invoice-web.onrender.com>                                |
-| Demo Video | <https://salujalavesh.neetorecord.com/watch/e0eac2a9177f225a0a8f>          |
+| What       | Link                                                              |
+| ---------- | ----------------------------------------------------------------- |
+| App        | <https://incubyte-invoice-web.onrender.com>                       |
+| Demo Video | <https://salujalavesh.neetorecord.com/watch/e0eac2a9177f225a0a8f> |
 
 - **Sign-in credentials** for the deployed app are shared by email and are not stored in this repository.
 - The live database is seeded with the 10,000 demo employees.
@@ -85,7 +85,6 @@ bin/brakeman             # security scan
 npm run lint             # ESLint
 npm run format:check     # Prettier
 npm run build            # production build
-make check               # everything CI runs
 ```
 
 Tests cover models, services, policies, background jobs and every API endpoint. Lefthook runs the linters on
