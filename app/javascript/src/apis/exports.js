@@ -1,7 +1,7 @@
-import { API_BASE_URL, HTTP_METHODS } from 'constants/api'
+import { HTTP_METHODS } from 'constants/api'
 import { apiRoutes } from 'routes'
 import { buildUrl } from 'utils/url'
-import { apiRequest } from './client'
+import { apiFileRequest, apiRequest } from './client'
 
 const list = async ({ signal } = {}) => {
   const { exports } = await apiRequest(apiRoutes.exports.index, { signal })
@@ -16,9 +16,9 @@ const create = async (filters) => {
   return created
 }
 
-const downloadUrl = (id) =>
-  `${API_BASE_URL}${buildUrl(apiRoutes.exports.download, { id })}`
+const download = (id) =>
+  apiFileRequest(buildUrl(apiRoutes.exports.download, { id }))
 
-const exportsApi = { list, create, downloadUrl }
+const exportsApi = { list, create, download }
 
 export default exportsApi

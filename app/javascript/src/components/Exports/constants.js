@@ -9,3 +9,5 @@ export const EXPORT_STATUS_STYLES = {
 export const toastId = (id) => `export-${id}`
 
 export const DOWNLOADED_TOAST_DURATION_MS = 6000
+
+export const DOWNLOAD_PHASES = { pending: 'pending', done: 'done' }

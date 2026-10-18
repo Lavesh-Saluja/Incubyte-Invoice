@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Download, FileDown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
 import EmptyState from 'components/commons/EmptyState'
+import LoadingButton from 'components/commons/LoadingButton'
 import LoadError from 'components/commons/LoadError'
 import PageHeader from 'components/commons/PageHeader'
 import Spinner from 'components/commons/Spinner'
@@ -23,6 +25,18 @@ const Exports = () => {
   const { t } = useTranslation()
   const { data: items, isPending, isError, error, refetch } = useFetchExports()
   const { mutate: createExport, isPending: isRetrying } = useCreateExport()
+  const [downloadingId, setDownloadingId] = useState(null)
+
+  const download = async (item) => {
+    setDownloadingId(item.id)
+    try {
+      await downloadExport(item)
+    } catch (apiError) {
+      toast.error(getErrorMessage(apiError))
+    } finally {
+      setDownloadingId(null)
+    }
+  }
 
   const retry = (item) =>
     createExport(item.filter_values, {
@@ -33,14 +47,15 @@ const Exports = () => {
   const renderAction = (item) => {
     if (item.downloadable)
       return (
-        <Button
+        <LoadingButton
           variant="outline"
           size="sm"
-          onClick={() => downloadExport(item.id)}
+          loading={downloadingId === item.id}
+          onClick={() => download(item)}
         >
           <Download />
           {t('exports.actions.download')}
-        </Button>
+        </LoadingButton>
       )
     if (item.status === 'failed')
       return (

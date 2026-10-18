@@ -32,16 +32,9 @@ const readJson = async (response) => {
   }
 }
 
-export const apiRequest = async (
-  path,
-  { method = HTTP_METHODS.GET, body, signal } = {},
-) => {
-  const headers = { Accept: JSON_CONTENT_TYPE }
-  if (body !== undefined) headers['Content-Type'] = JSON_CONTENT_TYPE
-
-  let response
+const send = async (path, { method, headers, body, signal }) => {
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, {
+    return await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -51,22 +44,42 @@ export const apiRequest = async (
     if (signal?.aborted) throw error
     throw new ApiError(t('errors.network'), HTTP_STATUS.NETWORK_ERROR)
   }
+}
+
+const failure = (response, payload) => {
+  const message =
+    typeof payload?.error === 'string'
+      ? payload.error
+      : t('errors.requestFailed', { status: response.status })
+  return new ApiError(message, response.status, payload?.details ?? {})
+}
+
+export const apiRequest = async (
+  path,
+  { method = HTTP_METHODS.GET, body, signal } = {},
+) => {
+  const headers = { Accept: JSON_CONTENT_TYPE }
+  if (body !== undefined) headers['Content-Type'] = JSON_CONTENT_TYPE
+
+  const response = await send(path, { method, headers, body, signal })
 
   if (response.status === HTTP_STATUS.NO_CONTENT) return undefined
 
   const payload = await readJson(response)
 
-  if (!response.ok) {
-    const message =
-      typeof payload?.error === 'string'
-        ? payload.error
-        : t('errors.requestFailed', { status: response.status })
-    throw new ApiError(message, response.status, payload?.details ?? {})
-  }
+  if (!response.ok) throw failure(response, payload)
 
   if (payload === undefined) {
     throw new ApiError(t('errors.unexpectedResponse'), response.status)
   }
 
   return payload
+}
+
+export const apiFileRequest = async (path) => {
+  const response = await send(path, { method: HTTP_METHODS.GET })
+
+  if (!response.ok) throw failure(response, await readJson(response))
+
+  return response.blob()
 }

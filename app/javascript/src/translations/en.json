@@ -118,6 +118,7 @@
       "ready": "Export ready",
       "readyDetail": "{{count}} employees · CSV",
       "failed": "Export failed",
+      "downloading": "Downloading export",
       "downloaded": "Export downloaded"
     }
   },
