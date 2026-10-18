@@ -24,5 +24,8 @@ export const apiRoutes = {
     noticePeriod: '/api/employees/:id/notice_period',
   },
   settings: '/api/settings',
-  countries: '/api/countries',
+  selectOptions: {
+    countries: '/api/select_options/countries',
+    departments: '/api/select_options/departments',
+  },
 }

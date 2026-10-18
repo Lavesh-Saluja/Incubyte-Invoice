@@ -145,6 +145,17 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "page" => 2, "per_page" => 2, "total_count" => 3, "total_pages" => 2 }, json_response["meta"])
   end
 
+  test "searches and filters the list" do
+    match = create(:employee, first_name: "Asha", department: "Finance", country: "IN")
+    create(:employee, first_name: "Asha", department: "Sales", country: "IN")
+    create(:employee, first_name: "Ben", department: "Finance", country: "IN")
+
+    get "/api/employees", params: { q: "asha", department: "Finance", country: "IN", status: "active" }
+
+    assert_equal [ match.id ], json_response["employees"].pluck("id")
+    assert_equal 1, json_response.dig("meta", "total_count")
+  end
+
   test "returns an empty list when there are no employees" do
     get "/api/employees"
 

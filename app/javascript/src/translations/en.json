@@ -160,6 +160,24 @@
       "annual_pf": "Annual PF",
       "annual_other_components": "Other annual components",
       "effective_from": "Effective from"
+    },
+    "filters": {
+      "search": "Search employees",
+      "searchPlaceholder": "Search by name, email or employee code",
+      "clear": "Clear all",
+      "noMatchesTitle": "No employees match",
+      "noMatchesDescription": "Try a different search or clear the filters.",
+      "allStatuses": "All statuses",
+      "allDepartments": "All departments",
+      "allCountries": "All countries",
+      "chips": {
+        "q": "Search:",
+        "status": "Status:",
+        "department": "Department:",
+        "country": "Country:"
+      },
+      "remove": "Remove {{filter}} filter",
+      "filteredBy": "Filtered by"
     }
   },
   "nav": {

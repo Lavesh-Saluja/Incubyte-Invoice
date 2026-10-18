@@ -10,10 +10,11 @@ import { QUERY_KEYS } from 'constants/query'
 const listKey = [QUERY_KEYS.EMPLOYEES, 'list']
 const employeeKey = (id) => [QUERY_KEYS.EMPLOYEES, id]
 
-export const useFetchEmployees = ({ page, perPage }) =>
+export const useFetchEmployees = ({ page, perPage, filters }) =>
   useQuery({
-    queryKey: [...listKey, { page, perPage }],
-    queryFn: ({ signal }) => employeesApi.list({ page, perPage }, { signal }),
+    queryKey: [...listKey, { page, perPage, filters }],
+    queryFn: ({ signal }) =>
+      employeesApi.list({ page, perPage, filters }, { signal }),
     placeholderData: keepPreviousData,
   })
 
@@ -31,6 +32,7 @@ const useSaveEmployee = (mutationFn) => {
     onSuccess: (employee) => {
       queryClient.setQueryData(employeeKey(employee.id), employee)
       queryClient.invalidateQueries({ queryKey: listKey })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SELECT_OPTIONS] })
     },
   })
 }
