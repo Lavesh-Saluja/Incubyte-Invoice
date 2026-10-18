@@ -5,6 +5,7 @@ import PageHeader from 'components/commons/PageHeader'
 import { Card, CardContent } from 'components/ui/card'
 import { useCreateEmployee } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
+import { buildUrl } from 'utils/url'
 import Form from './Form'
 
 const New = () => {
@@ -17,7 +18,7 @@ const New = () => {
     toast.success(
       t('employees.notices.created', { code: employee.employee_code }),
     )
-    navigate(routes.employees.index)
+    navigate(buildUrl(routes.employees.show, { id: employee.id }))
   }
 
   return (
@@ -29,6 +30,7 @@ const New = () => {
       <Card>
         <CardContent>
           <Form
+            cancelTo={routes.employees.index}
             onSubmit={handleSubmit}
             submitLabel={t('employees.actions.create')}
             submittingLabel={t('employees.actions.creating')}

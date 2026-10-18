@@ -68,8 +68,7 @@
       "saving": "Saving…",
       "cancel": "Cancel",
       "add": "Add employee",
-      "edit": "Edit",
-      "editLabel": "Edit {{name}}"
+      "edit": "Edit"
     },
     "notices": {
       "created": "Employee {{code}} created.",
@@ -95,13 +94,22 @@
     "table": {
       "employee": "Employee",
       "code": "Code",
-      "status": "Status",
-      "actions": "Actions"
+      "status": "Status"
     },
     "pagination": {
       "range": "Showing {{from}}–{{to}} of {{total}}",
       "previous": "Previous",
       "next": "Next"
+    },
+    "show": {
+      "back": "Employees",
+      "employment": "Employment",
+      "noticePeriod": "Notice period",
+      "noticeStarted": "Started",
+      "noticeEnds": "Ends",
+      "record": "Record",
+      "joined": "Joined",
+      "updated": "Last updated"
     }
   },
   "nav": {

@@ -3,14 +3,14 @@ import { useNavigate, useParams } from 'react-router'
 import { toast } from 'sonner'
 import LoadError from 'components/commons/LoadError'
 import PageHeader from 'components/commons/PageHeader'
-import { Badge } from 'components/ui/badge'
 import { Card, CardContent } from 'components/ui/card'
 import {
   useShowEmployee,
   useUpdateEmployee,
 } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
-import { STATUS_BADGE_VARIANTS } from './constants'
+import { buildUrl } from 'utils/url'
+import StatusBadge from './StatusBadge'
 import Form from './Form'
 import { fullName } from './utils'
 
@@ -26,11 +26,12 @@ const Edit = () => {
     refetch,
   } = useShowEmployee(id)
   const { mutateAsync: updateEmployee } = useUpdateEmployee()
+  const showPath = buildUrl(routes.employees.show, { id })
 
   const handleSubmit = async (payload) => {
     await updateEmployee({ id, payload })
     toast.success(t('employees.notices.updated'))
-    navigate(routes.employees.index)
+    navigate(showPath)
   }
 
   const renderContent = () => {
@@ -49,9 +50,7 @@ const Edit = () => {
           description={
             <span className="flex items-center gap-2">
               <span className="font-mono">{employee.employee_code}</span>
-              <Badge variant={STATUS_BADGE_VARIANTS[employee.status]}>
-                {t(`employees.status.${employee.status}`)}
-              </Badge>
+              <StatusBadge status={employee.status} />
             </span>
           }
         />
@@ -59,6 +58,7 @@ const Edit = () => {
           <CardContent>
             <Form
               employee={employee}
+              cancelTo={showPath}
               onSubmit={handleSubmit}
               submitLabel={t('employees.actions.save')}
               submittingLabel={t('employees.actions.saving')}
