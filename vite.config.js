@@ -1,8 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { loadEnv } from 'vite'
-import { defineConfig } from 'vitest/config'
+import { defineConfig, loadEnv } from 'vite'
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url))
 const src = fileURLToPath(new URL('./app/javascript/src', import.meta.url))
@@ -53,11 +52,6 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: `${projectRoot}/dist`,
       emptyOutDir: true,
-    },
-    test: {
-      environment: 'jsdom',
-      setupFiles: [`${src}/test/setup.js`],
-      restoreMocks: true,
     },
   }
 })

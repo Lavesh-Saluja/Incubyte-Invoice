@@ -45,8 +45,4 @@ export default defineConfig([
       'react-refresh/only-export-components': 'off',
     },
   },
-  {
-    files: ['**/*.test.{js,jsx}', '**/test/**'],
-    rules: { 'react/jsx-no-literals': 'off' },
-  },
 ])

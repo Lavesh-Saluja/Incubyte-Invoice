@@ -6,7 +6,7 @@ import { useCurrentUser, useLogout } from 'hooks/reactQuery/useSession'
 import { routes } from 'routes'
 
 const NAV_ITEMS = [
-  { to: routes.root, labelKey: 'nav.dashboard', end: true },
+  { to: routes.root, labelKey: 'nav.home', end: true },
   { to: routes.employees.index, labelKey: 'nav.employees' },
 ]
 import { getErrorMessage } from 'utils/errors'

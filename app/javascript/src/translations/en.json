@@ -3,9 +3,51 @@
     "title": "ACME Salary Management",
     "name": "ACME Salary"
   },
-  "home": {
-    "title": "Sample items",
-    "subtitle": "A demonstration CRUD workflow. Replace it with your assignment's feature."
+  "dashboard": {
+    "title": "Home",
+    "loading": "Loading dashboard…",
+    "cards": {
+      "current_headcount": {
+        "label": "Current headcount",
+        "hint": "Active and on notice"
+      },
+      "active": {
+        "label": "Active",
+        "hint": "{{percent}}% of current headcount"
+      },
+      "notice_period": {
+        "label": "On notice",
+        "hint_one": "{{count}} leaving in the next {{days}} days",
+        "hint_other": "{{count}} leaving in the next {{days}} days",
+        "hint_zero": "No one leaving in the next {{days}} days"
+      },
+      "inactive": {
+        "label": "Inactive",
+        "hint": "Employment has ended"
+      }
+    },
+    "departments": {
+      "title": "Department overview",
+      "department": "Department",
+      "active": "Active",
+      "notice_period": "On notice",
+      "total": "Total",
+      "share": "Share of headcount",
+      "empty": "No current employees yet.",
+      "shareLabel": "{{percent}}% of current headcount"
+    },
+    "departures": {
+      "title": "Upcoming departures",
+      "description_one": "Notice periods ending in the next {{count}} day.",
+      "description_other": "Notice periods ending in the next {{count}} days.",
+      "empty_one": "No one is leaving in the next {{count}} day.",
+      "empty_other": "No one is leaving in the next {{count}} days.",
+      "viewAll": "View all employees on notice",
+      "inDays_zero": "Last day today",
+      "inDays_one": "In {{count}} day",
+      "inDays_other": "In {{count}} days"
+    },
+    "percent": "{{value}}%"
   },
   "auth": {
     "checking": "Checking your session…"
@@ -181,7 +223,7 @@
     }
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "home": "Home",
     "employees": "Employees"
   },
   "ui": {

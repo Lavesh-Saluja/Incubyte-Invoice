@@ -3,3 +3,6 @@ export const buildUrl = (route, params = {}) =>
   route.replace(/:(\w+)/g, (placeholder, key) =>
     key in params ? encodeURIComponent(params[key]) : placeholder,
   )
+
+export const withQuery = (path, params) =>
+  `${path}?${new URLSearchParams(params)}`

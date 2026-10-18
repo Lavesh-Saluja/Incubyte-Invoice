@@ -27,11 +27,18 @@ module Employees
 
     def process!
       matching = filtered_scope
-      records = matching.includes(:salary).order(employee_number: :desc).offset((page - 1) * per_page).limit(per_page)
+      records = matching.includes(:salary).order(*ordering).offset((page - 1) * per_page).limit(per_page)
       Page.new(records:, page:, per_page:, total_count: matching.count)
     end
 
     private
+      def ordering
+        newest_first = { employee_number: :desc }
+        return [ newest_first ] unless filters[:status] == "notice_period"
+
+        [ Employee.arel_table[:notice_period_ends_at].asc.nulls_last, newest_first ]
+      end
+
       def filtered_scope
         result = scope
         result = result.where(status: filters[:status]) if Employee.statuses.key?(filters[:status])

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       resource :notice_period, only: %i[create destroy], module: :employees
     end
     resource :settings, only: :show
+    resource :dashboard, only: :show
     namespace :select_options do
       resources :countries, only: :index
       resources :departments, only: :index
