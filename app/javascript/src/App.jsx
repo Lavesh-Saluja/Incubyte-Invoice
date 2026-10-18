@@ -6,6 +6,7 @@ import VersionFooter from 'components/commons/VersionFooter'
 import Employees from 'components/Employees'
 import EditEmployee from 'components/Employees/Edit'
 import NewEmployee from 'components/Employees/New'
+import ShowEmployee from 'components/Employees/Show'
 import Home from 'components/Home'
 import Login from 'components/Login'
 import NotFound from 'components/NotFound'
@@ -25,6 +26,7 @@ const App = () => {
             <Route path={routes.root} element={<Home />} />
             <Route path={routes.employees.index} element={<Employees />} />
             <Route path={routes.employees.new} element={<NewEmployee />} />
+            <Route path={routes.employees.show} element={<ShowEmployee />} />
             <Route path={routes.employees.edit} element={<EditEmployee />} />
           </Route>
         </Route>

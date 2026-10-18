@@ -6,7 +6,6 @@ import { ApiError } from 'apis/client'
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
 import { Label } from 'components/ui/label'
-import { routes } from 'routes'
 import { getErrorMessage } from 'utils/errors'
 import { FORM_FIELDS } from './constants'
 import {
@@ -17,7 +16,13 @@ import {
   validateEmployee,
 } from './utils'
 
-const Form = ({ employee = null, onSubmit, submitLabel, submittingLabel }) => {
+const Form = ({
+  employee = null,
+  cancelTo,
+  onSubmit,
+  submitLabel,
+  submittingLabel,
+}) => {
   const { t } = useTranslation()
   const [values, setValues] = useState(() => toFormValues(employee))
   const [errors, setErrors] = useState({})
@@ -77,9 +82,7 @@ const Form = ({ employee = null, onSubmit, submitLabel, submittingLabel }) => {
 
       <div className="flex justify-end gap-2 border-t pt-6">
         <Button variant="outline" asChild>
-          <Link to={routes.employees.index}>
-            {t('employees.actions.cancel')}
-          </Link>
+          <Link to={cancelTo}>{t('employees.actions.cancel')}</Link>
         </Button>
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? submittingLabel : submitLabel}

@@ -46,10 +46,10 @@ class EmployeeTest < ActiveSupport::TestCase
   end
 
   test "ignores a caller-supplied employee code and number" do
-    employee = create(:employee, employee_code: "CUSTOM-1", employee_number: 1)
+    employee = create(:employee, employee_code: "CUSTOM-1", employee_number: 0)
 
     assert_match(/\AINC-\d{4}-\d{6}\z/, employee.employee_code)
-    assert_not_equal 1, employee.employee_number
+    assert_operator employee.employee_number, :positive?
   end
 
   test "validating repeatedly before saving uses a single sequence number" do

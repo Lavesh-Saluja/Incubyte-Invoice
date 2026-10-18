@@ -6,3 +6,5 @@ export const APP_REVISION = import.meta.env.VITE_APP_REVISION ?? ''
 export const SHORT_REVISION_LENGTH = 7
 
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+export const DATE_FORMAT = { dateStyle: 'medium' }

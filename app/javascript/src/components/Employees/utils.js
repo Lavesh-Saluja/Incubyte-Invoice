@@ -36,3 +36,6 @@ export const validateEmployee = (values) => {
 
 export const fullName = (employee) =>
   `${employee.first_name} ${employee.last_name}`
+
+export const initials = (employee) =>
+  `${employee.first_name[0]}${employee.last_name[0]}`.toUpperCase()

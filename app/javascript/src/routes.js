@@ -7,6 +7,7 @@ export const routes = {
   employees: {
     index: '/employees',
     new: '/employees/new',
+    show: '/employees/:id',
     edit: '/employees/:id/edit',
   },
   notFound: '*',

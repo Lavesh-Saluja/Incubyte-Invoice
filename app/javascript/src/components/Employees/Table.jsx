@@ -1,8 +1,5 @@
-import { Pencil } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-import { Badge } from 'components/ui/badge'
-import { Button } from 'components/ui/button'
+import { Link, useNavigate } from 'react-router'
 import {
   Table as UITable,
   TableBody,
@@ -13,11 +10,14 @@ import {
 } from 'components/ui/table'
 import { routes } from 'routes'
 import { buildUrl } from 'utils/url'
-import { STATUS_BADGE_VARIANTS } from './constants'
+import StatusBadge from './StatusBadge'
 import { fullName } from './utils'
 
 const Table = ({ employees }) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const showPath = (employee) =>
+    buildUrl(routes.employees.show, { id: employee.id })
 
   return (
     <UITable>
@@ -29,16 +29,24 @@ const Table = ({ employees }) => {
           <TableHead>{t('employees.fields.department')}</TableHead>
           <TableHead>{t('employees.fields.country')}</TableHead>
           <TableHead>{t('employees.table.status')}</TableHead>
-          <TableHead className="w-0">
-            <span className="sr-only">{t('employees.table.actions')}</span>
-          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {employees.map((employee) => (
-          <TableRow key={employee.id}>
+          <TableRow
+            key={employee.id}
+            className="cursor-pointer"
+            onClick={(event) => {
+              if (!event.target.closest('a')) navigate(showPath(employee))
+            }}
+          >
             <TableCell>
-              <div className="font-medium">{fullName(employee)}</div>
+              <Link
+                to={showPath(employee)}
+                className="font-medium hover:underline"
+              >
+                {fullName(employee)}
+              </Link>
               <div className="text-xs text-muted-foreground">
                 {employee.email}
               </div>
@@ -50,22 +58,7 @@ const Table = ({ employees }) => {
             <TableCell>{employee.department}</TableCell>
             <TableCell>{employee.country}</TableCell>
             <TableCell>
-              <Badge variant={STATUS_BADGE_VARIANTS[employee.status]}>
-                {t(`employees.status.${employee.status}`)}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-right">
-              <Button variant="ghost" size="sm" asChild>
-                <Link
-                  to={buildUrl(routes.employees.edit, { id: employee.id })}
-                  aria-label={t('employees.actions.editLabel', {
-                    name: fullName(employee),
-                  })}
-                >
-                  <Pencil />
-                  {t('employees.actions.edit')}
-                </Link>
-              </Button>
+              <StatusBadge status={employee.status} />
             </TableCell>
           </TableRow>
         ))}
