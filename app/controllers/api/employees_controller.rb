@@ -1,6 +1,7 @@
 module Api
   class EmployeesController < ApplicationController
     PERMITTED_ATTRIBUTES = %i[first_name last_name email department job_title country].freeze
+    SALARY_ATTRIBUTES = %i[annual_ctc annual_base_pay annual_pf annual_other_components effective_from].freeze
 
     before_action :expire_notice_periods
     before_action :load_employee, only: %i[show update]
@@ -34,7 +35,9 @@ module Api
       end
 
       def employee_params
-        params.require(:employee).permit(*PERMITTED_ATTRIBUTES)
+        attributes = params.require(:employee).permit(*PERMITTED_ATTRIBUTES, salary: SALARY_ATTRIBUTES)
+        salary = attributes.delete(:salary)
+        salary ? attributes.merge(salary_attributes: salary) : attributes
       end
   end
 end

@@ -10,5 +10,6 @@ Rails.application.routes.draw do
       resource :notice_period, only: %i[create destroy], module: :employees
     end
     resource :settings, only: :show
+    resources :countries, only: :index
   end
 end

@@ -9,7 +9,7 @@ class EmployeeTest < ActiveSupport::TestCase
   def insert_employee!(**attributes)
     Employee.insert_all!([ {
       employee_code: "INC-2026-#{SecureRandom.hex(3)}", first_name: "Raw", last_name: "Insert",
-      email: "raw-#{SecureRandom.hex(3)}@acme.test", department: "Finance", job_title: "Analyst", country: "India"
+      email: "raw-#{SecureRandom.hex(3)}@acme.test", department: "Finance", job_title: "Analyst", country: "IN"
     }.merge(attributes) ])
   end
 
@@ -101,12 +101,48 @@ class EmployeeTest < ActiveSupport::TestCase
       "is too long (maximum is 100 characters)"
   end
 
-  test "trims names, department, job title and country" do
+  test "trims names, department and job title" do
     employee = create(:employee, first_name: " Asha ", last_name: " Rao ", department: " Finance ",
-      job_title: " Analyst ", country: " India ")
+      job_title: " Analyst ")
 
-    assert_equal %w[Asha Rao Finance Analyst India],
-      employee.slice(:first_name, :last_name, :department, :job_title, :country).values
+    assert_equal %w[Asha Rao Finance Analyst],
+      employee.slice(:first_name, :last_name, :department, :job_title).values
+  end
+
+  test "stores the country as an upper-case ISO 3166 code" do
+    employee = create(:employee, country: " in ")
+
+    assert_equal "IN", employee.country
+    assert_equal "India", employee.country_name
+    assert_equal "INR", employee.currency_code
+  end
+
+  test "rejects a country that is not an ISO 3166 code" do
+    assert_includes errors_for(build(:employee, country: "India"), :country), "is not a valid country"
+    assert_includes errors_for(build(:employee, country: "XX"), :country), "is not a valid country"
+  end
+
+  test "takes the salary currency from the country" do
+    employee = create(:employee, country: "IN", salary_attributes: attributes_for(:salary, currency: "USD"))
+
+    assert_equal "INR", employee.salary.currency
+  end
+
+  test "changes the salary currency when the country changes" do
+    employee = create(:employee, :with_salary, country: "IN")
+
+    employee.update!(country: "DE")
+
+    assert_equal "EUR", employee.salary.reload.currency
+  end
+
+  test "updates the existing salary instead of adding another" do
+    employee = create(:employee, :with_salary)
+
+    employee.update!(salary_attributes: { annual_ctc: "2500000.75" })
+
+    assert_equal 1, Salary.where(employee:).count
+    assert_equal BigDecimal("2500000.75"), employee.salary.reload.annual_ctc
   end
 
   test "normalizes the email to trimmed lowercase" do

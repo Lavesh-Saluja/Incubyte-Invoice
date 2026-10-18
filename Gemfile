@@ -18,6 +18,8 @@ gem "jbuilder"
 
 gem "bcrypt", "~> 3.1.7"
 
+gem "countries", "~> 8.1"
+
 # Authorization policies in app/policies
 gem "pundit"
 

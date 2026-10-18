@@ -1,13 +1,31 @@
 export const NAME_MAX_LENGTH = 100
 
-export const FORM_FIELDS = [
+export const DETAIL_FIELDS = [
   { name: 'first_name', autoComplete: 'given-name' },
   { name: 'last_name', autoComplete: 'family-name' },
   { name: 'email', type: 'email', autoComplete: 'email' },
   { name: 'job_title', autoComplete: 'organization-title' },
   { name: 'department', autoComplete: 'off' },
-  { name: 'country', autoComplete: 'country-name' },
 ]
+
+export const AMOUNT_FIELDS = [
+  'annual_ctc',
+  'annual_base_pay',
+  'annual_pf',
+  'annual_other_components',
+]
+
+export const SALARY_FIELDS = [...AMOUNT_FIELDS, 'effective_from']
+
+export const FORM_FIELDS = [
+  ...DETAIL_FIELDS.map(({ name }) => name),
+  'country',
+  ...SALARY_FIELDS,
+]
+
+export const SALARY_ERROR_PREFIX = 'salary.'
+
+export const AMOUNT_PATTERN = /^\d+(\.\d{1,2})?$/
 
 export const NAME_FIELDS = ['first_name', 'last_name']
 

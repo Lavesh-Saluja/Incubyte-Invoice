@@ -5,19 +5,23 @@ class Employee < ApplicationRecord
   attr_readonly :employee_number, :employee_code
 
   has_one :salary, dependent: :destroy
+  accepts_nested_attributes_for :salary, update_only: true
 
   enum :status, { active: "active", notice_period: "notice_period", inactive: "inactive" },
     default: :active, validate: true
 
-  normalizes :first_name, :last_name, :department, :job_title, :country, with: ->(value) { value.strip }
+  normalizes :first_name, :last_name, :department, :job_title, with: ->(value) { value.strip }
+  normalizes :country, with: ->(country) { country.strip.upcase }
   normalizes :email, with: ->(email) { email.strip.downcase }
 
   before_validation :assign_employee_code, on: :create
+  before_validation :assign_salary_currency
 
   validates :employee_code, presence: true, uniqueness: true
   validates :first_name, :last_name, presence: true, length: { maximum: NAME_MAX_LENGTH }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :department, :job_title, :country, presence: true
+  validates :country, inclusion: { in: ->(_) { ISO3166::Country.codes }, message: :invalid_country }, allow_blank: true
 
   DEFAULT_NOTICE_PERIOD_DAYS = Integer(ENV.fetch("NOTICE_PERIOD_DAYS", 30))
   NOTICE_PERIOD_MAX_DAYS = 365
@@ -28,7 +32,19 @@ class Employee < ApplicationRecord
     connection.select_value("SELECT nextval(pg_get_serial_sequence('employees', 'employee_number'))")
   end
 
+  def country_name
+    ISO3166::Country[country]&.common_name
+  end
+
+  def currency_code
+    ISO3166::Country[country]&.currency_code
+  end
+
   private
+    def assign_salary_currency
+      salary.currency = currency_code if salary
+    end
+
     def assign_employee_code
       @sequence_number ||= self.class.next_employee_number
       self.employee_number = @sequence_number

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_075032) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_18_075814) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_075032) do
     t.index ["employee_code"], name: "index_employees_on_employee_code", unique: true
     t.index ["employee_number"], name: "index_employees_on_employee_number", unique: true
     t.index ["status"], name: "index_employees_on_status"
-    t.check_constraint "status::text = ANY (ARRAY['active'::character varying::text, 'notice_period'::character varying::text, 'inactive'::character varying::text])", name: "employees_status_allowed"
+    t.check_constraint "status::text = ANY (ARRAY['active'::character varying, 'notice_period'::character varying, 'inactive'::character varying]::text[])", name: "employees_status_allowed"
   end
 
   create_table "salaries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

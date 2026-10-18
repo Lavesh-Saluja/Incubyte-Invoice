@@ -12,6 +12,10 @@ en:
     cross_site_request: "Cross-site requests are not allowed"
     unsupported_media_type: "Request body must be JSON"
     conflict: "A record with these details already exists"
+  activerecord:
+    errors:
+      messages:
+        invalid_country: "is not a valid country"
   activemodel:
     errors:
       messages:

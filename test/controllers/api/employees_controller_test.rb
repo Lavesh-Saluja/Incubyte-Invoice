@@ -6,9 +6,14 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(create(:user))
   end
 
+  def salary_attributes(**overrides)
+    { annual_ctc: "1800000.50", annual_base_pay: "1000000", annual_pf: "120000", annual_other_components: "680000.50",
+      effective_from: "2026-04-01" }.merge(overrides)
+  end
+
   def employee_attributes(**overrides)
     { first_name: "Asha", last_name: "Rao", email: "asha.rao@acme.test", department: "Finance",
-      job_title: "Analyst", country: "India" }.merge(overrides)
+      job_title: "Analyst", country: "IN", salary: salary_attributes }.merge(overrides)
   end
 
   def create_employee(**overrides)
@@ -23,8 +28,48 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_match(/\AINC-\d{4}-\d{6}\z/, employee["employee_code"])
     assert_equal "active", employee["status"]
     assert_nil employee["notice_period_started_at"]
-    assert_equal employee_attributes.stringify_keys,
+    assert_equal employee_attributes.except(:salary).stringify_keys,
       employee.slice("first_name", "last_name", "email", "department", "job_title", "country")
+    assert_equal "India", employee["country_name"]
+  end
+
+  test "creates the salary with the currency of the employee's country" do
+    create_employee(country: "DE")
+
+    salary = json_response.dig("employee", "salary")
+    assert_equal({ "currency" => "EUR", "annual_ctc" => "1800000.5", "annual_base_pay" => "1000000.0",
+      "annual_pf" => "120000.0", "annual_other_components" => "680000.5", "effective_from" => "2026-04-01" }, salary)
+    assert_equal BigDecimal("1800000.50"), Employee.find(json_response.dig("employee", "id")).salary.annual_ctc
+  end
+
+  test "ignores a currency sent by the client" do
+    create_employee(country: "IN", salary: salary_attributes(currency: "USD"))
+
+    assert_equal "INR", json_response.dig("employee", "salary", "currency")
+  end
+
+  test "requires a salary when creating an employee" do
+    assert_no_difference("Employee.count") { create_employee(salary: nil) }
+
+    assert_response :unprocessable_content
+    assert_equal [ "can't be blank" ], json_response.dig("details", "salary")
+  end
+
+  test "responds 422 with salary field errors and saves nothing" do
+    assert_no_difference([ "Employee.count", "Salary.count" ]) do
+      create_employee(salary: salary_attributes(annual_ctc: "-5", effective_from: ""))
+    end
+
+    assert_response :unprocessable_content
+    assert_equal [ "must be greater than or equal to 0" ], json_response.dig("details", "salary.annual_ctc")
+    assert_equal [ "can't be blank" ], json_response.dig("details", "salary.effective_from")
+  end
+
+  test "responds 422 for an unknown country" do
+    create_employee(country: "Atlantis")
+
+    assert_response :unprocessable_content
+    assert_equal [ "is not a valid country" ], json_response.dig("details", "country")
   end
 
   test "ignores an employee code, status and notice dates sent by the client" do
@@ -127,11 +172,39 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
   test "updates the editable details" do
     employee = create(:employee)
 
-    patch "/api/employees/#{employee.id}", params: { employee: { job_title: "Senior Analyst", country: "Germany" } },
+    patch "/api/employees/#{employee.id}", params: { employee: { job_title: "Senior Analyst", country: "DE" } },
       as: :json
 
     assert_response :ok
-    assert_equal [ "Senior Analyst", "Germany" ], employee.reload.slice(:job_title, :country).values
+    assert_equal [ "Senior Analyst", "DE" ], employee.reload.slice(:job_title, :country).values
+  end
+
+  test "updates the salary and follows a country change with its currency" do
+    employee = create(:employee, :with_salary, country: "IN")
+
+    patch "/api/employees/#{employee.id}",
+      params: { employee: { country: "US", salary: salary_attributes(annual_ctc: "95000") } }, as: :json
+
+    assert_response :ok
+    salary = employee.reload.salary
+    assert_equal [ "USD", BigDecimal("95000") ], [ salary.currency, salary.annual_ctc ]
+  end
+
+  test "adds a salary to an employee who has none" do
+    employee = create(:employee, country: "SG")
+
+    patch "/api/employees/#{employee.id}", params: { employee: { salary: salary_attributes } }, as: :json
+
+    assert_response :ok
+    assert_equal "SGD", employee.reload.salary.currency
+  end
+
+  test "returns a null salary for an employee without one" do
+    employee = create(:employee)
+
+    get "/api/employees/#{employee.id}"
+
+    assert_nil json_response.dig("employee", "salary")
   end
 
   test "keeps the employee code and status when the client sends them on update" do

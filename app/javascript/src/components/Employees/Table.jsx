@@ -68,7 +68,7 @@ const Table = ({ employees, onNoticeAction }) => {
             </TableCell>
             <TableCell>{employee.job_title}</TableCell>
             <TableCell>{employee.department}</TableCell>
-            <TableCell>{employee.country}</TableCell>
+            <TableCell>{employee.country_name}</TableCell>
             <TableCell>
               <StatusBadge status={employee.status} />
               {employee.status === 'notice_period' && (
