@@ -1,7 +1,10 @@
+import { Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import DetailList from 'components/commons/DetailList'
 import DetailSection from 'components/commons/DetailSection'
+import EmptyState from 'components/commons/EmptyState'
+import { Button } from 'components/ui/button'
 import { routes } from 'routes'
 import { formatCurrency } from 'utils/formatCurrency'
 import { formatDate } from 'utils/formatDate'
@@ -16,17 +19,20 @@ const SalarySection = ({ employee }) => {
   if (!salary)
     return (
       <DetailSection title={t('employees.salary.title')}>
-        <p className="text-sm text-muted-foreground">
-          {t('employees.salary.none')}
-        </p>
-        {isEditable(employee) && (
-          <Link
-            to={buildUrl(routes.employees.edit, { id: employee.id })}
-            className="mt-3 inline-block text-sm text-primary underline"
-          >
-            {t('employees.salary.add')}
-          </Link>
-        )}
+        <EmptyState
+          icon={Wallet}
+          title={t('employees.salary.none')}
+          compact
+          action={
+            isEditable(employee) && (
+              <Button variant="outline" size="sm" asChild>
+                <Link to={buildUrl(routes.employees.edit, { id: employee.id })}>
+                  {t('employees.salary.add')}
+                </Link>
+              </Button>
+            )
+          }
+        />
       </DetailSection>
     )
 
@@ -39,6 +45,7 @@ const SalarySection = ({ employee }) => {
       })}
     >
       <DetailList
+        variant="amounts"
         items={AMOUNT_FIELDS.map((name) => ({
           label: t(`employees.salary.${name}`),
           value: formatCurrency(salary[name], salary.currency),

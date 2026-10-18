@@ -2,6 +2,7 @@ import { Plus, SearchX, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router'
+import EmptyState from 'components/commons/EmptyState'
 import LoadError from 'components/commons/LoadError'
 import Spinner from 'components/commons/Spinner'
 import PageHeader from 'components/commons/PageHeader'
@@ -22,15 +23,6 @@ import Filters from './Filters'
 import NoticeDialog from './NoticeDialog'
 import Pagination from './Pagination'
 import Table from './Table'
-
-const EmptyState = ({ icon: Icon, title, description, action }) => (
-  <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
-    <Icon className="size-10 text-muted-foreground" />
-    <h2 className="font-medium">{title}</h2>
-    <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
-    {action}
-  </div>
-)
 
 const Employees = () => {
   const { t } = useTranslation()
@@ -128,7 +120,7 @@ const Employees = () => {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <div>
       <PageHeader
         title={t('employees.list.title')}
         description={t('employees.list.description')}
@@ -152,7 +144,7 @@ const Employees = () => {
         dialog={noticeDialog}
         onClose={() => setNoticeDialog(null)}
       />
-    </main>
+    </div>
   )
 }
 

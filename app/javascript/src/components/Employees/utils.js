@@ -7,6 +7,7 @@ import {
   FORM_FIELDS,
   NAME_MAX_LENGTH,
   NOTICE_ACTIONS,
+  PAGE_WINDOW,
   SALARY_ERROR_PREFIX,
   SALARY_FIELDS,
   WHOLE_NUMBER_PATTERN,
@@ -103,3 +104,18 @@ export const fullName = (employee) =>
 
 export const initials = (employee) =>
   `${employee.first_name[0]}${employee.last_name[0]}`.toUpperCase()
+
+export const pageItems = (page, totalPages) => {
+  const pages = [...Array(totalPages).keys()]
+    .map((index) => index + 1)
+    .filter(
+      (number) =>
+        number === 1 ||
+        number === totalPages ||
+        Math.abs(number - page) <= PAGE_WINDOW,
+    )
+
+  return pages.flatMap((number, index) =>
+    index > 0 && number - pages[index - 1] > 1 ? [null, number] : [number],
+  )
+}

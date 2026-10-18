@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
 import { ApiError } from 'apis/client'
+import DetailSection from 'components/commons/DetailSection'
 import FormField from 'components/commons/FormField'
 import SubmitButton from 'components/commons/SubmitButton'
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
 import { useCountries } from 'hooks/reactQuery/useSelectOptions'
 import { getErrorMessage } from 'utils/errors'
+import { currencySymbol } from 'utils/formatCurrency'
 import { AMOUNT_FIELDS, DETAIL_FIELDS } from './constants'
 import CountrySelect from './CountrySelect'
 import {
@@ -20,13 +22,9 @@ import {
 } from './utils'
 
 const Section = ({ title, description, children }) => (
-  <section className="flex flex-col gap-5">
-    <div>
-      <h2 className="font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-    </div>
-    <div className="grid gap-5 sm:grid-cols-2">{children}</div>
-  </section>
+  <DetailSection title={title} description={description}>
+    <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2">{children}</div>
+  </DetailSection>
 )
 
 const Fields = ({ countries, cancelTo, submitLabel }) => {
@@ -37,7 +35,7 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
   )?.currency
 
   return (
-    <FormikForm noValidate className="flex flex-col gap-8">
+    <FormikForm noValidate className="flex flex-col gap-6">
       <Section
         title={t('employees.form.detailsTitle')}
         description={t('employees.form.detailsDescription')}
@@ -50,12 +48,15 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
             label={t(`employees.fields.${name}`)}
             type={type}
             autoComplete={autoComplete}
+            required
           />
         ))}
         <FormField
           name="country"
           id={fieldId('country')}
           label={t('employees.fields.country')}
+          hint={t('employees.form.countryHint')}
+          required
         >
           {({ field, helpers, ariaProps }) => (
             <CountrySelect
@@ -68,8 +69,6 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
           )}
         </FormField>
       </Section>
-
-      <div className="border-t" />
 
       <Section
         title={t('employees.form.salaryTitle')}
@@ -85,17 +84,18 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
             name={name}
             id={fieldId(name)}
             label={t(`employees.salary.${name}`)}
+            required
           >
             {({ field, ariaProps }) => (
               <div className="relative">
                 <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground">
-                  {currency ?? '—'}
+                  {currency ? currencySymbol(currency) : '—'}
                 </span>
                 <Input
                   type="text"
                   inputMode="decimal"
                   autoComplete="off"
-                  className="pl-14"
+                  className="pl-9 tabular-nums"
                   {...field}
                   {...ariaProps}
                 />
@@ -108,10 +108,11 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
           id={fieldId('effective_from')}
           label={t('employees.salary.effective_from')}
           type="date"
+          required
         />
       </Section>
 
-      <div className="flex justify-end gap-2 border-t pt-6">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button variant="outline" asChild>
           <Link to={cancelTo}>{t('employees.actions.cancel')}</Link>
         </Button>

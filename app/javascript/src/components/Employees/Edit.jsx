@@ -43,25 +43,28 @@ const Edit = () => {
     return (
       <>
         <PageHeader
-          title={fullName(employee)}
+          title={t('employees.edit.title')}
           description={
             <span className="flex items-center gap-2">
-              <span className="font-mono">{employee.employee_code}</span>
+              {fullName(employee)}
+              <span aria-hidden="true">{t('common.separator')}</span>
+              <span className="tabular-nums">{employee.employee_code}</span>
               <StatusBadge status={employee.status} />
             </span>
           }
+          breadcrumbs={[
+            { label: t('nav.employees'), to: routes.employees.index },
+            { label: fullName(employee), to: showPath },
+            { label: t('employees.edit.title') },
+          ]}
         />
         {isEditable(employee) ? (
-          <Card>
-            <CardContent>
-              <Form
-                employee={employee}
-                cancelTo={showPath}
-                onSubmit={handleSubmit}
-                submitLabel={t('employees.actions.save')}
-              />
-            </CardContent>
-          </Card>
+          <Form
+            employee={employee}
+            cancelTo={showPath}
+            onSubmit={handleSubmit}
+            submitLabel={t('employees.actions.save')}
+          />
         ) : (
           <Card>
             <CardContent className="text-sm">
@@ -81,7 +84,7 @@ const Edit = () => {
     )
   }
 
-  return <main className="mx-auto max-w-3xl px-4 py-8">{renderContent()}</main>
+  return <div className="mx-auto max-w-4xl">{renderContent()}</div>
 }
 
 export default Edit

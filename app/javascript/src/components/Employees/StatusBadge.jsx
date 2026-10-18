@@ -1,14 +1,21 @@
 import { useTranslation } from 'react-i18next'
-import { Badge } from 'components/ui/badge'
-import { STATUS_BADGE_CLASSES } from './constants'
+import { cn } from 'cn'
+import { STATUS_STYLES } from './constants'
 
 const StatusBadge = ({ status }) => {
   const { t } = useTranslation()
+  const { pill, dot } = STATUS_STYLES[status]
 
   return (
-    <Badge variant="outline" className={STATUS_BADGE_CLASSES[status]}>
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ring-1 ring-inset',
+        pill,
+      )}
+    >
+      <span aria-hidden="true" className={cn('size-1.5 rounded-full', dot)} />
       {t(`employees.status.${status}`)}
-    </Badge>
+    </span>
   )
 }
 

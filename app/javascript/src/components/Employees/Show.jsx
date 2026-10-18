@@ -1,9 +1,12 @@
-import { ArrowLeft, Pencil } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
+import { cn } from 'cn'
 import DetailList from 'components/commons/DetailList'
 import DetailSection from 'components/commons/DetailSection'
+import Breadcrumbs from 'components/commons/Breadcrumbs'
+import Initials from 'components/commons/Initials'
 import LoadError from 'components/commons/LoadError'
 import Spinner from 'components/commons/Spinner'
 import { Button } from 'components/ui/button'
@@ -11,6 +14,7 @@ import { useShowEmployee } from 'hooks/reactQuery/useEmployees'
 import { routes } from 'routes'
 import { formatDate } from 'utils/formatDate'
 import { buildUrl } from 'utils/url'
+import { NOTICE_ACTIONS } from './constants'
 import NoticeDialog from './NoticeDialog'
 import SalarySection from './SalarySection'
 import StatusBadge from './StatusBadge'
@@ -34,38 +38,45 @@ const Show = () => {
     if (isError) return <LoadError error={error} onRetry={() => refetch()} />
 
     const hasNoticePeriod = Boolean(employee.notice_period_started_at)
+    const noticeAction = noticeActionFor(employee)
 
     return (
       <>
+        <Breadcrumbs
+          items={[
+            { label: t('nav.employees'), to: routes.employees.index },
+            { label: fullName(employee) },
+          ]}
+        />
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-4">
-            <div
-              aria-hidden="true"
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent font-semibold text-accent-foreground"
-            >
+            <Initials className="size-14 text-lg">
               {initials(employee)}
-            </div>
+            </Initials>
             <div className="min-w-0">
-              <h1 className="truncate text-2xl font-semibold tracking-tight">
-                {fullName(employee)}
-              </h1>
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-mono">{employee.employee_code}</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="truncate text-[28px] leading-9 font-semibold">
+                  {fullName(employee)}
+                </h1>
                 <StatusBadge status={employee.status} />
+              </div>
+              <div className="mt-1 text-sm text-muted-foreground tabular-nums">
+                {employee.employee_code}
               </div>
             </div>
           </div>
           <div className="flex gap-2">
             <Button
               variant="outline"
+              className={cn(
+                noticeAction === NOTICE_ACTIONS.START &&
+                  'border-destructive/30 text-destructive hover:bg-destructive-surface hover:text-destructive',
+              )}
               onClick={() =>
-                setNoticeDialog({
-                  action: noticeActionFor(employee),
-                  employee,
-                })
+                setNoticeDialog({ action: noticeAction, employee })
               }
             >
-              {t(`employees.notice.${noticeActionFor(employee)}`)}
+              {t(`employees.notice.${noticeAction}`)}
             </Button>
             {isEditable(employee) && (
               <Button variant="outline" asChild>
@@ -79,7 +90,7 @@ const Show = () => {
         </div>
 
         <div className="grid items-start gap-6 lg:grid-cols-3">
-          <div className="flex flex-col gap-6 lg:col-span-2">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-span-2">
             <DetailSection title={t('employees.show.employment')}>
               <DetailList
                 items={[
@@ -104,7 +115,35 @@ const Show = () => {
             </DetailSection>
 
             <SalarySection employee={employee} />
+          </div>
 
+          <div className="flex min-w-0 flex-col gap-6">
+            <DetailSection title={t('employees.show.record')}>
+              <DetailList
+                items={[
+                  {
+                    label: t('employees.table.code'),
+                    value: (
+                      <span className="tabular-nums">
+                        {employee.employee_code}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: t('employees.table.status'),
+                    value: <StatusBadge status={employee.status} />,
+                  },
+                  {
+                    label: t('employees.show.joined'),
+                    value: formatDate(employee.created_at),
+                  },
+                  {
+                    label: t('employees.show.updated'),
+                    value: formatDate(employee.updated_at),
+                  },
+                ]}
+              />
+            </DetailSection>
             {hasNoticePeriod && (
               <DetailSection title={t('employees.show.noticePeriod')}>
                 <DetailList
@@ -126,52 +165,19 @@ const Show = () => {
               </DetailSection>
             )}
           </div>
-
-          <DetailSection title={t('employees.show.record')}>
-            <DetailList
-              columns={1}
-              items={[
-                {
-                  label: t('employees.table.code'),
-                  value: (
-                    <span className="font-mono">{employee.employee_code}</span>
-                  ),
-                },
-                {
-                  label: t('employees.table.status'),
-                  value: <StatusBadge status={employee.status} />,
-                },
-                {
-                  label: t('employees.show.joined'),
-                  value: formatDate(employee.created_at),
-                },
-                {
-                  label: t('employees.show.updated'),
-                  value: formatDate(employee.updated_at),
-                },
-              ]}
-            />
-          </DetailSection>
         </div>
       </>
     )
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <Link
-        to={routes.employees.index}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        {t('employees.show.back')}
-      </Link>
+    <div>
       {renderContent()}
       <NoticeDialog
         dialog={noticeDialog}
         onClose={() => setNoticeDialog(null)}
       />
-    </main>
+    </div>
   )
 }
 

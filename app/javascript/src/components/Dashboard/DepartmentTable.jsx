@@ -1,35 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import DetailSection from 'components/commons/DetailSection'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from 'components/ui/table'
 import { formatNumber } from 'utils/formatNumber'
 import { DEPARTMENT_COLUMNS } from './constants'
 import ShareBar from './ShareBar'
 import { employeesLink } from './utils'
-
-const Legend = () => {
-  const { t } = useTranslation()
-
-  return (
-    <div className="mb-4 flex gap-4 text-xs text-muted-foreground">
-      <span className="flex items-center gap-1.5">
-        <span className="size-2 rounded-full bg-success" />
-        {t('dashboard.departments.active')}
-      </span>
-      <span className="flex items-center gap-1.5">
-        <span className="size-2 rounded-full bg-warning" />
-        {t('dashboard.departments.notice_period')}
-      </span>
-    </div>
-  )
-}
 
 const DepartmentTable = ({ departments, headcount }) => {
   const { t } = useTranslation()
@@ -41,30 +16,36 @@ const DepartmentTable = ({ departments, headcount }) => {
           {t('dashboard.departments.empty')}
         </p>
       ) : (
-        <>
-          <Legend />
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('dashboard.departments.department')}</TableHead>
+        <div className="relative -mx-5 -mb-5 overflow-x-auto">
+          <table className="w-full min-w-[560px] text-sm">
+            <thead>
+              <tr className="border-y bg-muted/40 text-xs text-muted-foreground">
+                <th className="px-5 py-2.5 text-left font-medium">
+                  {t('dashboard.departments.department')}
+                </th>
                 {DEPARTMENT_COLUMNS.map(({ key }) => (
-                  <TableHead key={key} className="text-right">
+                  <th key={key} className="px-3 py-2.5 text-right font-medium">
                     {t(`dashboard.departments.${key}`)}
-                  </TableHead>
+                  </th>
                 ))}
-                <TableHead className="w-2/5">
+                <th className="w-2/5 px-5 py-2.5 text-left font-medium">
                   {t('dashboard.departments.share')}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
               {departments.map((row) => (
-                <TableRow key={row.department}>
-                  <TableCell className="font-medium">
-                    {row.department}
-                  </TableCell>
+                <tr key={row.department} className="hover:bg-muted/40">
+                  <td className="px-5 py-3">
+                    <Link
+                      to={employeesLink({ department: row.department })}
+                      className="font-medium hover:text-primary hover:underline"
+                    >
+                      {row.department}
+                    </Link>
+                  </td>
                   {DEPARTMENT_COLUMNS.map(({ key, filters }) => (
-                    <TableCell key={key} className="text-right tabular-nums">
+                    <td key={key} className="px-3 py-3 text-right tabular-nums">
                       <Link
                         to={employeesLink({
                           department: row.department,
@@ -78,20 +59,16 @@ const DepartmentTable = ({ departments, headcount }) => {
                       >
                         {formatNumber(row[key])}
                       </Link>
-                    </TableCell>
+                    </td>
                   ))}
-                  <TableCell>
-                    <ShareBar
-                      active={row.active}
-                      noticePeriod={row.notice_period}
-                      headcount={headcount}
-                    />
-                  </TableCell>
-                </TableRow>
+                  <td className="px-5 py-3">
+                    <ShareBar value={row.total} headcount={headcount} />
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
-        </>
+            </tbody>
+          </table>
+        </div>
       )}
     </DetailSection>
   )
