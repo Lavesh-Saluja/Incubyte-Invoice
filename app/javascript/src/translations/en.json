@@ -34,7 +34,7 @@
     },
     "departures": {
       "title": "Upcoming departures",
-      "viewAll": "View all",
+      "viewAll": "View all {{count}}",
       "description_one": "Next {{count}} day",
       "description_other": "Next {{count}} days",
       "emptyTitle": "No upcoming departures",
@@ -298,11 +298,16 @@
       "allStatuses": "All statuses",
       "allDepartments": "All departments",
       "allCountries": "All countries",
+      "noticeEnds": "Notice ends",
+      "anyNoticeEnd": "Any notice end",
+      "leavingWithin_one": "Within {{count}} day",
+      "leavingWithin_other": "Within {{count}} days",
       "chips": {
         "q": "Search:",
         "status": "Status:",
         "country": "Country:",
-        "department_id": "Department:"
+        "department_id": "Department:",
+        "leaving_within": "Notice ends:"
       },
       "remove": "Remove {{filter}} filter",
       "filteredBy": "Filtered by"

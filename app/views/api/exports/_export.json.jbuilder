@@ -7,4 +7,5 @@ json.filters do
   json.department Department.find_by(id: export.filters["department_id"])&.name
   json.country ISO3166::Country[export.filters["country"]]&.common_name
   json.q export.filters["q"]
+  json.leaving_within export.filters["leaving_within"]&.to_i
 end

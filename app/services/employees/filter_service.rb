@@ -1,6 +1,7 @@
 module Employees
   class FilterService
-    KEYS = %i[q status department_id country].freeze
+    KEYS = %i[q status department_id country leaving_within].freeze
+    LEAVING_WITHIN_DAYS = (1..Employee::NOTICE_PERIOD_MAX_DAYS).freeze
     SEARCH_COLUMNS = [
       "employees.first_name",
       "employees.last_name",
@@ -30,15 +31,21 @@ module Employees
       result = result.where(department_id: filters[:department_id]) if filters[:department_id]
       result = result.where(country: filters[:country].upcase) if filters[:country]
       result = search(result, filters[:q]) if filters[:q]
+      result = result.leaving_within(leaving_within_days) if leaving_within_days
       result
     end
 
     private
       def ordering
         newest_first = { employee_number: :desc }
-        return [ newest_first ] unless filters[:status] == "notice_period"
+        return [ newest_first ] unless filters[:status] == "notice_period" || leaving_within_days
 
         [ Employee.arel_table[:notice_period_ends_at].asc.nulls_last, newest_first ]
+      end
+
+      def leaving_within_days
+        days = Integer(filters[:leaving_within], exception: false)
+        days if LEAVING_WITHIN_DAYS.cover?(days)
       end
 
       def search(relation, query)

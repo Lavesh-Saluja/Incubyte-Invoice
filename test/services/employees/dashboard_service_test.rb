@@ -60,4 +60,18 @@ class Employees::DashboardServiceTest < ActiveSupport::TestCase
 
     assert_equal [ sooner, later ], dashboard.upcoming_departures.to_a
   end
+
+  test "shows the 10 soonest departures but counts everyone leaving soon" do
+    leaving = (1..12).map { |hours| on_notice(ends_in: hours.hours) }
+
+    assert_equal leaving.first(10), dashboard.upcoming_departures.to_a
+    assert_equal 12, dashboard.counts[:leaving_soon]
+  end
+
+  test "shows the 10 soonest departures but counts all of them" do
+    leaving = (1..12).map { |hours| on_notice(ends_in: (hours * 12).hours) }
+
+    assert_equal leaving.first(10), dashboard.upcoming_departures.to_a
+    assert_equal 12, dashboard.counts[:leaving_soon]
+  end
 end

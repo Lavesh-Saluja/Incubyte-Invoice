@@ -22,6 +22,7 @@ import {
   EMPLOYEE_STATUSES,
   EMPLOYEES_PER_PAGE,
   FILTER_KEYS,
+  LEAVING_WITHIN_DAYS,
   SEARCH_DEBOUNCE_MS,
 } from './constants'
 import Filters from './Filters'
@@ -56,6 +57,10 @@ const Employees = () => {
       label: name,
     })),
     country: countries.map(({ code, name }) => ({ value: code, label: name })),
+    leaving_within: LEAVING_WITHIN_DAYS.map((days) => ({
+      value: String(days),
+      label: t('employees.filters.leavingWithin', { count: days }),
+    })),
   }
   const { data, isPending, isError, error, refetch } = useFetchEmployees({
     page,

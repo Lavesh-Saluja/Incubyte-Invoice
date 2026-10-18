@@ -31,6 +31,7 @@ class Employee < ApplicationRecord
   NOTICE_PERIOD_MAX_DAYS = 365
 
   scope :with_expired_notice_period, -> { notice_period.where(notice_period_ends_at: ..Time.current) }
+  scope :leaving_within, ->(days) { notice_period.where(notice_period_ends_at: Time.current..days.days.from_now) }
 
   def self.next_employee_number
     connection.select_value("SELECT nextval(pg_get_serial_sequence('employees', 'employee_number'))")

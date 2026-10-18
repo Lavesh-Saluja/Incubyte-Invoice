@@ -13,14 +13,15 @@ class Api::ExportsControllerTest < ActionDispatch::IntegrationTest
     department = create(:department, name: "Finance")
 
     assert_enqueued_with(job: Exports::GenerateJob) do
-      post "/api/exports", params: { export: { filters: { department_id: department.id, country: "IN" } } }, as: :json
+      post "/api/exports", params: { export: { filters: { department_id: department.id, country: "IN", leaving_within: "10" } } }, as: :json
     end
 
     assert_response :accepted
     export = json_response["export"]
     assert_equal [ "queued", 0, false ], export.values_at("status", "progress", "downloadable")
-    assert_equal({ "status" => nil, "department" => "Finance", "country" => "India", "q" => nil }, export["filters"])
-    assert_equal({ "department_id" => department.id, "country" => "IN" }, export["filter_values"])
+    assert_equal({ "status" => nil, "department" => "Finance", "country" => "India", "q" => nil, "leaving_within" => 10 },
+      export["filters"])
+    assert_equal({ "department_id" => department.id, "country" => "IN", "leaving_within" => "10" }, export["filter_values"])
   end
 
   test "starting a new export cancels the one in progress" do

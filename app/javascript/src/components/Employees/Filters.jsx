@@ -67,6 +67,13 @@ const Filters = ({ filters, options, onChange }) => {
           options={options.country}
           onChange={(value) => onChange('country', value)}
         />
+        <FilterSelect
+          label={t('employees.filters.noticeEnds')}
+          allLabel={t('employees.filters.anyNoticeEnd')}
+          value={filters.leaving_within}
+          options={options.leaving_within}
+          onChange={(value) => onChange('leaving_within', value)}
+        />
       </div>
     </div>
   )

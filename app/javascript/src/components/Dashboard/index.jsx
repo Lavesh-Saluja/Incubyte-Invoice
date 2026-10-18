@@ -53,6 +53,7 @@ const Dashboard = () => {
           <UpcomingDepartures
             employees={upcoming_departures}
             days={leaving_soon_days}
+            total={counts.leaving_soon}
           />
         </div>
       </div>
