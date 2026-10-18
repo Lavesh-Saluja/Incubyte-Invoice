@@ -11,6 +11,7 @@ import { routes } from 'routes'
 import { formatDate } from 'utils/formatDate'
 import { buildUrl } from 'utils/url'
 import NoticeDialog from './NoticeDialog'
+import SalarySection from './SalarySection'
 import StatusBadge from './StatusBadge'
 import { fullName, initials, isEditable, noticeActionFor } from './utils'
 
@@ -95,7 +96,7 @@ const Show = () => {
                   },
                   {
                     label: t('employees.fields.country'),
-                    value: employee.country,
+                    value: employee.country_name,
                   },
                   {
                     label: t('employees.fields.email'),
@@ -104,6 +105,8 @@ const Show = () => {
                 ]}
               />
             </DetailSection>
+
+            <SalarySection employee={employee} />
 
             {hasNoticePeriod && (
               <DetailSection title={t('employees.show.noticePeriod')}>

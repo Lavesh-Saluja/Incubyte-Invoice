@@ -18,7 +18,7 @@ module Employees
     end
 
     def process!
-      records = scope.order(employee_number: :desc).offset((page - 1) * per_page).limit(per_page)
+      records = scope.includes(:salary).order(employee_number: :desc).offset((page - 1) * per_page).limit(per_page)
       Page.new(records:, page:, per_page:, total_count: scope.count)
     end
   end

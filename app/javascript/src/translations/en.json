@@ -59,7 +59,7 @@
     },
     "new": {
       "title": "Add employee",
-      "description": "The employee code is generated automatically when you save."
+      "description": "Add the employee’s details and salary. The employee code is generated automatically."
     },
     "actions": {
       "create": "Create employee",
@@ -78,7 +78,8 @@
     "validation": {
       "required": "This field is required.",
       "tooLong": "Use at most {{count}} characters.",
-      "emailInvalid": "Enter a valid email address, like name@acme.com."
+      "emailInvalid": "Enter a valid email address, like name@acme.com.",
+      "amountInvalid": "Enter an amount like 1200000 or 1200000.50, without commas."
     },
     "status": {
       "active": "Active",
@@ -137,10 +138,35 @@
     "edit": {
       "inactive": "Inactive employees can’t be edited. Remove them from the notice period to reactivate them first.",
       "viewEmployee": "View employee"
+    },
+    "form": {
+      "detailsTitle": "Employee details",
+      "detailsDescription": "Who the employee is and where they work. The country sets the salary currency.",
+      "salaryTitle": "Salary",
+      "salaryDescription": "Annual amounts in {{currency}}, the currency of the employee’s country.",
+      "salaryNoCountry": "Annual amounts. Choose a country to set the currency.",
+      "countryPlaceholder": "Select a country",
+      "countriesLoading": "Loading countries…",
+      "countrySearch": "Search countries…",
+      "countryEmpty": "No country found."
+    },
+    "salary": {
+      "title": "Salary",
+      "description": "Annual amounts in {{currency}}, effective from {{date}}.",
+      "none": "No salary recorded yet.",
+      "add": "Add salary",
+      "annual_ctc": "Annual CTC",
+      "annual_base_pay": "Annual base pay",
+      "annual_pf": "Annual PF",
+      "annual_other_components": "Other annual components",
+      "effective_from": "Effective from"
     }
   },
   "nav": {
     "dashboard": "Dashboard",
     "employees": "Employees"
+  },
+  "ui": {
+    "close": "Close"
   }
 }

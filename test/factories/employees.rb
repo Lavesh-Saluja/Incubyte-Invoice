@@ -5,12 +5,16 @@ FactoryBot.define do
     sequence(:email) { |n| "employee#{n}@acme.test" }
     department { %w[Engineering Finance Sales Operations].sample }
     job_title { Faker::Job.title }
-    country { %w[India Germany United\ States Singapore].sample }
+    country { %w[IN DE US SG].sample }
 
     trait :on_notice do
       status { :notice_period }
       notice_period_started_at { Time.current }
       notice_period_ends_at { 1.month.from_now }
+    end
+
+    trait :with_salary do
+      after(:create) { |employee| create(:salary, employee:) }
     end
 
     trait :inactive do
