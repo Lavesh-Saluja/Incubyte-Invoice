@@ -9,8 +9,8 @@ const formatter = (currency, options = {}) =>
     ...options,
   })
 
-export const formatCurrency = (amount, currency) =>
-  formatter(currency).format(Number(amount))
+export const formatCurrency = (amount, currency, options) =>
+  formatter(currency, options).format(Number(amount))
 
 export const currencySymbol = (currency) =>
   formatter(currency)

@@ -7,3 +7,6 @@ hr_email = "hr@acme.test"
 hr_password = "password1234"
 result = Users::ProvisionHrService.new(name: "HR Manager", email: hr_email, password: hr_password).process!
 puts "Local HR account #{result == :created ? "created" : "already exists"}: #{hr_email} / #{hr_password}"
+
+created = Employees::SeedService.new.process!
+puts "Demo employees: added #{created}, #{Employee.where("email LIKE ?", "%@#{Employees::SeedService::EMAIL_DOMAIN}").count} in total"

@@ -321,7 +321,8 @@
     "open": "Open navigation",
     "breadcrumb": "Breadcrumb",
     "departments": "Departments",
-    "exports": "Exports"
+    "exports": "Exports",
+    "pay": "Pay"
   },
   "ui": {
     "close": "Close"
@@ -415,6 +416,27 @@
         "annual_pf": "Same format as annual_ctc.",
         "annual_other_components": "Same format as annual_ctc."
       }
+    }
+  },
+  "pay": {
+    "title": "Pay",
+    "description": "Annual CTC of current employees (active and on notice), in each country's own currency. Amounts are never converted between currencies.",
+    "loading": "Loading pay summary",
+    "emptyTitle": "No salary data yet",
+    "emptyDescription": "Add employees with salaries, or import them from a CSV file, to see how ACME pays people.",
+    "byCountry": "By country",
+    "byCountryDescription": "Select a country to see its departments.",
+    "inCountry": "Departments in {{country}}",
+    "inCountryDescription": "Annual CTC in {{currency}}",
+    "viewEmployees": "View employees",
+    "table": {
+      "country": "Country",
+      "department": "Department",
+      "employees": "Employees",
+      "median": "Median CTC",
+      "average": "Average CTC",
+      "lowest": "Lowest",
+      "highest": "Highest"
     }
   }
 }

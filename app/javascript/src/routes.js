@@ -10,6 +10,9 @@ export const routes = {
   exports: {
     index: '/exports',
   },
+  pay: {
+    index: '/pay',
+  },
   employees: {
     index: '/employees',
     new: '/employees/new',
@@ -37,6 +40,7 @@ export const apiRoutes = {
   },
   settings: '/api/settings',
   dashboard: '/api/dashboard',
+  paySummary: '/api/pay_summary',
   departments: '/api/departments',
   exports: {
     index: '/api/exports',

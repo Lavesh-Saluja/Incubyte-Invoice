@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     resource :settings, only: :show
     resource :dashboard, only: :show
+    resource :pay_summary, only: :show
     resources :departments, only: %i[index create]
     resources :exports, only: %i[index show create] do
       get :download, on: :member

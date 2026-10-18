@@ -366,6 +366,7 @@ Locally, one root `.env` serves both Rails (via dotenv) and Vite.
 | `RAILS_FORCE_SSL`                                  | production | Default `true`. Set `false` only to run the image locally over plain HTTP                              |
 | `EMPLOYEE_IMPORT_MAX_ROWS`                         | all        | Maximum employees per CSV import (default 10000). See [docs/csv-import.md](docs/csv-import.md)         |
 | `EMPLOYEE_IMPORT_MAX_FILE_MB`                      | all        | Maximum CSV import file size in MB (default 5)                                                         |
+| `SEED_DEMO_EMPLOYEES`                              | production | Optional. When set (e.g. `10000`), `bin/migrate-and-start` tops up demo employees to that count        |
 
 ### Frontend
 
