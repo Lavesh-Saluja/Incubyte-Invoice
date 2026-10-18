@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
   SETTINGS: 'settings',
   SELECT_OPTIONS: 'selectOptions',
   DASHBOARD: 'dashboard',
+  DEPARTMENTS: 'departments',
 }
 
 export const QUERY_STALE_TIME_MS = 30_000

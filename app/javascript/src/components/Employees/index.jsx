@@ -46,9 +46,9 @@ const Employees = () => {
       value: status,
       label: t(`employees.status.${status}`),
     })),
-    department: departments.map((department) => ({
-      value: department,
-      label: department,
+    department_id: departments.map(({ id, name }) => ({
+      value: id,
+      label: name,
     })),
     country: countries.map(({ code, name }) => ({ value: code, label: name })),
   }

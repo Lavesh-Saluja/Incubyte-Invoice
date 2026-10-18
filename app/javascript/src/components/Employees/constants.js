@@ -5,7 +5,6 @@ export const DETAIL_FIELDS = [
   { name: 'last_name', autoComplete: 'family-name' },
   { name: 'email', type: 'email', autoComplete: 'email' },
   { name: 'job_title', autoComplete: 'organization-title' },
-  { name: 'department', autoComplete: 'off' },
 ]
 
 export const AMOUNT_FIELDS = [
@@ -19,6 +18,7 @@ export const SALARY_FIELDS = [...AMOUNT_FIELDS, 'effective_from']
 
 export const FORM_FIELDS = [
   ...DETAIL_FIELDS.map(({ name }) => name),
+  'department_id',
   'country',
   ...SALARY_FIELDS,
 ]
@@ -54,10 +54,12 @@ export const DAY_IN_MS = 24 * 60 * 60 * 1000
 
 export const WHOLE_NUMBER_PATTERN = /^\d+$/
 
-export const FILTER_KEYS = ['q', 'status', 'department', 'country']
+export const FILTER_KEYS = ['q', 'status', 'department_id', 'country']
 
 export const ALL_OPTION = 'all'
 
 export const SEARCH_DEBOUNCE_MS = 300
 
 export const EMPLOYEE_STATUSES = ['active', 'notice_period', 'inactive']
+
+export const ERROR_KEY_ALIASES = { department: 'department_id' }

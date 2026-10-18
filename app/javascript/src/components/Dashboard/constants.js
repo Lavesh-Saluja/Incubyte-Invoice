@@ -26,9 +26,3 @@ export const STAT_CARDS = [
     filters: { status: 'inactive' },
   },
 ]
-
-export const DEPARTMENT_COLUMNS = [
-  { key: 'active', filters: { status: 'active' } },
-  { key: 'notice_period', filters: { status: 'notice_period' } },
-  { key: 'total', filters: {} },
-]

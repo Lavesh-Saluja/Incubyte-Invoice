@@ -4,6 +4,7 @@ import { EMAIL_PATTERN } from 'constants'
 import {
   AMOUNT_FIELDS,
   AMOUNT_PATTERN,
+  ERROR_KEY_ALIASES,
   FORM_FIELDS,
   NAME_MAX_LENGTH,
   NOTICE_ACTIONS,
@@ -16,6 +17,8 @@ import {
 export const fieldId = (name) => `employee-${name}`
 
 const formValue = (employee, name) => {
+  if (name === 'department_id') return employee?.department?.id ?? ''
+
   const value = SALARY_FIELDS.includes(name)
     ? employee?.salary?.[name]
     : employee?.[name]
@@ -46,7 +49,7 @@ export const toPayload = (values) => {
 export const toFieldErrors = (details) =>
   Object.fromEntries(
     Object.entries(details).map(([key, messages]) => [
-      key.replace(SALARY_ERROR_PREFIX, ''),
+      ERROR_KEY_ALIASES[key] ?? key.replace(SALARY_ERROR_PREFIX, ''),
       messages.join(' '),
     ]),
   )
@@ -75,7 +78,7 @@ export const employeeSchema = () =>
       t('employees.validation.emailInvalid'),
     ),
     job_title: requiredText(),
-    department: requiredText(),
+    department_id: requiredText(),
     country: requiredText(),
     ...Object.fromEntries(AMOUNT_FIELDS.map((name) => [name, amount()])),
     effective_from: requiredText(),

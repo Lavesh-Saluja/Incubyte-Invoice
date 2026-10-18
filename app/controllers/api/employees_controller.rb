@@ -1,7 +1,7 @@
 module Api
   class EmployeesController < ApplicationController
-    PERMITTED_ATTRIBUTES = %i[first_name last_name email department job_title country].freeze
-    FILTER_PARAMS = %i[q status department country].freeze
+    PERMITTED_ATTRIBUTES = %i[first_name last_name email department_id job_title country].freeze
+    FILTER_PARAMS = %i[q status department_id country].freeze
     SALARY_ATTRIBUTES = %i[annual_ctc annual_base_pay annual_pf annual_other_components effective_from].freeze
 
     before_action :expire_notice_periods

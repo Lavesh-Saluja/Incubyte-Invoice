@@ -69,7 +69,7 @@ const Table = ({ employees, onNoticeAction }) => {
                 {employee.employee_code}
               </td>
               <td className="px-4 py-3">{employee.job_title}</td>
-              <td className="px-4 py-3">{employee.department}</td>
+              <td className="px-4 py-3">{employee.department.name}</td>
               <td className="px-4 py-3 whitespace-nowrap">
                 {employee.country_name}
               </td>

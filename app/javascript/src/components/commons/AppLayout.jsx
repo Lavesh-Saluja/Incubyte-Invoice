@@ -22,8 +22,8 @@ import {
   SheetTitle,
 } from 'components/ui/sheet'
 import { useCurrentUser, useLogout } from 'hooks/reactQuery/useSession'
-import { routes } from 'routes'
 import { getErrorMessage } from 'utils/errors'
+import { NAV_ITEMS } from './constants'
 import { initialsOf } from './utils'
 
 const AppLayout = () => {
@@ -32,9 +32,8 @@ const AppLayout = () => {
   const { data: user } = useCurrentUser()
   const logout = useLogout()
   const [menuOpen, setMenuOpen] = useState(false)
-  const section = pathname.startsWith(routes.employees.index)
-    ? t('nav.employees')
-    : t('nav.home')
+  const section =
+    NAV_ITEMS.findLast(({ to }) => pathname.startsWith(to)) ?? NAV_ITEMS[0]
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -74,7 +73,7 @@ const AppLayout = () => {
             <Menu />
           </Button>
           <span className="text-sm font-medium text-muted-foreground">
-            {section}
+            {t(section.labelKey)}
           </span>
 
           <DropdownMenu>

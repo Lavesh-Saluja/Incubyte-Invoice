@@ -11,8 +11,12 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
       effective_from: "2026-04-01" }.merge(overrides)
   end
 
+  def finance
+    @finance ||= create(:department, name: "Finance")
+  end
+
   def employee_attributes(**overrides)
-    { first_name: "Asha", last_name: "Rao", email: "asha.rao@acme.test", department: "Finance",
+    { first_name: "Asha", last_name: "Rao", email: "asha.rao@acme.test", department_id: finance.id,
       job_title: "Analyst", country: "IN", salary: salary_attributes }.merge(overrides)
   end
 
@@ -29,7 +33,8 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "active", employee["status"]
     assert_nil employee["notice_period_started_at"]
     assert_equal employee_attributes.except(:salary).stringify_keys,
-      employee.slice("first_name", "last_name", "email", "department", "job_title", "country")
+      employee.slice("first_name", "last_name", "email", "job_title", "country")
+        .merge("department_id" => employee.dig("department", "id"))
     assert_equal "India", employee["country_name"]
   end
 
@@ -63,6 +68,29 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_equal [ "must be greater than or equal to 0" ], json_response.dig("details", "salary.annual_ctc")
     assert_equal [ "can't be blank" ], json_response.dig("details", "salary.effective_from")
+  end
+
+  test "returns the employee's department" do
+    create_employee
+
+    assert_equal({ "id" => finance.id, "name" => "Finance" }, json_response.dig("employee", "department"))
+  end
+
+  test "responds 422 for an unknown department" do
+    create_employee(department_id: SecureRandom.uuid)
+
+    assert_response :unprocessable_content
+    assert_equal [ "must exist" ], json_response.dig("details", "department")
+  end
+
+  test "changes the employee's department" do
+    employee = create(:employee)
+    sales = create(:department, name: "Sales")
+
+    patch "/api/employees/#{employee.id}", params: { employee: { department_id: sales.id } }, as: :json
+
+    assert_response :ok
+    assert_equal sales, employee.reload.department
   end
 
   test "responds 422 for an unknown country" do
@@ -146,11 +174,11 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "searches and filters the list" do
-    match = create(:employee, first_name: "Asha", department: "Finance", country: "IN")
-    create(:employee, first_name: "Asha", department: "Sales", country: "IN")
-    create(:employee, first_name: "Ben", department: "Finance", country: "IN")
+    match = create(:employee, first_name: "Asha", department: finance, country: "IN")
+    create(:employee, first_name: "Asha", department: create(:department), country: "IN")
+    create(:employee, first_name: "Ben", department: finance, country: "IN")
 
-    get "/api/employees", params: { q: "asha", department: "Finance", country: "IN", status: "active" }
+    get "/api/employees", params: { q: "asha", department_id: finance.id, country: "IN", status: "active" }
 
     assert_equal [ match.id ], json_response["employees"].pluck("id")
     assert_equal 1, json_response.dig("meta", "total_count")

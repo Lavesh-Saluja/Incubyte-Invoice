@@ -1,5 +1,9 @@
-json.extract! employee, :id, :employee_code, :first_name, :last_name, :email, :department, :job_title, :country,
+json.extract! employee, :id, :employee_code, :first_name, :last_name, :email, :job_title, :country,
   :country_name, :status, :notice_period_started_at, :notice_period_ends_at, :created_at, :updated_at
+
+json.department do
+  json.partial! "api/departments/department", department: employee.department
+end
 
 if employee.salary
   json.salary do

@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router'
 import AppLayout from 'components/commons/AppLayout'
 import RequireAuth from 'components/commons/RequireAuth'
 import Dashboard from 'components/Dashboard'
+import Departments from 'components/Departments'
 import Employees from 'components/Employees'
 import EditEmployee from 'components/Employees/Edit'
 import NewEmployee from 'components/Employees/New'
@@ -23,6 +24,7 @@ const App = () => {
         <Route element={<RequireAuth />}>
           <Route element={<AppLayout />}>
             <Route path={routes.root} element={<Dashboard />} />
+            <Route path={routes.departments.index} element={<Departments />} />
             <Route path={routes.employees.index} element={<Employees />} />
             <Route path={routes.employees.new} element={<NewEmployee />} />
             <Route path={routes.employees.show} element={<ShowEmployee />} />

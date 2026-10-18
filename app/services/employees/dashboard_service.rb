@@ -1,6 +1,7 @@
 module Employees
   class DashboardService
     LEAVING_SOON_DAYS = 10
+    TOP_DEPARTMENTS = 10
 
     Dashboard = Data.define(:counts, :departments, :upcoming_departures)
 
@@ -32,17 +33,13 @@ module Employees
       end
 
       def departments
-        counts = scope.where(status: %w[active notice_period]).group(:department, :status).count
-
-        counts.keys.map(&:first).uniq.map { |name|
-          active = counts.fetch([ name, "active" ], 0)
-          notice_period = counts.fetch([ name, "notice_period" ], 0)
-          { department: name, active:, notice_period:, total: active + notice_period }
-        }.sort_by { |row| [ -row[:total], row[:department] ] }
+        Departments::StatsService.new(Department.all).process!
+          .select { |row| row[:current].positive? }
+          .first(TOP_DEPARTMENTS)
       end
 
       def upcoming_departures
-        leaving_soon.order(:notice_period_ends_at, :employee_number)
+        leaving_soon.includes(:department).order(:notice_period_ends_at, :employee_number)
       end
 
       def leaving_soon

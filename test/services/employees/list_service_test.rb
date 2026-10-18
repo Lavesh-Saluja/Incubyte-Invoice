@@ -49,22 +49,24 @@ class Employees::ListServiceTest < ActiveSupport::TestCase
   end
 
   test "filters by status, department and country" do
-    india_finance = create(:employee, department: "Finance", country: "IN")
-    create(:employee, department: "Finance", country: "DE")
-    create(:employee, :inactive, department: "Finance", country: "IN")
-    create(:employee, department: "Sales", country: "IN")
+    finance, sales = create_list(:department, 2)
+    india_finance = create(:employee, department: finance, country: "IN")
+    create(:employee, department: finance, country: "DE")
+    create(:employee, :inactive, department: finance, country: "IN")
+    create(:employee, department: sales, country: "IN")
 
-    page = list(filters: { status: "active", department: "Finance", country: "in" })
+    page = list(filters: { status: "active", department_id: finance.id, country: "in" })
 
     assert_equal [ india_finance ], page.records.to_a
     assert_equal 1, page.total_count
   end
 
   test "combines search with filters and paginates the matches" do
-    create_list(:employee, 3, first_name: "Asha", department: "Finance")
-    create(:employee, first_name: "Asha", department: "Sales")
+    finance, sales = create_list(:department, 2)
+    create_list(:employee, 3, first_name: "Asha", department: finance)
+    create(:employee, first_name: "Asha", department: sales)
 
-    page = list(filters: { q: "asha", department: "Finance" }, per_page: 2)
+    page = list(filters: { q: "asha", department_id: finance.id }, per_page: 2)
 
     assert_equal [ 3, 2, 2 ], [ page.total_count, page.total_pages, page.records.size ]
   end
@@ -72,7 +74,7 @@ class Employees::ListServiceTest < ActiveSupport::TestCase
   test "ignores blank filters and unknown statuses" do
     create_list(:employee, 2)
 
-    assert_equal 2, list(filters: { q: "  ", status: "retired", department: "" }).total_count
+    assert_equal 2, list(filters: { q: "  ", status: "retired", department_id: "" }).total_count
   end
 
   test "sorts employees on notice by notice end date, soonest first, across pages" do

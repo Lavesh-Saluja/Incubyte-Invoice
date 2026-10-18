@@ -100,7 +100,7 @@ const Show = () => {
                   },
                   {
                     label: t('employees.fields.department'),
-                    value: employee.department,
+                    value: employee.department.name,
                   },
                   {
                     label: t('employees.fields.country'),

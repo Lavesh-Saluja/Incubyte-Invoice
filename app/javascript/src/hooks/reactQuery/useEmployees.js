@@ -34,6 +34,7 @@ const useSaveEmployee = (mutationFn) => {
       queryClient.invalidateQueries({ queryKey: listKey })
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SELECT_OPTIONS] })
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DEPARTMENTS] })
     },
   })
 }
