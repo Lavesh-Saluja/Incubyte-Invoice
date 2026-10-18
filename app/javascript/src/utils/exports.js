@@ -12,11 +12,14 @@ export const forgetStartedHere = (id) => startedHere.delete(id)
 export const isActiveExport = ({ status }) =>
   ACTIVE_EXPORT_STATUSES.includes(status)
 
-export const downloadExport = (id) => {
+export const downloadExport = async ({ id, filename }) => {
+  const blob = await exportsApi.download(id)
+  const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
-  link.href = exportsApi.downloadUrl(id)
-  link.download = ''
+  link.href = url
+  link.download = filename
   document.body.append(link)
   link.click()
   link.remove()
+  setTimeout(() => URL.revokeObjectURL(url))
 }

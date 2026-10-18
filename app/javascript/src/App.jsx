@@ -37,7 +37,7 @@ const App = () => {
         <Route path={routes.notFound} element={<NotFound />} />
       </Routes>
       <Toaster
-        position="top-center"
+        position="top-right"
         offset={{ top: TOAST_TOP_OFFSET }}
         mobileOffset={{ top: TOAST_TOP_OFFSET }}
       />

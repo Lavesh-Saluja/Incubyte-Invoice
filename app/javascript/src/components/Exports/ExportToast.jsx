@@ -2,8 +2,8 @@ import { AlertCircle, CheckCircle2, Download, Loader2, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from 'cn'
 import { Button } from 'components/ui/button'
-import { downloadExport } from 'utils/exports'
 import { formatNumber } from 'utils/formatNumber'
+import { DOWNLOAD_PHASES } from './constants'
 
 const ICONS = {
   completed: { icon: CheckCircle2, className: 'text-success' },
@@ -22,20 +22,24 @@ const ProgressBar = ({ progress, indeterminate }) => (
   </div>
 )
 
-const ExportToast = ({ item, autoDownloaded, onDismiss, onRetry }) => {
+const ExportToast = ({ item, download, onDownload, onDismiss, onRetry }) => {
   const { t } = useTranslation()
   const { status, progress, processed_rows: done, total_rows: total } = item
   const preparing = status === 'queued' || total === null
-  const { icon: Icon, className } = ICONS[status] ?? {
+  const downloading = download === DOWNLOAD_PHASES.pending
+  const downloaded = download === DOWNLOAD_PHASES.done
+  const { icon: Icon, className } = (!downloading && ICONS[status]) || {
     icon: Loader2,
     className: 'animate-spin text-primary',
   }
 
   const title = () => {
-    if (status === 'completed')
-      return autoDownloaded
+    if (status === 'completed') {
+      if (downloading) return t('exports.toast.downloading')
+      return downloaded
         ? t('exports.toast.downloaded')
         : t('exports.toast.ready')
+    }
     if (status === 'failed') return t('exports.toast.failed')
     return preparing
       ? t('exports.toast.preparing')
@@ -84,21 +88,18 @@ const ExportToast = ({ item, autoDownloaded, onDismiss, onRetry }) => {
             />
           )}
           {status === 'completed' &&
-            (autoDownloaded ? (
+            !downloading &&
+            (downloaded ? (
               <Button
                 variant="link"
                 size="sm"
                 className="mt-1 h-auto px-0"
-                onClick={() => downloadExport(item.id)}
+                onClick={onDownload}
               >
                 {t('exports.actions.downloadAgain')}
               </Button>
             ) : (
-              <Button
-                size="sm"
-                className="mt-3"
-                onClick={() => downloadExport(item.id)}
-              >
+              <Button size="sm" className="mt-3" onClick={onDownload}>
                 <Download />
                 {t('exports.actions.download')}
               </Button>
@@ -114,7 +115,7 @@ const ExportToast = ({ item, autoDownloaded, onDismiss, onRetry }) => {
             </Button>
           )}
         </div>
-        {!['queued', 'processing'].includes(status) && (
+        {!['queued', 'processing'].includes(status) && !downloading && (
           <Button
             variant="ghost"
             size="icon-xs"
