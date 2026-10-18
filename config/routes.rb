@@ -15,6 +15,12 @@ Rails.application.routes.draw do
     resources :exports, only: %i[index show create] do
       get :download, on: :member
     end
+    resources :employee_imports, only: :create do
+      collection do
+        get :template
+        post :preview
+      end
+    end
     namespace :select_options do
       resources :countries, only: :index
       resources :departments, only: :index

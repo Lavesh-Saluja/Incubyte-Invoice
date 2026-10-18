@@ -12,12 +12,14 @@ export class ApiError extends Error {
    * @param {string} message
    * @param {number} status HTTP status, or 0 when the server could not be reached
    * @param {Record<string, string[]>} details per-field validation messages (422)
+   * @param {object} payload the full JSON error body
    */
-  constructor(message, status, details = {}) {
+  constructor(message, status, details = {}, payload = {}) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.details = details
+    this.payload = payload
   }
 }
 
@@ -37,7 +39,10 @@ const send = async (path, { method, headers, body, signal }) => {
     return await fetch(`${API_BASE_URL}${path}`, {
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body:
+        body === undefined || body instanceof FormData
+          ? body
+          : JSON.stringify(body),
       signal,
     })
   } catch (error) {
@@ -51,7 +56,12 @@ const failure = (response, payload) => {
     typeof payload?.error === 'string'
       ? payload.error
       : t('errors.requestFailed', { status: response.status })
-  return new ApiError(message, response.status, payload?.details ?? {})
+  return new ApiError(
+    message,
+    response.status,
+    payload?.details ?? {},
+    payload ?? {},
+  )
 }
 
 export const apiRequest = async (
@@ -59,7 +69,8 @@ export const apiRequest = async (
   { method = HTTP_METHODS.GET, body, signal } = {},
 ) => {
   const headers = { Accept: JSON_CONTENT_TYPE }
-  if (body !== undefined) headers['Content-Type'] = JSON_CONTENT_TYPE
+  if (body !== undefined && !(body instanceof FormData))
+    headers['Content-Type'] = JSON_CONTENT_TYPE
 
   const response = await send(path, { method, headers, body, signal })
 

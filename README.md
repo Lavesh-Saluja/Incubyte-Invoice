@@ -364,6 +364,8 @@ Locally, one root `.env` serves both Rails (via dotenv) and Vite.
 | `APP_HOSTS`                                        | production | Comma-separated API host names for Host-header protection, e.g. `api.example.com`. Empty = disabled    |
 | `RAILS_LOG_LEVEL`                                  | production | Default `info`                                                                                         |
 | `RAILS_FORCE_SSL`                                  | production | Default `true`. Set `false` only to run the image locally over plain HTTP                              |
+| `EMPLOYEE_IMPORT_MAX_ROWS`                         | all        | Maximum employees per CSV import (default 10000). See [docs/csv-import.md](docs/csv-import.md)         |
+| `EMPLOYEE_IMPORT_MAX_FILE_MB`                      | all        | Maximum CSV import file size in MB (default 5)                                                         |
 
 ### Frontend
 
@@ -407,16 +409,16 @@ migration compatible with the **currently running** code:
 
 ## 12–14. Tests and linting
 
-| What                   | Command                                                       | Notes                                 |
-| ---------------------- | ------------------------------------------------------------- | ------------------------------------- |
-| All backend tests      | `bin/rails test`                                              | Needs PostgreSQL; uses `starter_test` |
+| What                   | Command                                                              | Notes                                 |
+| ---------------------- | -------------------------------------------------------------------- | ------------------------------------- |
+| All backend tests      | `bin/rails test`                                                     | Needs PostgreSQL; uses `starter_test` |
 | One file / one line    | `bin/rails test test/controllers/api/sessions_controller_test.rb:15` |                                       |
-| Ruby lint              | `bin/rubocop` (`-a` to autocorrect)                           | Omakase style                         |
-| Security scan          | `bin/brakeman`                                                |                                       |
-| ESLint                 | `npm run lint`                                                | Fails on any warning                  |
-| Prettier               | `npm run format:check` / `npm run format`                     |                                       |
-| Production build       | `npm run build`                                               | → `dist/`                             |
-| **Everything CI runs** | `make check`                                                  |                                       |
+| Ruby lint              | `bin/rubocop` (`-a` to autocorrect)                                  | Omakase style                         |
+| Security scan          | `bin/brakeman`                                                       |                                       |
+| ESLint                 | `npm run lint`                                                       | Fails on any warning                  |
+| Prettier               | `npm run format:check` / `npm run format`                            |                                       |
+| Production build       | `npm run build`                                                      | → `dist/`                             |
+| **Everything CI runs** | `make check`                                                         |                                       |
 
 **Backend tests (36)** build records with FactoryBot (`test/factories/`, values from Faker):
 `create(:sample_item)`, `build(:sample_item, :without_description)`. They cover:

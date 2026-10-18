@@ -320,5 +320,96 @@
   },
   "ui": {
     "close": "Close"
+  },
+  "employeeImport": {
+    "title": "Import employees",
+    "description": "Add employees and their current salaries in bulk from a CSV file.",
+    "ready": "All {{count}} rows are valid. Nothing is saved until you confirm.",
+    "notReady": "Nothing can be imported until every row is valid. Fix the problems, save the file and upload it again.",
+    "fileRejected": "This file could not be checked. Fix the problem below and upload it again.",
+    "actions": {
+      "open": "Import",
+      "import": "Import {{count}} employees",
+      "importAnother": "Import another file",
+      "viewEmployees": "View employees",
+      "cancel": "Cancel",
+      "importBlocked": "Import employees"
+    },
+    "upload": {
+      "title": "Upload your file",
+      "description": "We check every row before anything is saved, and show you exactly what needs fixing.",
+      "choose": "Choose a CSV file or drag it here",
+      "chooseAnother": "Choose another file",
+      "hint": "Use the template columns. Save from Excel as “CSV UTF-8”.",
+      "checking": "Checking your file…",
+      "tooLarge": "The file is larger than {{size}} MB"
+    },
+    "summary": {
+      "total_rows": "Rows in file",
+      "valid_rows": "Ready to import",
+      "invalid_rows": "With problems"
+    },
+    "errors": {
+      "title": "Problems to fix ({{count}})",
+      "row": "Row",
+      "column": "Column",
+      "problem": "Problem",
+      "file": "File",
+      "wholeRow": "Whole row",
+      "truncated": "Showing the first {{shown}} of {{total}} problems."
+    },
+    "preview": {
+      "title": "Preview",
+      "row": "Row",
+      "employee": "Employee",
+      "department": "Department",
+      "country": "Country",
+      "status": "Status",
+      "annual_ctc": "Annual CTC",
+      "ready": "Ready to import",
+      "hasErrors": "Has problems",
+      "truncated": "Showing the first {{shown}} of {{total}} rows."
+    },
+    "confirm": {
+      "title": "Import {{count}} employees?",
+      "description": "This creates {{count}} employees, each with a current salary record. Existing employees are not changed. If anything has changed since the check and a row is no longer valid, nothing is imported."
+    },
+    "done": {
+      "title": "{{count}} employees imported",
+      "description": "Created {{employees}} employees and {{salaries}} salary records.",
+      "toast": "Imported {{count}} employees"
+    },
+    "prepare": {
+      "title": "File format",
+      "template": "Download template",
+      "limits": "Up to {{rows}} employees and {{size}} MB per file, UTF-8 encoded, with a header row.",
+      "allOrNothing": "All or nothing: if any row has a problem, no employees are imported.",
+      "createOnly": "Only creates new employees. Existing employees are never updated, so each employee code and email must be new.",
+      "effectiveFrom": "Salaries are recorded as effective from the day of the import."
+    },
+    "columns": {
+      "column": "Column",
+      "required": "Required",
+      "rules": "Rules",
+      "yes": "Required",
+      "conditional": "Depends on status",
+      "rule": {
+        "employee_code": "Unique, up to 50 characters. Must not start with INC-, which the app uses for codes it generates.",
+        "first_name": "Up to 100 characters.",
+        "last_name": "Up to 100 characters.",
+        "email": "A valid email address not used by any other employee.",
+        "job_title": "Any text.",
+        "department": "Name of an existing department (not case-sensitive). Add new departments on the Departments page first.",
+        "country": "Country name or 2-letter ISO code, e.g. India or IN.",
+        "status": "active, notice_period or inactive.",
+        "notice_period_start_date": "YYYY-MM-DD. Empty for active employees. Required for notice_period, and not after today. Optional for inactive.",
+        "notice_period_end_date": "YYYY-MM-DD. Empty for active employees. Required for notice_period: today or later, and within 365 days of the start. For inactive, not after today.",
+        "currency": "3-letter code that must match the country, e.g. INR for India.",
+        "annual_ctc": "Amount of 0 or more with up to 2 decimals, without commas or symbols, e.g. 1800000.00.",
+        "annual_base_pay": "Same format as annual_ctc.",
+        "annual_pf": "Same format as annual_ctc.",
+        "annual_other_components": "Same format as annual_ctc."
+      }
+    }
   }
 }

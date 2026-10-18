@@ -48,6 +48,7 @@ module Starter
       same_site: :lax
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
+    config.middleware.use Rack::TempfileReaper
 
     config.active_job.queue_adapter = :solid_queue
 

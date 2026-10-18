@@ -1,6 +1,7 @@
 class Employee < ApplicationRecord
   CODE_PREFIX = "INC"
   NAME_MAX_LENGTH = 100
+  COUNTRIES = ISO3166::Country.all.index_by(&:alpha2).freeze
 
   attr_readonly :employee_number, :employee_code
 
@@ -18,11 +19,13 @@ class Employee < ApplicationRecord
   before_validation :assign_employee_code, on: :create
   before_validation :assign_salary_currency
 
-  validates :employee_code, presence: true, uniqueness: true
+  validates :employee_code, presence: true
+  validates :employee_code, uniqueness: true, on: %i[create update]
   validates :first_name, :last_name, presence: true, length: { maximum: NAME_MAX_LENGTH }
-  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, uniqueness: { case_sensitive: false }, on: %i[create update]
   validates :job_title, :country, presence: true
-  validates :country, inclusion: { in: ->(_) { ISO3166::Country.codes }, message: :invalid_country }, allow_blank: true
+  validates :country, inclusion: { in: COUNTRIES.keys, message: :invalid_country }, allow_blank: true
 
   DEFAULT_NOTICE_PERIOD_DAYS = Integer(ENV.fetch("NOTICE_PERIOD_DAYS", 30))
   NOTICE_PERIOD_MAX_DAYS = 365
@@ -34,11 +37,11 @@ class Employee < ApplicationRecord
   end
 
   def country_name
-    ISO3166::Country[country]&.common_name
+    COUNTRIES[country]&.common_name
   end
 
   def currency_code
-    ISO3166::Country[country]&.currency_code
+    COUNTRIES[country]&.currency_code
   end
 
   private

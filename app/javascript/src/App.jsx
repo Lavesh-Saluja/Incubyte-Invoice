@@ -8,6 +8,7 @@ import Exports from 'components/Exports'
 import Employees from 'components/Employees'
 import EditEmployee from 'components/Employees/Edit'
 import NewEmployee from 'components/Employees/New'
+import EmployeeImport from 'components/EmployeeImport'
 import ShowEmployee from 'components/Employees/Show'
 import Login from 'components/Login'
 import NotFound from 'components/NotFound'
@@ -30,6 +31,10 @@ const App = () => {
             <Route path={routes.exports.index} element={<Exports />} />
             <Route path={routes.employees.index} element={<Employees />} />
             <Route path={routes.employees.new} element={<NewEmployee />} />
+            <Route
+              path={routes.employees.import}
+              element={<EmployeeImport />}
+            />
             <Route path={routes.employees.show} element={<ShowEmployee />} />
             <Route path={routes.employees.edit} element={<EditEmployee />} />
           </Route>
