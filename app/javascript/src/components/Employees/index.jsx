@@ -7,9 +7,12 @@ import PageHeader from 'components/commons/PageHeader'
 import { Button } from 'components/ui/button'
 import { Card } from 'components/ui/card'
 import { useFetchEmployees } from 'hooks/reactQuery/useEmployees'
+import { useCountries, useDepartments } from 'hooks/reactQuery/useSelectOptions'
 import { useDebouncedValue } from 'hooks/useDebouncedValue'
 import { routes } from 'routes'
+import ActiveFilters from './ActiveFilters'
 import {
+  EMPLOYEE_STATUSES,
   EMPLOYEES_PER_PAGE,
   FILTER_KEYS,
   SEARCH_DEBOUNCE_MS,
@@ -43,6 +46,19 @@ const Employees = () => {
     ),
   )
   const hasFilters = Object.values(filters).some(Boolean)
+  const { data: departments = [] } = useDepartments()
+  const { data: countries = [] } = useCountries({ inUse: true })
+  const filterOptions = {
+    status: EMPLOYEE_STATUSES.map((status) => ({
+      value: status,
+      label: t(`employees.status.${status}`),
+    })),
+    department: departments.map((department) => ({
+      value: department,
+      label: department,
+    })),
+    country: countries.map(({ code, name }) => ({ value: code, label: name })),
+  }
   const { data, isPending, isError, error, refetch } = useFetchEmployees({
     page,
     perPage: EMPLOYEES_PER_PAGE,
@@ -122,14 +138,20 @@ const Employees = () => {
         description={t('employees.list.description')}
         actions={addButton}
       />
-      <Card className="gap-0 overflow-hidden py-0">
+      <div className="mb-4 flex flex-col gap-3">
         <Filters
           filters={filters}
+          options={filterOptions}
           onChange={handleFilterChange}
+        />
+        <ActiveFilters
+          filters={filters}
+          options={filterOptions}
+          onRemove={(key) => handleFilterChange(key, '')}
           onClear={clearFilters}
         />
-        {renderContent()}
-      </Card>
+      </div>
+      <Card className="gap-0 overflow-hidden py-0">{renderContent()}</Card>
       <NoticeDialog
         dialog={noticeDialog}
         onClose={() => setNoticeDialog(null)}

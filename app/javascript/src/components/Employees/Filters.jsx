@@ -1,6 +1,5 @@
-import { Search, X } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
 import {
   Select,
@@ -9,15 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from 'components/ui/select'
-import { useCountries, useDepartments } from 'hooks/reactQuery/useSelectOptions'
-import { ALL_OPTION, EMPLOYEE_STATUSES } from './constants'
+import { ALL_OPTION } from './constants'
 
 const FilterSelect = ({ label, allLabel, value, options, onChange }) => (
   <Select
     value={value || ALL_OPTION}
     onValueChange={(next) => onChange(next === ALL_OPTION ? '' : next)}
   >
-    <SelectTrigger aria-label={label} className="w-full sm:w-44">
+    <SelectTrigger aria-label={label} className="w-full bg-card sm:w-44">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -31,28 +29,12 @@ const FilterSelect = ({ label, allLabel, value, options, onChange }) => (
   </Select>
 )
 
-const Filters = ({ filters, onChange, onClear }) => {
+const Filters = ({ filters, options, onChange }) => {
   const { t } = useTranslation()
-  const { data: departments = [] } = useDepartments()
-  const { data: countries = [] } = useCountries({ inUse: true })
-  const hasFilters = Object.values(filters).some(Boolean)
-
-  const statusOptions = EMPLOYEE_STATUSES.map((status) => ({
-    value: status,
-    label: t(`employees.status.${status}`),
-  }))
-  const departmentOptions = departments.map((department) => ({
-    value: department,
-    label: department,
-  }))
-  const countryOptions = countries.map(({ code, name }) => ({
-    value: code,
-    label: name,
-  }))
 
   return (
-    <div className="flex flex-col gap-3 border-b p-4 lg:flex-row lg:items-center">
-      <div className="relative flex-1">
+    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative w-full lg:max-w-sm">
         <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
@@ -60,37 +42,31 @@ const Filters = ({ filters, onChange, onClear }) => {
           onChange={(event) => onChange('q', event.target.value)}
           placeholder={t('employees.filters.searchPlaceholder')}
           aria-label={t('employees.filters.search')}
-          className="pl-9"
+          className="bg-card pl-9"
         />
       </div>
-      <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center">
+      <div className="grid grid-cols-1 gap-3 sm:flex">
         <FilterSelect
           label={t('employees.table.status')}
           allLabel={t('employees.filters.allStatuses')}
           value={filters.status}
-          options={statusOptions}
+          options={options.status}
           onChange={(value) => onChange('status', value)}
         />
         <FilterSelect
           label={t('employees.fields.department')}
           allLabel={t('employees.filters.allDepartments')}
           value={filters.department}
-          options={departmentOptions}
+          options={options.department}
           onChange={(value) => onChange('department', value)}
         />
         <FilterSelect
           label={t('employees.fields.country')}
           allLabel={t('employees.filters.allCountries')}
           value={filters.country}
-          options={countryOptions}
+          options={options.country}
           onChange={(value) => onChange('country', value)}
         />
-        {hasFilters && (
-          <Button variant="ghost" onClick={onClear}>
-            <X />
-            {t('employees.filters.clear')}
-          </Button>
-        )}
       </div>
     </div>
   )
