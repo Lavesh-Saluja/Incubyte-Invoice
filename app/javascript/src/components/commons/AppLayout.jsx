@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation } from 'react-router'
 import { toast } from 'sonner'
 import Initials from 'components/commons/Initials'
+import ExportToasts from 'components/Exports/ExportToasts'
 import Sidebar from 'components/commons/Sidebar'
 import VersionFooter from 'components/commons/VersionFooter'
 import { Button } from 'components/ui/button'
@@ -113,6 +114,7 @@ const AppLayout = () => {
           <Outlet />
         </main>
         <VersionFooter />
+        <ExportToasts />
       </div>
     </div>
   )

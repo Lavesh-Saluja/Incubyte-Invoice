@@ -20,6 +20,10 @@ gem "bcrypt", "~> 3.1.7"
 
 gem "countries", "~> 8.1"
 
+gem "csv", "~> 3.3"
+
+gem "solid_queue", "~> 1.7"
+
 # Authorization policies in app/policies
 gem "pundit"
 

@@ -3,6 +3,8 @@ class User < ApplicationRecord
 
   has_secure_password
 
+  has_many :exports, dependent: :destroy
+
   enum :role, { hr: "hr" }, default: :hr, validate: true
 
   normalizes :name, with: ->(name) { name.strip }

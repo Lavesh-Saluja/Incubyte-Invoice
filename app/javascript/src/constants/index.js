@@ -9,4 +9,8 @@ export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export const DATE_FORMAT = { dateStyle: 'medium' }
 
+export const DATE_TIME_FORMAT = { dateStyle: 'medium', timeStyle: 'short' }
+
 export const CURRENCY_LOCALES = { INR: 'en-IN' }
+
+export const TOAST_TOP_OFFSET = '4.5rem'
