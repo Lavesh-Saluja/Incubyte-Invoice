@@ -33,16 +33,23 @@ class Employees::DashboardServiceTest < ActiveSupport::TestCase
   end
 
   test "breaks headcount down by department, excluding inactive employees, largest first" do
-    create_list(:employee, 2, department: "Finance")
-    on_notice(ends_in: 20.days, department: "Finance")
-    create(:employee, department: "Sales")
-    create(:employee, :inactive, department: "Sales")
-    create(:employee, :inactive, department: "Legal")
+    finance, sales, legal = %w[Finance Sales Legal].map { |name| create(:department, name:) }
+    create_list(:employee, 2, department: finance)
+    on_notice(ends_in: 20.days, department: finance)
+    create(:employee, department: sales)
+    create(:employee, :inactive, department: sales)
+    create(:employee, :inactive, department: legal)
 
     assert_equal [
-      { department: "Finance", active: 2, notice_period: 1, total: 3 },
-      { department: "Sales", active: 1, notice_period: 0, total: 1 }
+      { id: finance.id, name: "Finance", active: 2, notice_period: 1, inactive: 0, current: 3 },
+      { id: sales.id, name: "Sales", active: 1, notice_period: 0, inactive: 1, current: 1 }
     ], dashboard.departments
+  end
+
+  test "shows at most the top 10 departments by current headcount" do
+    12.times { |n| create_list(:employee, n + 1, department: create(:department, name: "Team #{n}")) }
+
+    assert_equal (2..11).map { |n| "Team #{n}" }.reverse, dashboard.departments.pluck(:name)
   end
 
   test "lists upcoming departures within 10 days, leaving soonest first" do

@@ -1,1 +1,1 @@
-json.departments @departments
+json.departments @departments, partial: "api/departments/department", as: :department

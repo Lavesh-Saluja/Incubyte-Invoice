@@ -9,7 +9,7 @@ class EmployeeTest < ActiveSupport::TestCase
   def insert_employee!(**attributes)
     Employee.insert_all!([ {
       employee_code: "INC-2026-#{SecureRandom.hex(3)}", first_name: "Raw", last_name: "Insert",
-      email: "raw-#{SecureRandom.hex(3)}@acme.test", department: "Finance", job_title: "Analyst", country: "IN"
+      email: "raw-#{SecureRandom.hex(3)}@acme.test", department_id: create(:department).id, job_title: "Analyst", country: "IN"
     }.merge(attributes) ])
   end
 
@@ -84,13 +84,14 @@ class EmployeeTest < ActiveSupport::TestCase
     employee = Employee.new
 
     employee.validate
-    %i[first_name last_name email department job_title country].each do |attribute|
+    %i[first_name last_name email job_title country].each do |attribute|
       assert_includes employee.errors[attribute], "can't be blank", "expected #{attribute} to be required"
     end
+    assert_includes employee.errors[:department], "must exist"
   end
 
   test "treats whitespace-only values as blank" do
-    assert_includes errors_for(build(:employee, department: "   "), :department), "can't be blank"
+    assert_includes errors_for(build(:employee, job_title: "   "), :job_title), "can't be blank"
   end
 
   test "limits first and last names to 100 characters" do
@@ -101,12 +102,20 @@ class EmployeeTest < ActiveSupport::TestCase
       "is too long (maximum is 100 characters)"
   end
 
-  test "trims names, department and job title" do
-    employee = create(:employee, first_name: " Asha ", last_name: " Rao ", department: " Finance ",
-      job_title: " Analyst ")
+  test "trims names and job title" do
+    employee = create(:employee, first_name: " Asha ", last_name: " Rao ", job_title: " Analyst ")
 
-    assert_equal %w[Asha Rao Finance Analyst],
-      employee.slice(:first_name, :last_name, :department, :job_title).values
+    assert_equal %w[Asha Rao Analyst], employee.slice(:first_name, :last_name, :job_title).values
+  end
+
+  test "belongs to a department" do
+    department = create(:department, name: "Finance")
+
+    assert_equal "Finance", create(:employee, department:).department.name
+  end
+
+  test "the database rejects an unknown department" do
+    assert_raises(ActiveRecord::InvalidForeignKey) { insert_employee!(department_id: SecureRandom.uuid) }
   end
 
   test "stores the country as an upper-case ISO 3166 code" do

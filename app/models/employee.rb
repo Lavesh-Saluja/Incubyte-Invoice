@@ -4,13 +4,14 @@ class Employee < ApplicationRecord
 
   attr_readonly :employee_number, :employee_code
 
+  belongs_to :department
   has_one :salary, dependent: :destroy
   accepts_nested_attributes_for :salary, update_only: true
 
   enum :status, { active: "active", notice_period: "notice_period", inactive: "inactive" },
     default: :active, validate: true
 
-  normalizes :first_name, :last_name, :department, :job_title, with: ->(value) { value.strip }
+  normalizes :first_name, :last_name, :job_title, with: ->(value) { value.strip }
   normalizes :country, with: ->(country) { country.strip.upcase }
   normalizes :email, with: ->(email) { email.strip.downcase }
 
@@ -20,7 +21,7 @@ class Employee < ApplicationRecord
   validates :employee_code, presence: true, uniqueness: true
   validates :first_name, :last_name, presence: true, length: { maximum: NAME_MAX_LENGTH }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
-  validates :department, :job_title, :country, presence: true
+  validates :job_title, :country, presence: true
   validates :country, inclusion: { in: ->(_) { ISO3166::Country.codes }, message: :invalid_country }, allow_blank: true
 
   DEFAULT_NOTICE_PERIOD_DAYS = Integer(ENV.fetch("NOTICE_PERIOD_DAYS", 30))

@@ -56,9 +56,9 @@ const Filters = ({ filters, options, onChange }) => {
         <FilterSelect
           label={t('employees.fields.department')}
           allLabel={t('employees.filters.allDepartments')}
-          value={filters.department}
-          options={options.department}
-          onChange={(value) => onChange('department', value)}
+          value={filters.department_id}
+          options={options.department_id}
+          onChange={(value) => onChange('department_id', value)}
         />
         <FilterSelect
           label={t('employees.fields.country')}

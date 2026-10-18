@@ -3,7 +3,7 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     sequence(:email) { |n| "employee#{n}@acme.test" }
-    department { %w[Engineering Finance Sales Operations].sample }
+    department
     job_title { Faker::Job.title }
     country { %w[IN DE US SG].sample }
 

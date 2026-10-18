@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     end
     resource :settings, only: :show
     resource :dashboard, only: :show
+    resources :departments, only: %i[index create]
     namespace :select_options do
       resources :countries, only: :index
       resources :departments, only: :index

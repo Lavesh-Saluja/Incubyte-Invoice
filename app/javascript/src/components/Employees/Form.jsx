@@ -8,11 +8,12 @@ import FormField from 'components/commons/FormField'
 import SubmitButton from 'components/commons/SubmitButton'
 import { Button } from 'components/ui/button'
 import { Input } from 'components/ui/input'
-import { useCountries } from 'hooks/reactQuery/useSelectOptions'
+import { useCountries, useDepartments } from 'hooks/reactQuery/useSelectOptions'
 import { getErrorMessage } from 'utils/errors'
 import { currencySymbol } from 'utils/formatCurrency'
 import { AMOUNT_FIELDS, DETAIL_FIELDS } from './constants'
 import CountrySelect from './CountrySelect'
+import DepartmentSelect from './DepartmentSelect'
 import {
   employeeSchema,
   fieldId,
@@ -27,7 +28,7 @@ const Section = ({ title, description, children }) => (
   </DetailSection>
 )
 
-const Fields = ({ countries, cancelTo, submitLabel }) => {
+const Fields = ({ countries, departments, cancelTo, submitLabel }) => {
   const { t } = useTranslation()
   const { values } = useFormikContext()
   const currency = countries?.find(
@@ -51,6 +52,23 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
             required
           />
         ))}
+        <FormField
+          name="department_id"
+          id={fieldId('department_id')}
+          label={t('employees.fields.department')}
+          hint={t('employees.form.departmentHint')}
+          required
+        >
+          {({ field, helpers, ariaProps }) => (
+            <DepartmentSelect
+              value={field.value}
+              departments={departments}
+              onChange={(departmentId) => helpers.setValue(departmentId)}
+              onClose={() => helpers.setTouched(true)}
+              {...ariaProps}
+            />
+          )}
+        </FormField>
         <FormField
           name="country"
           id={fieldId('country')}
@@ -124,6 +142,7 @@ const Fields = ({ countries, cancelTo, submitLabel }) => {
 
 const Form = ({ employee = null, cancelTo, onSubmit, submitLabel }) => {
   const { data: countries } = useCountries()
+  const { data: departments } = useDepartments()
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
@@ -143,6 +162,7 @@ const Form = ({ employee = null, cancelTo, onSubmit, submitLabel }) => {
     >
       <Fields
         countries={countries}
+        departments={departments}
         cancelTo={cancelTo}
         submitLabel={submitLabel}
       />

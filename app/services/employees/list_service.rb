@@ -27,7 +27,7 @@ module Employees
 
     def process!
       matching = filtered_scope
-      records = matching.includes(:salary).order(*ordering).offset((page - 1) * per_page).limit(per_page)
+      records = matching.includes(:salary, :department).order(*ordering).offset((page - 1) * per_page).limit(per_page)
       Page.new(records:, page:, per_page:, total_count: matching.count)
     end
 
@@ -42,7 +42,7 @@ module Employees
       def filtered_scope
         result = scope
         result = result.where(status: filters[:status]) if Employee.statuses.key?(filters[:status])
-        result = result.where(department: filters[:department]) if filters[:department]
+        result = result.where(department_id: filters[:department_id]) if filters[:department_id]
         result = result.where(country: filters[:country].upcase) if filters[:country]
         result = search(result, filters[:q]) if filters[:q]
         result

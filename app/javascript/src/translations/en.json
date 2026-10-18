@@ -28,13 +28,9 @@
     },
     "departments": {
       "title": "Department overview",
-      "department": "Department",
-      "active": "Active",
-      "notice_period": "On notice",
-      "total": "Total",
-      "share": "Share of headcount",
       "empty": "No current employees yet.",
-      "shareLabel": "{{percent}}% of current headcount"
+      "shareLabel": "{{percent}}% of current headcount",
+      "viewAll": "View all"
     },
     "departures": {
       "title": "Upcoming departures",
@@ -49,6 +45,39 @@
       "daysLeft_other": "{{count}} days left"
     },
     "percent": "{{value}}%"
+  },
+  "departments": {
+    "title": "Departments",
+    "description": "Every department and its current headcount.",
+    "loading": "Loading departments",
+    "emptyTitle": "No departments yet",
+    "emptyDescription": "Add a department to start organising employees.",
+    "table": {
+      "department": "Department",
+      "active": "Active",
+      "notice_period": "On notice",
+      "inactive": "Inactive",
+      "current": "Current",
+      "share": "Share of headcount"
+    },
+    "fields": {
+      "name": "Name"
+    },
+    "add": {
+      "title": "Add department",
+      "description": "Department names must be unique."
+    },
+    "actions": {
+      "add": "Add department",
+      "cancel": "Cancel"
+    },
+    "notices": {
+      "created": "Department “{{name}}” added."
+    },
+    "validation": {
+      "nameRequired": "Enter a department name.",
+      "nameTooLong": "Use at most {{count}} characters."
+    }
   },
   "auth": {
     "checking": "Checking your session"
@@ -198,7 +227,12 @@
       "countryPlaceholder": "Select a country",
       "countrySearch": "Search countries",
       "countryEmpty": "No country found.",
-      "countryHint": "Sets the salary currency."
+      "countryHint": "Sets the salary currency.",
+      "departmentPlaceholder": "Select a department",
+      "departmentSearch": "Search or add a department",
+      "departmentEmpty": "No department found.",
+      "departmentCreate": "Add department “{{name}}”",
+      "departmentHint": "Type a new name to add a department."
     },
     "salary": {
       "title": "Current salary",
@@ -223,8 +257,8 @@
       "chips": {
         "q": "Search:",
         "status": "Status:",
-        "department": "Department:",
-        "country": "Country:"
+        "country": "Country:",
+        "department_id": "Department:"
       },
       "remove": "Remove {{filter}} filter",
       "filteredBy": "Filtered by"
@@ -236,7 +270,8 @@
     "label": "Main navigation",
     "description": "Navigate between sections of ACME Salary",
     "open": "Open navigation",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "departments": "Departments"
   },
   "ui": {
     "close": "Close"
