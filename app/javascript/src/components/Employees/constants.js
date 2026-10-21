@@ -60,6 +60,14 @@ export const FILTER_KEYS = [
   'department_id',
   'country',
   'leaving_within',
+  'min_salary',
+]
+
+export const MORE_FILTER_KEYS = [
+  'department_id',
+  'country',
+  'leaving_within',
+  'min_salary',
 ]
 
 export const LEAVING_WITHIN_DAYS = [7, 10, 30, 90]

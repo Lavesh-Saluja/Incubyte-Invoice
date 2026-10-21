@@ -1,6 +1,6 @@
 module Employees
   class FilterService
-    KEYS = %i[q status department_id country leaving_within].freeze
+    KEYS = %i[q status department_id country leaving_within min_salary].freeze
     LEAVING_WITHIN_DAYS = (1..Employee::NOTICE_PERIOD_MAX_DAYS).freeze
     SEARCH_COLUMNS = [
       "employees.first_name",
@@ -32,10 +32,16 @@ module Employees
       result = result.where(country: filters[:country].upcase) if filters[:country]
       result = search(result, filters[:q]) if filters[:q]
       result = result.leaving_within(leaving_within_days) if leaving_within_days
+      result = result.joins(:salary).where(salaries: { annual_ctc: min_salary.. }) if min_salary
       result
     end
 
     private
+      def min_salary
+        value = BigDecimal(filters[:min_salary], exception: false)
+        value if value && value >= 0
+      end
+
       def ordering
         newest_first = { employee_number: :desc }
         return [ newest_first ] unless filters[:status] == "notice_period" || leaving_within_days

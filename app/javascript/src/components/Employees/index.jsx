@@ -39,10 +39,16 @@ const Employees = () => {
     FILTER_KEYS.map((key) => [key, searchParams.get(key) ?? '']),
   )
   const debouncedQuery = useDebouncedValue(filters.q.trim(), SEARCH_DEBOUNCE_MS)
+  const debouncedMinSalary = useDebouncedValue(
+    filters.min_salary.trim(),
+    SEARCH_DEBOUNCE_MS,
+  )
   const activeFilters = Object.fromEntries(
-    Object.entries({ ...filters, q: debouncedQuery }).filter(([, value]) =>
-      Boolean(value),
-    ),
+    Object.entries({
+      ...filters,
+      q: debouncedQuery,
+      min_salary: debouncedMinSalary,
+    }).filter(([, value]) => Boolean(value)),
   )
   const hasFilters = Object.values(filters).some(Boolean)
   const { data: departments = [] } = useDepartments()
@@ -78,7 +84,10 @@ const Employees = () => {
     }, options)
 
   const handleFilterChange = (key, value) =>
-    updateSearchParams({ [key]: value, page: '' }, { replace: key === 'q' })
+    updateSearchParams(
+      { [key]: value, page: '' },
+      { replace: key === 'q' || key === 'min_salary' },
+    )
 
   const clearFilters = () =>
     updateSearchParams(
