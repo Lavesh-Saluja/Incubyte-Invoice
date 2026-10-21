@@ -184,6 +184,20 @@ class Api::EmployeesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, json_response.dig("meta", "total_count")
   end
 
+  test "filters employees whose annual CTC is at least the minimum salary" do
+    below = create(:employee)
+    create(:salary, employee: below, annual_ctc: 250_000)
+    at_threshold = create(:employee)
+    create(:salary, employee: at_threshold, annual_ctc: 300_000)
+    above = create(:employee)
+    create(:salary, employee: above, annual_ctc: 450_000)
+    create(:employee)
+
+    get "/api/employees", params: { min_salary: 300_000 }
+
+    assert_equal [ above.id, at_threshold.id ], json_response["employees"].pluck("id")
+  end
+
   test "returns an empty list when there are no employees" do
     get "/api/employees"
 

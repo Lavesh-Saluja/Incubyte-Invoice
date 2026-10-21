@@ -302,12 +302,16 @@
       "anyNoticeEnd": "Any notice end",
       "leavingWithin_one": "Within {{count}} day",
       "leavingWithin_other": "Within {{count}} days",
+      "moreFilters": "More filters",
+      "minSalary": "Minimum salary",
+      "minSalaryPlaceholder": "e.g. 300000",
       "chips": {
         "q": "Search:",
         "status": "Status:",
         "country": "Country:",
         "department_id": "Department:",
-        "leaving_within": "Notice ends:"
+        "leaving_within": "Notice ends:",
+        "min_salary": "Min salary:"
       },
       "remove": "Remove {{filter}} filter",
       "filteredBy": "Filtered by"
